@@ -104,6 +104,8 @@ class CreateSystemDataTable extends Migration
             $table->dropForeign('system_committed_data_confirmed_by_foreign');
         });
 
+		Schema::dropIfExists('system_saved_data');
+		Schema::dropIfExists('system_committed_data');
         Schema::dropIfExists('system_data');
     }
 }
