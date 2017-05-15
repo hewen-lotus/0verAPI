@@ -60,6 +60,7 @@ class CreateDepartmentDataTable extends Migration
         Schema::create('department_saved_data', function (Blueprint $table) {
             $table->increments('history_id');
             $table->string('id')->comment('系所代碼（系統按規則產生）');
+            $table->foreign('id')->references('id')->on('department_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('card_code')->comment('讀卡代碼');
@@ -109,6 +110,7 @@ class CreateDepartmentDataTable extends Migration
         Schema::create('department_committed_data', function (Blueprint $table) {
             $table->increments('history_id');
             $table->string('id')->comment('系所代碼（系統按規則產生）');
+            $table->foreign('id')->references('id')->on('department_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('card_code')->comment('讀卡代碼');
@@ -172,10 +174,12 @@ class CreateDepartmentDataTable extends Migration
     {
         Schema::table('department_saved_data', function (Blueprint $table) {
             $table->dropForeign('department_saved_data_school_code_foreign');
+            $table->dropForeign('department_saved_data_id_foreign');
         });
 
         Schema::table('department_committed_data', function (Blueprint $table) {
             $table->dropForeign('department_committed_data_school_code_foreign');
+            $table->dropForeign('department_committed_data_id_foreign');
         });
 
         Schema::dropIfExists('department_saved_data');
