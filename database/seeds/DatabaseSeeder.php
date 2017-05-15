@@ -22,6 +22,7 @@ class DatabaseSeeder extends Seeder
             $this->call(SchoolEditorsTableSeeder::class);
             $this->call(SchoolReviewersTableSeeder::class);
             $this->call(SystemDataTableSeeder::class);
+            $this->call(ApplicationDocumentTypesTableSeeder::class);
         }
     }
 }
