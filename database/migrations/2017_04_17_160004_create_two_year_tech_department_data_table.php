@@ -58,6 +58,7 @@ class CreateTwoYearTechDepartmentDataTable extends Migration
         Schema::create('two_year_tech_department_saved_data', function (Blueprint $table) {
             $table->increments('history_id');
             $table->string('id')->comment('系所代碼（系統按規則產生）');
+            $table->foreign('id')->references('id')->on('two_year_tech_department_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->nullable()->comment('系所名稱');
@@ -104,6 +105,7 @@ class CreateTwoYearTechDepartmentDataTable extends Migration
         Schema::create('two_year_tech_department_committed_data', function (Blueprint $table) {
             $table->increments('history_id');
             $table->string('id')->comment('系所代碼（系統按規則產生）');
+            $table->foreign('id')->references('id')->on('two_year_tech_department_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->comment('系所名稱');
@@ -164,10 +166,12 @@ class CreateTwoYearTechDepartmentDataTable extends Migration
     public function down()
     {
         Schema::table('two_year_tech_department_saved_data', function (Blueprint $table) {
+            $table->dropForeign('two_year_tech_department_saved_data_id_foreign');
             $table->dropForeign('two_year_tech_department_saved_data_school_code_foreign');
         });
 
         Schema::table('two_year_tech_department_committed_data', function (Blueprint $table) {
+            $table->dropForeign('two_year_tech_department_committed_data_id_foreign');
             $table->dropForeign('two_year_tech_department_committed_data_school_code_foreign');
         });
 
