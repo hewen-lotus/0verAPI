@@ -18,6 +18,17 @@ class SchoolDataPolicy
     }
 
     /**
+     * Determine whether the user can view the schoolData list.
+     *
+     * @param  \App\User  $user
+     * @return mixed
+     */
+    public function list(User $user)
+    {
+        return $user->school_editor != NULL;
+    }
+
+    /**
      * Determine whether the user can view the schoolData.
      *
      * @param  \App\User  $user

@@ -29,6 +29,23 @@ class SchoolDataController extends Controller
     }
 
     /**
+     * 取得學校資訊（校名、介紹等）與所有系所資訊
+     *
+     * @param  string $school_id
+     * @return \Illuminate\Http\Response
+     */
+    public function show(Request $request, $school_id)
+    {
+        if (SchoolData::where('id', '=', $school_id)->exists()) {
+            return SchoolData::where('id', '=', $school_id)->with('departments')->first();
+        }
+
+        $messages = array('School Data Not Found!');
+
+        return response()->json(compact('messages'), 404);
+    }
+
+    /**
      * 新增學校
      *
      * @param  \Illuminate\Http\Request $request
@@ -100,7 +117,7 @@ class SchoolDataController extends Controller
         }
 
         if ($request->input('five_year_allowed')) {
-            $insertData += array(
+            $InsertData += array(
                 'five_year_confirmed_by' => $request->input('five_year_confirmed_by'),
                 'five_year_rule' => $request->input('five_year_rule'),
             );
@@ -224,23 +241,6 @@ class SchoolDataController extends Controller
             SchoolData::where('id', '=', $school_id)->update($UpdateData);
 
             return SchoolData::where('id', '=', $school_id)->first();
-        }
-
-        $messages = array('School Data Not Found!');
-
-        return response()->json(compact('messages'), 404);
-    }
-
-    /**
-     * 取得學校資訊（校名、介紹等）與所有系所資訊
-     *
-     * @param  string $school_id
-     * @return \Illuminate\Http\Response
-     */
-    public function show(Request $request, $school_id)
-    {
-        if (SchoolData::where('id', '=', $school_id)->exists()) {
-            return SchoolData::where('id', '=', $school_id)->with('departments')->first();
         }
 
         $messages = array('School Data Not Found!');
