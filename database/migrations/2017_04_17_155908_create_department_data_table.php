@@ -173,13 +173,17 @@ class CreateDepartmentDataTable extends Migration
     public function down()
     {
         Schema::table('department_saved_data', function (Blueprint $table) {
-            $table->dropForeign('department_saved_data_school_code_foreign');
             $table->dropForeign('department_saved_data_id_foreign');
+            $table->dropForeign('department_saved_data_school_code_foreign');
+            $table->dropForeign('department_saved_data_modified_by_foreign');
         });
 
         Schema::table('department_committed_data', function (Blueprint $table) {
-            $table->dropForeign('department_committed_data_school_code_foreign');
             $table->dropForeign('department_committed_data_id_foreign');
+            $table->dropForeign('department_committed_data_school_code_foreign');
+            $table->dropForeign('department_committed_data_committed_by_foreign');
+            $table->dropForeign('department_committed_data_replied_by_foreign');
+            $table->dropForeign('department_committed_data_confirmed_by_foreign');
         });
 
         Schema::dropIfExists('department_saved_data');
