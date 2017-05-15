@@ -46,7 +46,7 @@ class CreateDepartmentDataTable extends Migration
             $table->string('after_birth')->nullable()->comment('限…之後出生');
             $table->string('before_birth')->nullable()->comment('限…之前出生');
             $table->string('dept_group')->comment('18大學群代碼');
-            $table->string('sub_dept_group')->comment('次要18大學群代碼');
+            $table->string('sub_dept_group')->nullable()->comment('次要18大學群代碼');
             $table->boolean('eng_taught')->comment('全英文授課');
             $table->boolean('disabilities')->comment('是否招收身障學生');
             $table->boolean('BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
@@ -141,7 +141,7 @@ class CreateDepartmentDataTable extends Migration
             $table->string('after_birth')->nullable()->comment('限…之後出生');
             $table->string('before_birth')->nullable()->comment('限…之前出生');
             $table->string('dept_group')->comment('18大學群代碼');
-            $table->string('sub_dept_group')->comment('次要18大學群代碼');
+            $table->string('sub_dept_group')->nullable()->comment('次要18大學群代碼');
             $table->boolean('eng_taught')->comment('全英文授課');
             $table->boolean('disabilities')->comment('是否招收身障學生');
             $table->boolean('BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
