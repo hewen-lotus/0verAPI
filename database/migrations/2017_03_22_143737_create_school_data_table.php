@@ -37,7 +37,7 @@ class CreateSchoolDataTable extends Migration
             $table->boolean('five_year_allowed')->comment('[中五]我可以招呢');
             $table->string('five_year_rule')->nullable()->comment('[中五]給海聯看的學則');
             $table->string('approve_no_of_independent_recruitment')->nullable()->comment('自招核定文號');
-            $table->string('approval_document_of_independent_recruitment')->nullable()->comment('自招核定公文電子檔');
+            $table->string('approval_document_of_independent_recruitment')->nullable()->comment('自招核定公文電子檔(file path)');
             $table->unsignedInteger('self_limit')->nullable()->comment('自招總額');
             $table->string('created_at');
             $table->string('updated_at');
@@ -70,7 +70,7 @@ class CreateSchoolDataTable extends Migration
             $table->boolean('five_year_allowed')->nullable()->comment('[中五]我可以招呢');
             $table->string('five_year_rule')->nullable()->comment('[中五]給海聯看的學則');
             $table->string('approve_no_of_independent_recruitment')->nullable()->comment('自招核定文號');
-            $table->string('approval_document_of_independent_recruitment')->nullable()->comment('自招核定公文電子檔');
+            $table->string('approval_document_of_independent_recruitment')->nullable()->comment('自招核定公文電子檔(file path)');
             $table->unsignedInteger('self_limit')->nullable()->comment('自招總額');
             $table->string('modified_by')->comment('按下儲存的人是誰');
             $table->foreign('modified_by')->references('username')->on('users');
@@ -106,7 +106,7 @@ class CreateSchoolDataTable extends Migration
             $table->boolean('five_year_allowed')->comment('[中五]我可以招呢');
             $table->string('five_year_rule')->nullable()->comment('[中五]給海聯看的學則');
             $table->string('approve_no_of_independent_recruitment')->nullable()->comment('自招核定文號');
-            $table->string('approval_document_of_independent_recruitment')->nullable()->comment('自招核定公文電子檔');
+            $table->string('approval_document_of_independent_recruitment')->nullable()->comment('自招核定公文電子檔(file path)');
             $table->unsignedInteger('self_limit')->nullable()->comment('自招總額');
             $table->string('committed_by')->comment('按下送出的人是誰');
             $table->foreign('committed_by')->references('username')->on('users');

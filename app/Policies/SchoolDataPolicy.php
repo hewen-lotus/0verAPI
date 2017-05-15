@@ -37,7 +37,7 @@ class SchoolDataPolicy
      */
     public function view(User $user, SchoolData $schoolData)
     {
-        //
+        return $user->school_editor->school_code === $schoolData->id;
     }
 
     /**
