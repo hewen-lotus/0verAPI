@@ -122,6 +122,8 @@ class SchoolCommittedData extends Model
         'approve_no_of_independent_recruitment', //自招核定文號
         'approval_document_of_independent_recruitment', //自招核定公文電子檔(file path)
         'self_limit', //自招總額
+        'committed_by', //按下送出的人是誰
+        'ip_address', //按下送出的人的IP
         'review_status', //waiting|confirmed|editing
         'reason', //讓學校再次修改的原因
         'replied_by', //海聯回覆的人員
@@ -130,5 +132,5 @@ class SchoolCommittedData extends Model
         'confirmed_at', //海聯審查的時間點
     ];
 
-    protected $dates = ['deleted_at'];
+    protected $dates = ['deleted_at', 'replied_at', 'confirmed_at'];
 }

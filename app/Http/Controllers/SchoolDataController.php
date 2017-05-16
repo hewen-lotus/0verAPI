@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 use Storage;
+use DB;
 
 use App\SchoolData;
+use App\SchoolCommittedData;
+use App\SchoolSavedData;
 
 class SchoolDataController extends Controller
 {
@@ -135,9 +138,20 @@ class SchoolDataController extends Controller
             );
         }
 
-        $SchoolData = SchoolData::create($InsertData);
+        $SavedInsertData = $InsertData + array('modified_by' => Auth::id(), 'ip_address' => $request->ip());
 
-        return response()->json($SchoolData, 201);
+        $CommittedInsertData = $InsertData + array('modified_by' => Auth::id(), 'ip_address' => $request->ip(), 'review_status' => 'editing');
+
+        return DB::transaction(function () use ($InsertData, $SavedInsertData, $CommittedInsertData) {
+
+            $SchoolData = SchoolData::create($InsertData);
+
+            $SchoolSavedData = SchoolSavedData::create($SavedInsertData);
+
+            $SchoolCommittedData = SchoolCommittedData::create($CommittedInsertData);
+
+            return response()->json($SchoolCommittedData, 201);
+        });
     }
 
     /**

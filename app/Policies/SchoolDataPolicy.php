@@ -48,7 +48,7 @@ class SchoolDataPolicy
      */
     public function create(User $user)
     {
-        //
+        return false;
     }
 
     /**
