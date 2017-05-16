@@ -36,8 +36,8 @@ class CreateSystemDataTable extends Migration
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('system')->comment('學制種類（學士, 碩士, 二技, 博士）');
             $table->foreign('system')->references('type')->on('system_types');
-            $table->string('description')->nullable()->comment('學制描述');
-            $table->string('eng_description')->nullable()->comment('學制描述');
+            $table->string('description')->comment('學制描述');
+            $table->string('eng_description')->comment('學制描述');
             $table->unsignedInteger('quantity_of_overseas')->nullable()->comment('僑生可招收數量');
             $table->unsignedInteger('surplus')->nullable()->comment('上學年本地生未招足名額（二技參照學士）');
             $table->unsignedInteger('expanded')->nullable()->comment('本學年教育部核定擴增名額（二技參照學士）');
@@ -56,7 +56,7 @@ class CreateSystemDataTable extends Migration
 
         Schema::create('system_committed_data', function (Blueprint $table) {
             $table->increments('history_id');
-            $table->integer('saved_id')->unsigned()->comment('對應 saved 表的 id');
+            $table->unsignedInteger('saved_id')->comment('對應 saved 表的 id');
             $table->foreign('saved_id')->references('history_id')->on('system_saved_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
