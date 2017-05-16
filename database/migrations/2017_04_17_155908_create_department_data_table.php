@@ -98,8 +98,10 @@ class CreateDepartmentDataTable extends Migration
             $table->boolean('disabilities')->nullable()->comment('是否招收身障學生');
             $table->boolean('BuHweiHwaWen')->nullable()->comment('是否招收不具華文基礎學生');
             $table->string('evaluation')->nullable()->comment('系所評鑑等級');
-            $table->string('modified_by')->comment('按下儲存的人是誰');
+            $table->string('modified_by')->nullable()->comment('儲存資料的人是誰');
             $table->foreign('modified_by')->references('username')->on('users');
+            $table->string('quantity_modified_by')->nullable()->comment('儲存名額的人是誰');
+            $table->foreign('quantity_modified_by')->references('username')->on('users');
             $table->string('ip_address')->comment('按下儲存的人的IP');
             $table->string('created_at');
             $table->string('updated_at');
@@ -150,10 +152,13 @@ class CreateDepartmentDataTable extends Migration
             $table->boolean('disabilities')->comment('是否招收身障學生');
             $table->boolean('BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
             $table->string('evaluation')->comment('系所評鑑等級');
-            $table->string('committed_by')->comment('按下送出的人是誰');
+            $table->string('committed_by')->nullable()->comment('送出資料的人是誰');
             $table->foreign('committed_by')->references('username')->on('users');
+            $table->string('quantity_committed_by')->nullable()->comment('送出名額的人是誰');
+            $table->foreign('quantity_committed_by')->references('username')->on('users');
             $table->string('ip_address')->comment('按下送出的人的IP');
-            $table->string('review_status')->comment('waiting|confirmed|editing');
+            $table->string('quantity_status')->comment('waiting|confirmed(by 教育部)|editing');
+            $table->string('review_status')->comment('waiting|confirmed(by 海聯)|editing');
             $table->string('reason')->nullable()->comment('讓學校再次修改的原因');
             $table->string('replied_by')->nullable()->comment('海聯回覆的人員');
             $table->foreign('replied_by')->references('username')->on('admins');
@@ -178,6 +183,7 @@ class CreateDepartmentDataTable extends Migration
             $table->dropForeign('department_saved_data_id_foreign');
             $table->dropForeign('department_saved_data_school_code_foreign');
             $table->dropForeign('department_saved_data_modified_by_foreign');
+            $table->dropForeign('department_saved_data_quantity_modified_by_foreign');
         });
 
         Schema::table('department_committed_data', function (Blueprint $table) {
@@ -185,6 +191,7 @@ class CreateDepartmentDataTable extends Migration
             $table->dropForeign('department_committed_data_id_foreign');
             $table->dropForeign('department_committed_data_school_code_foreign');
             $table->dropForeign('department_committed_data_committed_by_foreign');
+            $table->dropForeign('department_committed_data_quantity_committed_by_foreign');
             $table->dropForeign('department_committed_data_replied_by_foreign');
             $table->dropForeign('department_committed_data_confirmed_by_foreign');
         });
