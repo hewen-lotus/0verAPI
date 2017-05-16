@@ -7,8 +7,11 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 use Storage;
+use DB;
 
 use App\SchoolData;
+use App\SchoolCommittedData;
+use App\SchoolSavedData;
 
 class SchoolDataController extends Controller
 {
@@ -135,9 +138,22 @@ class SchoolDataController extends Controller
             );
         }
 
-        $SchoolData = SchoolData::create($InsertData);
+        $SavedInsertData = $InsertData + array('modified_by' => Auth::id(), 'ip_address' => $request->ip());
 
-        return response()->json($SchoolData, 201);
+        $CommittedInsertData = $InsertData + array('modified_by' => Auth::id(), 'ip_address' => $request->ip(), 'review_status' => 'editing');
+
+        $newDataid = DB::transaction(function () use ($InsertData, $SavedInsertData, $CommittedInsertData) {
+
+            $SchoolData = SchoolData::create($InsertData);
+
+            $SchoolSavedData = SchoolSavedData::create($SavedInsertData);
+
+            $SchoolCommittedData = SchoolCommittedData::create($CommittedInsertData);
+
+            return $SchoolCommittedData->history_id;
+        });
+
+        return SchoolCommittedData::find($newDataid);
     }
 
     /**
@@ -150,7 +166,8 @@ class SchoolDataController extends Controller
     public function update(Request $request, $school_id)
     {
         if (SchoolData::where('id', '=', $school_id)->exists()) {
-            $school = SchoolData::where('id', '=', $school_id)->first();
+            $LastSavedData = SchoolSavedData::where('id', '=', $school_id)
+                ->orderBy('history_id', 'desc')->first();
 
             $validator = Validator::make($request->all(), [
                 'title' => 'required|string|max:191', //學校名稱
@@ -174,9 +191,8 @@ class SchoolDataController extends Controller
                 'eng_scholarship_dept' => 'required_if:scholarship,1|string', //獎學金負責單位英文名稱
                 'five_year_allowed' => 'required|boolean', //[中五]我可以招呢
                 'five_year_rule' => 'required_if:five_year_allowed,1|string', //[中五]給海聯看的學則
-                // TODO 自招核定文號如果沒變要跳過檔案上傳檢查
                 'approve_no_of_independent_recruitment' => 'present|string', //自招核定文號
-                'approval_document_of_independent_recruitment' => 'required_if:approve_no_of_independent_recruitment,1|file', //自招核定公文電子檔
+                'approval_document_of_independent_recruitment' => 'required_if:approve_no_of_independent_recruitment,1|required_if:approve_no_of_independent_recruitment,'.$LastSavedData->approve_no_of_independent_recruitment.'|file', //自招核定公文電子檔
                 'self_limit' => 'required_if:approve_no_of_independent_recruitment,1|integer|min:0', //自招總額
             ]);
 
@@ -185,7 +201,8 @@ class SchoolDataController extends Controller
                 return response()->json(compact('messages'), 400);
             }
 
-            $UpdateData = array(
+            $InsertData = array(
+                'id' =>  $school_id,
                 'title' => $request->input('title'),
                 'eng_title' => $request->input('eng_title'),
                 'address' => $request->input('address'),
@@ -205,65 +222,43 @@ class SchoolDataController extends Controller
             );
 
             if ($request->input('scholarship')) {
-                $UpdateData += array(
+                $InsertData += array(
                     'scholarship_url' => $request->input('scholarship_url'),
                     'eng_scholarship_url' => $request->input('eng_scholarship_url'),
                     'scholarship_dept' => $request->input('scholarship_dept'),
                     'eng_scholarship_dept' => $request->input('eng_scholarship_dept'),
                 );
-            } else {
-                $UpdateData += array(
-                    'scholarship_url' => NULL,
-                    'eng_scholarship_url' => NULL,
-                    'scholarship_dept' => NULL,
-                    'eng_scholarship_dept' => NULL,
-                );
             }
 
             if ($request->input('five_year_allowed')) {
-                $UpdateData += array(
+                $InsertData += array(
                     'five_year_rule' => $request->input('five_year_rule'),
-                );
-            } else {
-                $UpdateData += array(
-                    'five_year_rule' => NULL,
                 );
             }
 
             if ($request->has('approve_no_of_independent_recruitment')) {
-                if ($request->input('approve_no_of_independent_recruitment') != $school->approve_no_of_independent_recruitment) {
+                if ($request->input('approve_no_of_independent_recruitment') == $LastSavedData->approve_no_of_independent_recruitment) {
+                    $InsertData += array(
+                        'approve_no_of_independent_recruitment' => $request->input('approve_no_of_independent_recruitment'),
+                        'approval_document_of_independent_recruitment' => $LastSavedData->approve_no_of_independent_recruitment,
+                        'self_limit' => $request->input('self_limit', 0),
+                    );
+                } else {
                     $extension = $request->approval_document_of_independent_recruitment->extension();
 
                     $path = $request->file('approval_document_of_independent_recruitment')->storeAs(
-                        '/', uniqid() . '-' . $request->input('id') . '-' . 'approval_document.' . $extension
+                        '/', uniqid().'-'.$request->input('id').'-'.'approval_document.'.$extension
                     );
 
-                    $UpdateData += array(
+                    $InsertData += array(
                         'approve_no_of_independent_recruitment' => $request->input('approve_no_of_independent_recruitment'),
                         'approval_document_of_independent_recruitment' => $path,
                         'self_limit' => $request->input('self_limit', 0),
                     );
-                } else {
-                    $UpdateData += array(
-                        'approve_no_of_independent_recruitment' => $request->input('approve_no_of_independent_recruitment'),
-                        'approval_document_of_independent_recruitment' => $school->approve_no_of_independent_recruitment,
-                        'self_limit' => $request->input('self_limit', 0),
-                    );
                 }
-            } else {
-                if (Storage::exists($school->approval_document_of_independent_recruitment)) {
-                    Storage::delete($school->approval_document_of_independent_recruitment);
-                }
-                $UpdateData += array(
-                    'approve_no_of_independent_recruitment' => NULL,
-                    'approval_document_of_independent_recruitment' => NULL,
-                    'self_limit' => NULL,
-                );
             }
 
-            SchoolData::where('id', '=', $school_id)->update($UpdateData);
-
-            return SchoolData::where('id', '=', $school_id)->first();
+            return SchoolSavedData::create($InsertData);
         }
 
         $messages = array('School Data Not Found!');
