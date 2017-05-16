@@ -47,6 +47,8 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
 
         Schema::create('department_committed_application_documents', function (Blueprint $table) {
             $table->increments('history_id');
+            $table->integer('saved_id')->unsigned()->comment('對應 saved 表的 id');
+            $table->foreign('saved_id')->references('history_id')->on('department_saved_application_documents');
             $table->string('dept_id')->comment('系所代碼');
             $table->foreign('dept_id')->references('id')->on('department_data');
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
@@ -89,6 +91,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
         });
 
         Schema::table('department_committed_application_documents', function (Blueprint $table) {
+            $table->dropForeign('department_committed_application_documents_saved_id_foreign');
             $table->dropForeign('department_committed_application_documents_doc_type_id_foreign');
             $table->dropForeign('department_committed_application_documents_dept_id_foreign');
             $table->dropForeign('department_committed_application_documents_committed_by_foreign');

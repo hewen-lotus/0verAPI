@@ -82,6 +82,8 @@ class CreateSchoolDataTable extends Migration
 
         Schema::create('school_committed_data', function (Blueprint $table) {
             $table->increments('history_id');
+            $table->integer('saved_id')->unsigned()->unsigned()->comment('對應 saved 表的 id');
+            $table->foreign('saved_id')->references('history_id')->on('school_saved_data');
             $table->string('id')->comment('學校代碼');
             $table->foreign('id')->references('id')->on('school_data');
             $table->string('title')->comment('學校名稱');
@@ -138,6 +140,7 @@ class CreateSchoolDataTable extends Migration
         });
 
         Schema::table('school_committed_data', function (Blueprint $table) {
+            $table->dropForeign('school_committed_data_saved_id_foreign');
             $table->dropForeign('school_committed_data_id_foreign');
             $table->dropForeign('school_committed_data_committed_by_foreign');
             $table->dropForeign('school_committed_data_replied_by_foreign');

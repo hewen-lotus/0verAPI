@@ -98,6 +98,8 @@ class CreateGraduateDepartmentDataTable extends Migration
 
         Schema::create('graduate_department_committed_data', function (Blueprint $table) {
             $table->increments('history_id');
+            $table->integer('saved_id')->unsigned()->comment('對應 saved 表的 id');
+            $table->foreign('saved_id')->references('history_id')->on('graduate_department_saved_data');
             $table->string('id')->comment('系所代碼（系統按規則產生）');
             $table->foreign('id')->references('id')->on('graduate_department_data');
             $table->string('school_code')->comment('學校代碼');
@@ -163,6 +165,7 @@ class CreateGraduateDepartmentDataTable extends Migration
         });
 
         Schema::table('graduate_department_committed_data', function (Blueprint $table) {
+            $table->dropForeign('graduate_department_committed_data_saved_id_foreign');
             $table->dropForeign('graduate_department_committed_data_id_foreign');
             $table->dropForeign('graduate_department_committed_data_school_code_foreign');
             $table->dropForeign('graduate_department_committed_data_committed_by_foreign');

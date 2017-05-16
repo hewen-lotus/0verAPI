@@ -54,6 +54,8 @@ class CreateSystemDataTable extends Migration
 
         Schema::create('system_committed_data', function (Blueprint $table) {
             $table->increments('history_id');
+            $table->integer('saved_id')->unsigned()->comment('對應 saved 表的 id');
+            $table->foreign('saved_id')->references('history_id')->on('system_saved_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('system')->comment('學制種類（學士, 碩士, 二技, 博士）');
@@ -97,6 +99,7 @@ class CreateSystemDataTable extends Migration
         });
 
         Schema::table('system_committed_data', function (Blueprint $table) {
+            $table->dropForeign('system_committed_data_saved_id_foreign');
             $table->dropForeign('system_committed_data_school_code_foreign');
             $table->dropForeign('system_committed_data_system_foreign');
             $table->dropForeign('system_committed_data_committed_by_foreign');

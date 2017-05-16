@@ -47,6 +47,8 @@ class CreateTwoYearTechDepartmentApplicationDocumentsTable extends Migration
 
         Schema::create('two_year_tech_department_committed_application_documents', function (Blueprint $table) {
             $table->increments('history_id');
+            $table->integer('saved_id')->unsigned()->comment('對應 saved 表的 id');
+            $table->foreign('saved_id', 'two_year_tech_committed_saved_id_foreign')->references('history_id')->on('two_year_tech_department_saved_application_documents');
             $table->string('dept_id')->comment('系所代碼');
             $table->foreign('dept_id', 'two_year_tech_committed_id_foreign')->references('id')->on('department_data');
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
@@ -89,6 +91,7 @@ class CreateTwoYearTechDepartmentApplicationDocumentsTable extends Migration
         });
 
         Schema::table('two_year_tech_department_committed_application_documents', function (Blueprint $table) {
+            $table->dropForeign('two_year_tech_committed_saved_id_foreign');
             $table->dropForeign('two_year_tech_committed_id_foreign');
             $table->dropForeign('two_year_tech_committed_type_foreign');
             $table->dropForeign('two_year_tech_committed_modified_by_foreign');
