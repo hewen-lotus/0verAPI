@@ -120,7 +120,7 @@ class SchoolCommittedData extends Model
         'five_year_allowed', //[中五]我可以招呢
         'five_year_rule', //[中五]給海聯看的學則
         'approve_no_of_independent_recruitment', //自招核定文號
-        'approval_document_of_independent_recruitment', //自招核定公文電子檔
+        'approval_document_of_independent_recruitment', //自招核定公文電子檔(file path)
         'self_limit', //自招總額
         'review_status', //waiting|confirmed|editing
         'reason', //讓學校再次修改的原因
