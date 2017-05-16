@@ -7,6 +7,19 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
+## Deploy Local Develop Environment
+
+- Install [composer](https://getcomposer.org/download/) first
+  >for ubuntu user, recommand to place composer into ~/bin to avoid some permission problem
+- clone this [repo](https://github.com/0verseas/0verAPI.git)
+- change your command line path into repo directory
+- ``composer install``
+- ``cp .env.example .env``
+- ``php artisan key:generate``
+- setup env variable to your own setting in .env
+- ``php artisan migrate --seed`` to setup database and insert some data for testing
+- ``php artisan serve`` to start a develop server
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable, creative experience to be truly fulfilling. Laravel attempts to take the pain out of development by easing common tasks used in the majority of web projects, such as:
