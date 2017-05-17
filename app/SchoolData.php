@@ -93,6 +93,7 @@ class SchoolData extends Model
         'eng_address', //學校英文地址
         'organization', //學校負責僑生事務的承辦單位名稱
         'eng_organization', //學校負責僑生事務的承辦單位英文名稱
+        'has_dorm', //是否提供宿舍
         'dorm_info', //宿舍說明
         'eng_dorm_info', //宿舍英文說明
         'url', //學校網站網址
