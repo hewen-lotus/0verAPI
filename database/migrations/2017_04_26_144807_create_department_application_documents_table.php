@@ -16,8 +16,8 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
         Schema::create('department_application_documents', function (Blueprint $table) {
             $table->string('dept_id')->comment('系所代碼');
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
-            $table->string('detail')->comment('詳細說明');
-            $table->string('eng_detail')->comment('英文的詳細說明');
+            $table->text('description')->comment('詳細說明');
+            $table->text('eng_description')->comment('英文的詳細說明');
             $table->string('created_at');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
@@ -35,11 +35,11 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->foreign('dept_id')->references('id')->on('department_data');
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
             $table->foreign('document_type_id')->references('id')->on('application_document_types');
-            $table->string('detail')->comment('詳細說明');
-            $table->string('eng_detail')->comment('英文的詳細說明');
+            $table->text('description')->comment('詳細說明');
+            $table->text('eng_description')->comment('英文的詳細說明');
             $table->string('modified_by')->comment('按下儲存的人是誰');
             $table->foreign('modified_by')->references('username')->on('users');
-            $table->string('ip_address')->comment('按下儲存的人的IP');
+            $table->ipAddress('ip_address')->comment('按下儲存的人的IP');
             $table->string('created_at');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
@@ -53,13 +53,13 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->foreign('dept_id')->references('id')->on('department_data');
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
             $table->foreign('document_type_id', 'department_committed_application_documents_doc_type_id_foreign')->references('id')->on('application_document_types');
-            $table->string('detail')->comment('詳細說明');
-            $table->string('eng_detail')->comment('英文的詳細說明');
+            $table->string('description')->comment('詳細說明');
+            $table->string('eng_description')->comment('英文的詳細說明');
             $table->string('committed_by')->comment('按下送出的人是誰');
             $table->foreign('committed_by')->references('username')->on('users');
-            $table->string('ip_address')->comment('按下送出的人的IP');
-            $table->string('review_status')->comment('waiting|confirmed|editing');
-            $table->string('reason')->nullable()->comment('讓學校再次修改的原因');
+            $table->ipAddress('ip_address')->comment('按下送出的人的IP');
+            $table->enum('review_status', ['waiting', 'confirmed', 'editing'])->default('editing')->comment('by 海聯');
+            $table->text('review_memo')->nullable()->comment('讓學校再次修改的原因');
             $table->string('replied_by')->nullable()->comment('海聯回覆的人員');
             $table->foreign('replied_by')->references('username')->on('admins');
             $table->string('replied_at')->nullable()->comment('海聯回覆的時間點');

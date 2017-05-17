@@ -16,21 +16,21 @@ class AdminsTableSeeder extends Seeder
         DB::table('admins')->insert([
             [
                 'username' => 'admin1',
-                'admin' => true,
+                'has_admin' => true,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
 
             [
                 'username' => 'admin2',
-                'admin' => false,
+                'has_admin' => false,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
 
             [
                 'username' => 'admin3',
-                'admin' => false,
+                'has_admin' => false,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ]
