@@ -97,12 +97,15 @@ class DepartmentCommittedData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'department_data';
+    protected $table = 'department_committed_data';
+
+    protected $primaryKey = 'history_id';
 
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
         'id', //系所代碼（系統按規則產生）
+        'saved_id', //對應 saved 表的 id
         'school_code', //學校代碼
         'card_code', //讀卡代碼
         'title', //系所名稱

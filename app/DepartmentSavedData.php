@@ -97,7 +97,9 @@ class DepartmentSavedData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'department_data';
+    protected $table = 'department_saved_data';
+
+    protected $primaryKey = 'history_id';
 
     protected $dateFormat = Carbon::ISO8601;
 
