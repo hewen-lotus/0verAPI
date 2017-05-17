@@ -28,7 +28,7 @@ class SystemTypes extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
-    protected $fillable = ['type'];
+    protected $fillable = ['type', 'eng_type'];
 
     protected $dates = ['deleted_at'];
 }

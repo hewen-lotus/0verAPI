@@ -50,15 +50,13 @@ class SystemSavedData extends Model
 
     protected $fillable = [
         'school_code', //學校代碼
-        'system', //學制種類（學士, 碩士, 二技, 博士）
+        'type', //學制種類（學士, 碩士, 二技, 博士）
         'description', //學制描述
         'eng_description', //'學制描述
-        'quantity_of_overseas', //僑生可招收數量
-        'surplus', //上學年本地生未招足名額（二技參照學士）
-        'expanded', //本學年教育部核定擴增名額（二技參照學士）
-        'distribution', //聯合分發名額（聯招；研究所沒有）
-        'personal_apply', //個人申請名額（聯招）
-        'recruit_by_school', //自招名額
+        'last_year_admission_amount', //僑生可招收數量（上學年新生總額 10%）（二技參照學士）
+        'last_year_surplus_admission_quota', //上學年本地生未招足名額（二技參照學士）
+        'ratify_expanded_quota', //本學年教育部核定擴增名額（二技參照學士）
+        'ratify_quota_for_self_enrollment', //教育部核定單獨招收名額（只有學士班有）
         'modified_by', //儲存資料的人是誰
         'quantity_modified_by', //儲存名額的人是誰
         'ip_address', //按下儲存的人的IP
