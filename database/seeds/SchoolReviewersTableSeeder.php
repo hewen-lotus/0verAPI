@@ -20,8 +20,8 @@ class SchoolReviewersTableSeeder extends Seeder
                 'username' => 'admin1',
                 'password' => Hash::make('admin123!@#'),
                 'email' => 'a@a.a',
-                'chinese_name' => '管理者一號',
-                'admin' => true,
+                'name' => '管理者一號',
+                'has_admin' => true,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
@@ -30,8 +30,8 @@ class SchoolReviewersTableSeeder extends Seeder
                 'username' => 'admin2',
                 'password' => Hash::make('admin123!@#'),
                 'email' => 'b@a.a',
-                'chinese_name' => '管理者二號',
-                'admin' => false,
+                'name' => '管理者二號',
+                'has_admin' => false,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
@@ -40,8 +40,8 @@ class SchoolReviewersTableSeeder extends Seeder
                 'username' => 'admin3',
                 'password' => Hash::make('admin123!@#'),
                 'email' => 'a@b.a',
-                'chinese_name' => '管理者三號',
-                'admin' => false,
+                'name' => '管理者三號',
+                'has_admin' => false,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ]
