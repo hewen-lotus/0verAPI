@@ -21,7 +21,8 @@ class CreateSchoolDataTable extends Migration
             $table->string('eng_address')->comment('學校英文地址');
             $table->string('organization')->comment('學校負責僑生事務的承辦單位名稱');
             $table->string('eng_organization')->comment('學校負責僑生事務的承辦單位英文名稱');
-            $table->text('dorm_info')->comment('宿舍說明');
+            $table->boolean('has_dorm')->comment('是否提供宿舍');
+            $table->text('dorm_info')->nullable()->comment('宿舍說明');
             $table->text('eng_dorm_info')->comment('宿舍英文說明');
             $table->string('url')->comment('學校網站網址');
             $table->string('eng_url')->comment('學校英文網站網址');
@@ -55,7 +56,8 @@ class CreateSchoolDataTable extends Migration
             $table->string('eng_address')->comment('學校英文地址');
             $table->string('organization')->comment('學校負責僑生事務的承辦單位名稱');
             $table->string('eng_organization')->comment('學校負責僑生事務的承辦單位英文名稱');
-            $table->text('dorm_info')->comment('宿舍說明');
+            $table->boolean('has_dorm')->comment('是否提供宿舍');
+            $table->text('dorm_info')->nullable()->comment('宿舍說明');
             $table->text('eng_dorm_info')->comment('宿舍英文說明');
             $table->string('url')->comment('學校網站網址');
             $table->string('eng_url')->comment('學校英文網站網址');
@@ -94,7 +96,8 @@ class CreateSchoolDataTable extends Migration
             $table->string('eng_address')->comment('學校英文地址');
             $table->string('organization')->comment('學校負責僑生事務的承辦單位名稱');
             $table->string('eng_organization')->comment('學校負責僑生事務的承辦單位英文名稱');
-            $table->text('dorm_info')->comment('宿舍說明');
+            $table->boolean('has_dorm')->comment('是否提供宿舍');
+            $table->text('dorm_info')->nullable()->comment('宿舍說明');
             $table->text('eng_dorm_info')->comment('宿舍英文說明');
             $table->string('url')->comment('學校網站網址');
             $table->string('eng_url')->comment('學校英文網站網址');
