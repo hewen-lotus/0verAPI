@@ -18,6 +18,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
             $table->text('description')->comment('詳細說明');
             $table->text('eng_description')->comment('英文的詳細說明');
+            $table->boolean('required')->default(0)->comment('備審資料是否為必繳');
             $table->string('created_at');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
