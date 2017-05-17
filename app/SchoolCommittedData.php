@@ -98,6 +98,7 @@ class SchoolCommittedData extends Model
 
     protected $fillable = [
         'id', //學校代碼
+        'saved_id',
         'title', //學校名稱
         'eng_title', //學校英文名稱
         'address', //學校地址
