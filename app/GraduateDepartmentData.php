@@ -88,6 +88,8 @@ class GraduateDepartmentData extends Model
 
     protected $table = 'graduate_department_data';
 
+    public $incrementing = false;
+
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
