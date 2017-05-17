@@ -42,7 +42,7 @@ class SystemCommittedData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'system_data';
+    protected $table = 'system_committed_data';
 
     protected $primaryKey = 'history_id';
 
