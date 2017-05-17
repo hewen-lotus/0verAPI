@@ -52,8 +52,6 @@ class SystemDataTableSeeder extends Seeder
                 'ratify_quota_for_self_enrollment' => NULL,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
-                'created_at' => Carbon::now()->toIso8601String(),
-                'updated_at' => Carbon::now()->toIso8601String()
             ]
         ]);
     }
