@@ -82,16 +82,19 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUrl($value)
  * @mixin \Eloquent
  */
-class GraduateDepartmentData extends Model
+class GraduateDepartmentCommittedData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'graduate_department_data';
+    protected $table = 'graduate_department_committed_data';
+
+    protected $primaryKey = 'history_id';
 
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
         'id', //系所代碼（系統按規則產生）
+        'saved_id',
         'school_code', //學校代碼
         'title', //系所名稱
         'eng_title', //系所英文名稱
@@ -123,6 +126,16 @@ class GraduateDepartmentData extends Model
         'disabilities', //是否招收身障學生
         'BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
+        'committed_by', //送出資料的人是誰
+        'quantity_committed_by', //送出名額的人是誰
+        'ip_address', //按下送出的人的IP
+        'quantity_status', //waiting|confirmed(by 教育部)|editing
+        'review_status', //'waiting|confirmed(by 海聯)|editing
+        'reason', //讓學校再次修改的原因
+        'replied_by', //海聯回覆的人員
+        'replied_at', //海聯回覆的時間點
+        'confirmed_by', //海聯審查的人員
+        'confirmed_at', //海聯審查的時間點
     ];
 
     protected $dates = ['deleted_at'];

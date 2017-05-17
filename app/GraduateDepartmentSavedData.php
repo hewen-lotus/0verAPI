@@ -82,11 +82,13 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUrl($value)
  * @mixin \Eloquent
  */
-class GraduateDepartmentData extends Model
+class GraduateDepartmentSavedData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'graduate_department_data';
+    protected $table = 'graduate_department_saved_data';
+
+    protected $primaryKey = 'history_id';
 
     protected $dateFormat = Carbon::ISO8601;
 
@@ -123,6 +125,9 @@ class GraduateDepartmentData extends Model
         'disabilities', //是否招收身障學生
         'BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
+        'modified_by', //儲存資料的人是誰
+        'quantity_modified_by', //儲存名額的人是誰
+        'ip_address', //按下儲存的人的IP
     ];
 
     protected $dates = ['deleted_at'];
