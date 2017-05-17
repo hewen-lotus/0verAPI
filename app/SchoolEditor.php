@@ -59,7 +59,7 @@ class SchoolEditor extends Model
      * @var array
      */
     protected $fillable = [
-        'username', 'school_code', 'organization', 'admin', 'last_move'
+        'username', 'school_code', 'organization', 'has_admin', 'last_action_at'
     ];
 
     /**
