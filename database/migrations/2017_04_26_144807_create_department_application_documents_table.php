@@ -59,7 +59,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->string('committed_by')->comment('按下送出的人是誰');
             $table->foreign('committed_by')->references('username')->on('users');
             $table->ipAddress('ip_address')->comment('按下送出的人的IP');
-            $table->enum('review_status', ['waiting', 'confirmed', 'editing'])->default('editing')->comment('by 海聯');
+            $table->enum('review_status', ['editing', 'waiting', 'confirmed'])->comment('資料 review 狀態（waiting|confirmed|editing）');
             $table->text('review_memo')->nullable()->comment('讓學校再次修改的原因');
             $table->string('replied_by')->nullable()->comment('海聯回覆的人員');
             $table->foreign('replied_by')->references('username')->on('admins');
