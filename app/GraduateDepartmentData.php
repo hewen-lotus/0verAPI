@@ -114,7 +114,6 @@ class GraduateDepartmentData extends Model
         'special_dept', //特殊系所（醫、牙、中醫、藝術）
         'sex_limit', //性別限制
         'ratify', //核定名額
-        'rank', //志願排名
         'sort_order', //輸出排序
         'after_birth', //限…之後出生
         'before_birth', //限…之前出生
