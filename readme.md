@@ -11,6 +11,8 @@
 
 - Install [composer](https://getcomposer.org/download/) first
   >for ubuntu user, recommand to place composer into ~/bin to avoid some permission problem
+  
+  >please also remember to install php-mbstring, php-mcrypt, php-json, php-zip, php-xml, php-mysql
 - clone this [repo](https://github.com/0verseas/0verAPI.git)
 - change your command line path into repo directory
 - ``composer install``
