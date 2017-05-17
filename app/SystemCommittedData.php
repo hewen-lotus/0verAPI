@@ -44,9 +44,12 @@ class SystemCommittedData extends Model
 
     protected $table = 'system_data';
 
+    protected $primaryKey = 'history_id';
+
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
+        'saved_id', //對應 saved 表的 id
         'school_code', //學校代碼
         'system', //學制種類（學士, 碩士, 二技, 博士）
         'description', //學制描述
@@ -70,5 +73,4 @@ class SystemCommittedData extends Model
     ];
 
     protected $dates = ['deleted_at'];
-
 }

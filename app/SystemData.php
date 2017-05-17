@@ -42,6 +42,8 @@ class SystemData extends Model
 {
     use SoftDeletes;
 
+    public $incrementing = false;
+
     protected $table = 'system_data';
 
     protected $dateFormat = Carbon::ISO8601;
@@ -60,5 +62,4 @@ class SystemData extends Model
     ];
 
     protected $dates = ['deleted_at'];
-
 }

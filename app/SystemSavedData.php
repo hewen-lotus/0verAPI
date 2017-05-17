@@ -42,7 +42,9 @@ class SystemSavedData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'system_data';
+    protected $table = 'system_saved_data';
+
+    protected $primaryKey = 'history_id';
 
     protected $dateFormat = Carbon::ISO8601;
 
@@ -63,5 +65,4 @@ class SystemSavedData extends Model
     ];
 
     protected $dates = ['deleted_at'];
-
 }

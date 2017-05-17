@@ -15,7 +15,9 @@ class CreateSystemDataTable extends Migration
     {
         Schema::create('system_data', function (Blueprint $table) {
             $table->string('school_code')->comment('學校代碼');
+            $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('system')->comment('學制種類（學士, 碩士, 二技, 博士）');
+            $table->foreign('system')->references('type')->on('system_types');
             $table->string('description')->comment('學制描述');
             $table->string('eng_description')->comment('學制描述');
             $table->unsignedInteger('quantity_of_overseas')->nullable()->comment('僑生可招收數量');
@@ -97,6 +99,11 @@ class CreateSystemDataTable extends Migration
      */
     public function down()
     {
+        Schema::table('system_data', function (Blueprint $table) {
+            $table->dropForeign('system_data_school_code_foreign');
+            $table->dropForeign('system_data_system_foreign');
+        });
+
         Schema::table('system_saved_data', function (Blueprint $table) {
             $table->dropForeign('system_saved_data_school_code_foreign');
             $table->dropForeign('system_saved_data_system_foreign');
