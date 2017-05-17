@@ -13,17 +13,31 @@ class SystemTypesTableSeeder extends Seeder
      */
     public function run()
     {
-        $types = array(
-            '學士學制',
-            '二技學制',
-            '碩士學制',
-            '博士學制'
-        );
-
-        foreach($types as $type) {
-            DB::table('system_types')->insert(
-                ['type' => $type, 'created_at' => Carbon::now()->toIso8601String(), 'updated_at' => Carbon::now()->toIso8601String()]
-            );
-        }
+        DB::table('system_types')->insert([
+            [
+                'type' => '學士學制',
+                'eng_type' => '還沒想到'
+                'created_at' => Carbon::now()->toIso8601String(),
+                'updated_at' => Carbon::now()->toIso8601String()
+            ],
+            [
+                'type' => '二技學制',
+                'eng_type' => '還沒想到'
+                'created_at' => Carbon::now()->toIso8601String(),
+                'updated_at' => Carbon::now()->toIso8601String()
+            ],
+            [
+                'type' => '碩士學制',
+                'eng_type' => '還沒想到'
+                'created_at' => Carbon::now()->toIso8601String(),
+                'updated_at' => Carbon::now()->toIso8601String()
+            ],
+            [
+                'type' => '博士學制',
+                'eng_type' => '還沒想到'
+                'created_at' => Carbon::now()->toIso8601String(),
+                'updated_at' => Carbon::now()->toIso8601String()
+            ]
+        ]);
     }
 }

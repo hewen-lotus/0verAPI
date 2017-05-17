@@ -18,7 +18,7 @@ class SchoolEditorsTableSeeder extends Seeder
                 'username' => 'editor1',
                 'school_code' => '01',
                 'organization' => '註冊組',
-                'admin' => true,
+                'has_admin' => true,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
@@ -27,14 +27,14 @@ class SchoolEditorsTableSeeder extends Seeder
                 'username' => 'editor2',
                 'school_code' => '02',
                 'organization' => '註冊組',
-                'admin' => true,
+                'has_admin' => true,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()            ],
             [
                 'username' => 'editor3',
                 'school_code' => '04',
                 'organization' => '註冊組',
-                'admin' => true,
+                'has_admin' => true,
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ]
