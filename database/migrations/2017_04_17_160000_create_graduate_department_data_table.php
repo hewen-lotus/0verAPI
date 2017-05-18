@@ -19,6 +19,7 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
+            $table->enum('system', ['Master', 'PhD'])->comment('這是碩士班還是博士班 QQ');
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->comment('給海聯的備註');
@@ -62,6 +63,7 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
+            $table->enum('system', ['Master', 'PhD'])->comment('這是碩士還是博士班 QQ');
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->comment('給海聯的備註');
@@ -111,6 +113,7 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
+            $table->enum('system', ['Master', 'PhD'])->comment('這是碩士還是博士班 QQ');
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->comment('給海聯的備註');

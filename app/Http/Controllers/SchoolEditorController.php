@@ -55,15 +55,14 @@ class SchoolEditorController extends Controller
         }
 
         $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:191|unique:admins,username|unique:users,username',
+            'username' => 'required|string|max:191|unique:school_editors,username|unique:users,username',
             'password' => 'required|string|min:6',
             'email' => 'sometimes|nullable|email',
-            'chinese_name' => 'required|string',
-            'english_name' => 'required|string',
+            'name' => 'required|string',
+            'eng_name' => 'required|string',
             'phone' => 'required|string',
-            //'school_code' => 'required|exists:school_data,id',
             'organization' => 'required|string',
-            'admin' => 'sometimes|required|boolean'
+            'has_admin' => 'sometimes|required|boolean'
         ]);
 
         if ($validator->fails()) {
@@ -76,8 +75,8 @@ class SchoolEditorController extends Controller
                 'username' => $request->username,
                 'password' => Hash::make($request->password),
                 'email' => $request->email,
-                'chinese_name' => $request->chinese_name,
-                'english_name' => $request->english_name,
+                'name' => $request->name,
+                'eng_name' => $request->eng_name,
                 'phone' => $request->phone,
             ]);
 
@@ -85,7 +84,7 @@ class SchoolEditorController extends Controller
                 'username' => $request->username,
                 'school_code' => $school_code,
                 'organization' => $request->organization,
-                'admin' => $request->input('admin', 0),
+                'has_admin' => $request->input('has_admin', 0),
             ]);
 
             return User::where('username', '=', $request->username)->with('school_editor')->first();

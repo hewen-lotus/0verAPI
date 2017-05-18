@@ -16,25 +16,25 @@ class SystemTypesTableSeeder extends Seeder
         DB::table('system_types')->insert([
             [
                 'title' => '學士學制',
-                'eng_title' => '學士學制的英文',
+                'eng_title' => 'Bachelor',
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
             [
                 'title' => '二技學制',
-                'eng_title' => '二技學制的英文',
+                'eng_title' => 'Two-Year Technical',
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
             [
                 'title' => '碩士學制',
-                'eng_title' => '碩士學制的英文',
+                'eng_title' => 'Master',
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ],
             [
                 'title' => '博士學制',
-                'eng_title' => '博士學制的英文',
+                'eng_title' => 'PhD',
                 'created_at' => Carbon::now()->toIso8601String(),
                 'updated_at' => Carbon::now()->toIso8601String()
             ]
