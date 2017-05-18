@@ -306,7 +306,7 @@ class SchoolDataController extends Controller
                 );
             }
 
-            return SchoolSavedData::create($InsertData);
+            return response()->json(SchoolSavedData::create($InsertData));
         }
 
         $messages = array('School Data Not Found!');
