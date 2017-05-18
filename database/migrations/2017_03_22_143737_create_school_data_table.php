@@ -26,7 +26,7 @@ class CreateSchoolDataTable extends Migration
             $table->text('eng_dorm_info')->nullable()->comment('宿舍英文說明');
             $table->string('url')->comment('學校網站網址');
             $table->string('eng_url')->comment('學校英文網站網址');
-            $table->string('type')->comment('「公、私立」與「大學、科大」之組合＋「僑先部」共五種');
+            $table->enum('type', ['國立大學', '私立大學', '國立科技大學', '私立科技大學', '僑生先修部'])->comment('「公、私立」與「大學、科大」之組合＋「僑先部」共五種');
             $table->string('phone')->comment('學校聯絡電話（+886-49-2910960#1234）');
             $table->string('fax')->comment('學校聯絡電話（+886-49-2910960#1234）');
             $table->integer('sort_order')->comment('學校顯示排序（教育部給）');
@@ -61,7 +61,7 @@ class CreateSchoolDataTable extends Migration
             $table->text('eng_dorm_info')->nullable()->comment('宿舍英文說明');
             $table->string('url')->comment('學校網站網址');
             $table->string('eng_url')->comment('學校英文網站網址');
-            $table->string('type')->comment('「公、私立」與「大學、科大」之組合＋「僑先部」共五種');
+            $table->enum('type', ['國立大學', '私立大學', '國立科技大學', '私立科技大學', '僑生先修部'])->comment('「公、私立」與「大學、科大」之組合＋「僑先部」共五種');
             $table->string('phone')->comment('學校聯絡電話（+886-49-2910960#1234）');
             $table->string('fax')->comment('學校聯絡電話（+886-49-2910960#1234）');
             $table->integer('sort_order')->comment('學校顯示排序（教育部給）');
@@ -101,7 +101,7 @@ class CreateSchoolDataTable extends Migration
             $table->text('eng_dorm_info')->nullable()->comment('宿舍英文說明');
             $table->string('url')->comment('學校網站網址');
             $table->string('eng_url')->comment('學校英文網站網址');
-            $table->string('type')->comment('「公、私立」與「大學、科大」之組合＋「僑先部」共五種');
+            $table->enum('type', ['國立大學', '私立大學', '國立科技大學', '私立科技大學', '僑生先修部'])->comment('「公、私立」與「大學、科大」之組合＋「僑先部」共五種');
             $table->string('phone')->comment('學校聯絡電話（+886-49-2910960#1234）');
             $table->string('fax')->comment('學校聯絡電話（+886-49-2910960#1234）');
             $table->integer('sort_order')->comment('學校顯示排序（教育部給）');

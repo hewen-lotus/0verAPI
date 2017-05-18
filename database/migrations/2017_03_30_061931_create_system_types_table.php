@@ -14,12 +14,12 @@ class CreateSystemTypesTable extends Migration
     public function up()
     {
         Schema::create('system_types', function (Blueprint $table) {
-            $table->string('type')->unique()->comment('目前可以收學生的學制');
-            $table->string('eng_type')->unique()->comment('目前可以收學生的學制的英文');
+            $table->increments('id');
+            $table->string('title')->unique()->comment('目前可以收學生的學制');
+            $table->string('eng_title')->unique()->comment('目前可以收學生的學制的英文');
             $table->string('created_at');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
-            $table->primary(['type', 'eng_type']);
         });
     }
 

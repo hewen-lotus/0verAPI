@@ -16,8 +16,8 @@ class CreateSystemDataTable extends Migration
         Schema::create('system_data', function (Blueprint $table) {
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
-            $table->string('type')->comment('學制種類（學士, 碩士, 二技, 博士）');
-            $table->foreign('type')->references('type')->on('system_types');
+            $table->unsignedInteger('type_id')->comment('學制種類（學士, 碩士, 二技, 博士）');
+            $table->foreign('type_id')->references('id')->on('system_types');
             $table->text('description')->comment('學制描述');
             $table->text('eng_description')->comment('學制描述');
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
@@ -34,8 +34,8 @@ class CreateSystemDataTable extends Migration
             $table->increments('history_id');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
-            $table->string('type')->comment('學制種類（學士, 碩士, 二技, 博士）');
-            $table->foreign('type')->references('type')->on('system_types');
+            $table->unsignedInteger('type_id')->comment('學制種類（學士, 碩士, 二技, 博士）');
+            $table->foreign('type_id')->references('id')->on('system_types');
             $table->text('description')->comment('學制描述');
             $table->text('eng_description')->comment('學制描述');
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
@@ -58,8 +58,8 @@ class CreateSystemDataTable extends Migration
             $table->foreign('saved_id')->references('history_id')->on('system_saved_data');
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
-            $table->string('type')->comment('學制種類（學士, 碩士, 二技, 博士）');
-            $table->foreign('type')->references('type')->on('system_types');
+            $table->unsignedInteger('type_id')->comment('學制種類（學士, 碩士, 二技, 博士）');
+            $table->foreign('type_id')->references('id')->on('system_types');
             $table->text('description')->comment('學制描述');
             $table->text('eng_description')->comment('學制描述');
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
