@@ -44,6 +44,16 @@ use Carbon\Carbon;
  * @property string $last_move 上次動作時間
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereLastMove($value)
  * @property-read \App\User $user
+ * @property bool $has_admin
+ * @property string $last_action_at 上次動作時間
+ * @property string $created_by
+ * @property string $updated_by
+ * @property string $deleted_by
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereDeletedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereHasAdmin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereLastActionAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereUpdatedBy($value)
  */
 class SchoolReviewer extends Model
 {

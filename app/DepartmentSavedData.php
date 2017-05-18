@@ -92,6 +92,70 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property int $history_id
+ * @property string $description 選系說明
+ * @property string $eng_description 選系英文說明
+ * @property string $memo 給海聯的備註
+ * @property string $eng_memo 給海聯的英文備註
+ * @property int $last_year_admission_placement_amount 去年聯合分發錄取名額
+ * @property int $last_year_admission_placement_quota 去年聯合分發名額（只有學士班有聯合分發）
+ * @property int $admission_placement_quota 聯合分發名額（只有學士班有聯合分發）
+ * @property string $decrease_reason_of_admission_placement 聯合分發人數減招原因
+ * @property int $admission_selection_quota 個人申請名額
+ * @property bool $has_self_enrollment 是否有自招
+ * @property int $self_enrollment_quota 自招名額
+ * @property bool $has_special_class 是否招收僑生專班
+ * @property bool $has_foreign_special_class 是否招收外生專班
+ * @property string $special_dept_type 特殊系所（醫、牙、中醫、藝術）
+ * @property string $gender_limit 性別限制
+ * @property int $admission_placement_ratify_quota 教育部核定聯合分發名額
+ * @property int $admission_selection_ratify_quota 教育部核定個人申請名額
+ * @property bool $has_birth_limit 是否限制出生日期
+ * @property string $birth_limit_after 限…之後出生
+ * @property string $birth_limit_before 限…之前出生
+ * @property int $main_group 主要隸屬學群代碼
+ * @property int $sub_group 次要隸屬學群代碼
+ * @property bool $has_eng_taught 全英文授課
+ * @property bool $has_disabilities 是否招收身障學生
+ * @property bool $has_BuHweiHwaWen 是否招收不具華文基礎學生
+ * @property string $modified_by 儲存資料的人是誰
+ * @property string $quantity_modified_by 儲存名額的人是誰
+ * @property string $ip_address 按下儲存的人的IP
+ * @property bool $has_review_fee 是否要收審查費用
+ * @property string $review_fee_detail 審查費用細節
+ * @property string $eng_review_fee_detail 審查費用英文細節
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereAdmissionPlacementQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereAdmissionPlacementRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereAdmissionSelectionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereAdmissionSelectionRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereBirthLimitAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereBirthLimitBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereDecreaseReasonOfAdmissionPlacement($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereEngMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereEngReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereGenderLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasBirthLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasBuHweiHwaWen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasDisabilities($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasEngTaught($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasForeignSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasReviewFee($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHasSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereLastYearAdmissionPlacementAmount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereLastYearAdmissionPlacementQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereMainGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereModifiedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereQuantityModifiedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereSelfEnrollmentQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereSpecialDeptType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentSavedData whereSubGroup($value)
  */
 class DepartmentSavedData extends Model
 {

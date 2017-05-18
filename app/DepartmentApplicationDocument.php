@@ -25,6 +25,12 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereEngDetail($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $description 詳細說明
+ * @property string $eng_description 英文的詳細說明
+ * @property bool $required 備審資料是否為必繳
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereRequired($value)
  */
 class DepartmentApplicationDocument extends Model
 {

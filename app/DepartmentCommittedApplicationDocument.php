@@ -25,6 +25,32 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereEngDetail($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $history_id
+ * @property int $saved_id 對應 saved 表的 id
+ * @property string $description 詳細說明
+ * @property string $eng_description 英文的詳細說明
+ * @property bool $required 備審資料是否為必繳
+ * @property string $committed_by 按下送出的人是誰
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $review_status 資料 review 狀態（waiting|confirmed|editing）
+ * @property string $review_memo 讓學校再次修改的原因
+ * @property string $replied_by 海聯回覆的人員
+ * @property string $replied_at 海聯回覆的時間點
+ * @property string $confirmed_by 海聯審查的人員
+ * @property string $confirmed_at 海聯審查的時間點
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereConfirmedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereConfirmedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereRepliedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereRepliedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereRequired($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereSavedId($value)
  */
 class DepartmentCommittedApplicationDocument extends Model
 {
@@ -37,7 +63,7 @@ class DepartmentCommittedApplicationDocument extends Model
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
-        'saved_id'
+        'saved_id',
         'dept_id',
         'document_type_id',
         'detail',

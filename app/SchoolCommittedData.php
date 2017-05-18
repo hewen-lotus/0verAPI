@@ -85,6 +85,26 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereUrl($value)
  * @mixin \Eloquent
+ * @property int $saved_id 對應 saved 表的 id
+ * @property bool $has_dorm 是否提供宿舍
+ * @property bool $has_scholarship 是否提供僑生專屬獎學金
+ * @property bool $has_five_year_student_allowed [中五]我可以招呢
+ * @property string $rule_of_five_year_student [中五]給海聯看的學則
+ * @property string $rule_doc_of_five_year_student [中五]學則文件電子擋(file path)
+ * @property bool $has_self_enrollment [自招]是否單獨招收僑生
+ * @property string $approve_no_of_self_enrollment [自招]核定文號
+ * @property string $approval_doc_of_self_enrollment [自招]核定公文電子檔(file path)
+ * @property string $review_memo 讓學校再次修改的原因
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereApprovalDocOfSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereApproveNoOfSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasDorm($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasFiveYearStudentAllowed($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasScholarship($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereRuleDocOfFiveYearStudent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereRuleOfFiveYearStudent($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereSavedId($value)
  */
 class SchoolCommittedData extends Model
 {

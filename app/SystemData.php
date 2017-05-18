@@ -37,6 +37,16 @@ use Carbon\Carbon;
  * @property string $eng_description 學制描述
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereDescription($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereEngDescription($value)
+ * @property int $type_id 學制種類（學士, 碩士, 二技, 博士）
+ * @property int $last_year_admission_amount 僑生可招收數量（上學年新生總額 10%）（二技參照學士）
+ * @property int $last_year_surplus_admission_quota 上學年本地生未招足名額（二技參照學士）
+ * @property int $ratify_expanded_quota 本學年教育部核定擴增名額（二技參照學士）
+ * @property int $ratify_quota_for_self_enrollment 教育部核定單獨招收名額（只有學士班有）
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereLastYearAdmissionAmount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereLastYearSurplusAdmissionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereRatifyExpandedQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereRatifyQuotaForSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereTypeId($value)
  */
 class SystemData extends Model
 {

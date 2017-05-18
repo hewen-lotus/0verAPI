@@ -87,6 +87,61 @@ use Carbon\Carbon;
  * @mixin \Eloquent
  * @property string $approval_document_of_special_class 僑生專班報部公文電子檔
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereApprovalDocumentOfSpecialClass($value)
+ * @property string $description 選系說明
+ * @property string $eng_description 選系英文說明
+ * @property string $memo 給海聯的備註
+ * @property string $eng_memo 給海聯的英文備註
+ * @property int $admission_selection_quota 個人申請名額
+ * @property bool $has_self_enrollment 是否有自招
+ * @property int $self_enrollment_quota 自招名額
+ * @property bool $has_special_class 是否招收僑生專班
+ * @property string $approval_doc_of_special_class 招收僑生專班核定公文電子檔(file path)
+ * @property bool $has_foreign_special_class 是否招收外生專班
+ * @property string $special_dept_type 特殊系所（醫、牙、中醫、藝術）
+ * @property string $gender_limit 性別限制
+ * @property int $admission_placement_ratify_quota 教育部核定聯合分發名額
+ * @property int $admission_selection_ratify_quota 教育部核定個人申請名額
+ * @property int $self_enrollment_ratify_quota 教育部核定單獨招收(自招)名額
+ * @property int $rank 志願排名
+ * @property bool $has_birth_limit 是否限制出生日期
+ * @property string $birth_limit_after 限…之後出生
+ * @property string $birth_limit_before 限…之前出生
+ * @property int $main_group 主要隸屬學群代碼
+ * @property int $sub_group 次要隸屬學群代碼
+ * @property bool $has_eng_taught 全英文授課
+ * @property bool $has_disabilities 是否招收身障學生
+ * @property bool $has_BuHweiHwaWen 是否招收不具華文基礎學生
+ * @property bool $has_review_fee 是否要收審查費用
+ * @property string $review_fee_detail 審查費用細節
+ * @property string $eng_review_fee_detail 審查費用英文細節
+ * @property-read \App\SchoolData $school
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereAdmissionPlacementRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereAdmissionSelectionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereAdmissionSelectionRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereApprovalDocOfSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereBirthLimitAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereBirthLimitBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereGenderLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasBirthLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasBuHweiHwaWen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasDisabilities($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasEngTaught($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasForeignSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasReviewFee($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereMainGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereRank($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSelfEnrollmentQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSelfEnrollmentRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSpecialDeptType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSubGroup($value)
  */
 class TwoYearTechDepartmentData extends Model
 {

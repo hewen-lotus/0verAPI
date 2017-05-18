@@ -92,6 +92,86 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property int $history_id
+ * @property int $saved_id 對應 saved 表的 id
+ * @property string $description 選系說明
+ * @property string $eng_description 選系英文說明
+ * @property string $memo 給海聯的備註
+ * @property string $eng_memo 給海聯的英文備註
+ * @property int $last_year_admission_placement_amount 去年聯合分發錄取名額
+ * @property int $last_year_admission_placement_quota 去年聯合分發名額（只有學士班有聯合分發）
+ * @property int $admission_placement_quota 聯合分發名額（只有學士班有聯合分發）
+ * @property string $decrease_reason_of_admission_placement 聯合分發人數減招原因
+ * @property int $admission_selection_quota 個人申請名額
+ * @property bool $has_self_enrollment 是否有自招
+ * @property int $self_enrollment_quota 自招名額
+ * @property bool $has_special_class 是否招收僑生專班
+ * @property bool $has_foreign_special_class 是否招收外生專班
+ * @property string $special_dept_type 特殊系所（醫、牙、中醫、藝術）
+ * @property string $gender_limit 性別限制
+ * @property int $admission_placement_ratify_quota 教育部核定聯合分發名額
+ * @property int $admission_selection_ratify_quota 教育部核定個人申請名額
+ * @property bool $has_birth_limit 是否限制出生日期
+ * @property string $birth_limit_after 限…之後出生
+ * @property string $birth_limit_before 限…之前出生
+ * @property int $main_group 主要隸屬學群代碼
+ * @property int $sub_group 次要隸屬學群代碼
+ * @property bool $has_eng_taught 全英文授課
+ * @property bool $has_disabilities 是否招收身障學生
+ * @property bool $has_BuHweiHwaWen 是否招收不具華文基礎學生
+ * @property string $committed_by 送出資料的人是誰
+ * @property string $quantity_committed_by 送出名額的人是誰
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $quantity_review_status 名額 review 狀態（waiting|confirmed|editing）
+ * @property string $review_status 資料 review 狀態（waiting|confirmed|editing）
+ * @property string $review_memo 讓學校再次修改的原因
+ * @property string $replied_by 海聯回覆的人員
+ * @property string $replied_at 海聯回覆的時間點
+ * @property string $confirmed_by 海聯審查的人員
+ * @property string $confirmed_at 海聯審查的時間點
+ * @property bool $has_review_fee 是否要收審查費用
+ * @property string $review_fee_detail 審查費用細節
+ * @property string $eng_review_fee_detail 審查費用英文細節
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereAdmissionPlacementQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereAdmissionPlacementRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereAdmissionSelectionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereAdmissionSelectionRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereBirthLimitAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereBirthLimitBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereConfirmedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereConfirmedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereDecreaseReasonOfAdmissionPlacement($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereEngMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereEngReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereGenderLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasBirthLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasBuHweiHwaWen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasDisabilities($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasEngTaught($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasForeignSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasReviewFee($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHasSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereLastYearAdmissionPlacementAmount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereLastYearAdmissionPlacementQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereMainGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereQuantityCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereQuantityReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereRepliedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereRepliedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereSavedId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereSelfEnrollmentQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereSpecialDeptType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedData whereSubGroup($value)
  */
 class DepartmentCommittedData extends Model
 {

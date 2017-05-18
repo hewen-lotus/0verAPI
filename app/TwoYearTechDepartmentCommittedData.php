@@ -87,6 +87,84 @@ use Carbon\Carbon;
  * @mixin \Eloquent
  * @property string $approval_document_of_special_class 僑生專班報部公文電子檔
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereApprovalDocumentOfSpecialClass($value)
+ * @property int $history_id
+ * @property int $saved_id 對應 saved 表的 id
+ * @property string $description 選系說明
+ * @property string $eng_description 選系英文說明
+ * @property string $memo 給海聯的備註
+ * @property string $eng_memo 給海聯的英文備註
+ * @property int $admission_selection_quota 個人申請名額
+ * @property bool $has_self_enrollment 是否有自招
+ * @property int $self_enrollment_quota 自招名額
+ * @property bool $has_special_class 是否招收僑生專班
+ * @property string $approval_doc_of_special_class 招收僑生專班核定公文電子檔(file path)
+ * @property bool $has_foreign_special_class 是否招收外生專班
+ * @property string $special_dept_type 特殊系所（醫、牙、中醫、藝術）
+ * @property string $gender_limit 性別限制
+ * @property int $admission_placement_ratify_quota 教育部核定聯合分發名額
+ * @property int $admission_selection_ratify_quota 教育部核定個人申請名額
+ * @property int $self_enrollment_ratify_quota 教育部核定單獨招收(自招)名額
+ * @property int $rank 志願排名
+ * @property bool $has_birth_limit 是否限制出生日期
+ * @property string $birth_limit_after 限…之後出生
+ * @property string $birth_limit_before 限…之前出生
+ * @property int $main_group 主要隸屬學群代碼
+ * @property int $sub_group 次要隸屬學群代碼
+ * @property bool $has_eng_taught 全英文授課
+ * @property bool $has_disabilities 是否招收身障學生
+ * @property bool $has_BuHweiHwaWen 是否招收不具華文基礎學生
+ * @property string $committed_by 送出資料的人是誰
+ * @property string $quantity_committed_by 送出名額的人是誰
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $quantity_review_status 名額 review 狀態（waiting|confirmed|editing）
+ * @property string $review_status 資料 review 狀態（waiting|confirmed|editing）
+ * @property string $review_memo 讓學校再次修改的原因
+ * @property string $replied_by 海聯回覆的人員
+ * @property string $replied_at 海聯回覆的時間點
+ * @property string $confirmed_by 海聯審查的人員
+ * @property string $confirmed_at 海聯審查的時間點
+ * @property bool $has_review_fee 是否要收審查費用
+ * @property string $review_fee_detail 審查費用細節
+ * @property string $eng_review_fee_detail 審查費用英文細節
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereAdmissionPlacementRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereAdmissionSelectionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereAdmissionSelectionRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereApprovalDocOfSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereBirthLimitAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereBirthLimitBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereConfirmedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereConfirmedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereEngMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereEngReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereGenderLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasBirthLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasBuHweiHwaWen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasDisabilities($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasEngTaught($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasForeignSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasReviewFee($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHasSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereMainGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereQuantityCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereQuantityReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereRank($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereRepliedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereRepliedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereSavedId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereSelfEnrollmentQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereSelfEnrollmentRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereSpecialDeptType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentCommittedData whereSubGroup($value)
  */
 class TwoYearTechDepartmentCommittedData extends Model
 {

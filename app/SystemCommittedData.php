@@ -37,6 +37,40 @@ use Carbon\Carbon;
  * @property string $eng_description 學制描述
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereDescription($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereEngDescription($value)
+ * @property int $history_id
+ * @property int $saved_id 對應 saved 表的 id
+ * @property int $type_id 學制種類（學士, 碩士, 二技, 博士）
+ * @property int $last_year_admission_amount 僑生可招收數量（上學年新生總額 10%）（二技參照學士）
+ * @property int $last_year_surplus_admission_quota 上學年本地生未招足名額（二技參照學士）
+ * @property int $ratify_expanded_quota 本學年教育部核定擴增名額（二技參照學士）
+ * @property int $ratify_quota_for_self_enrollment 教育部核定單獨招收名額（只有學士班有）
+ * @property string $committed_by 送出資料的人是誰
+ * @property string $quantity_committed_by 送出名額的人是誰
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $quantity_review_status 名額 review 狀態（waiting|confirmed|editing）
+ * @property string $review_status 資料 review 狀態（waiting|confirmed|editing）
+ * @property string $review_memo 讓學校再次修改的原因
+ * @property string $replied_by 海聯回覆的人員
+ * @property string $replied_at 海聯回覆的時間點
+ * @property string $confirmed_by 海聯審查的人員
+ * @property string $confirmed_at 海聯審查的時間點
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereConfirmedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereConfirmedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereLastYearAdmissionAmount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereLastYearSurplusAdmissionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereQuantityCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereQuantityReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereRatifyExpandedQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereRatifyQuotaForSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereRepliedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereRepliedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereSavedId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemCommittedData whereTypeId($value)
  */
 class SystemCommittedData extends Model
 {

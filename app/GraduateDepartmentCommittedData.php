@@ -81,6 +81,82 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property int $history_id
+ * @property int $saved_id 對應 saved 表的 id
+ * @property string $description 選系說明
+ * @property string $eng_description 選系英文說明
+ * @property string $memo 給海聯的備註
+ * @property string $eng_memo 給海聯的英文備註
+ * @property int $admission_selection_quota 個人申請名額
+ * @property bool $has_self_enrollment 是否有自招
+ * @property int $self_enrollment_quota 自招名額
+ * @property bool $has_special_class 是否招收僑生專班
+ * @property bool $has_foreign_special_class 是否招收外生專班
+ * @property string $special_dept_type 特殊系所（醫、牙、中醫、藝術）
+ * @property string $gender_limit 性別限制
+ * @property int $admission_placement_ratify_quota 教育部核定聯合分發名額
+ * @property int $admission_selection_ratify_quota 教育部核定個人申請名額
+ * @property int $self_enrollment_ratify_quota 教育部核定單獨招收(自招)名額
+ * @property int $rank 志願排名
+ * @property bool $has_birth_limit 是否限制出生日期
+ * @property string $birth_limit_after 限…之後出生
+ * @property string $birth_limit_before 限…之前出生
+ * @property int $main_group 主要隸屬學群代碼
+ * @property int $sub_group 次要隸屬學群代碼
+ * @property bool $has_eng_taught 全英文授課
+ * @property bool $has_disabilities 是否招收身障學生
+ * @property bool $has_BuHweiHwaWen 是否招收不具華文基礎學生
+ * @property string $committed_by 送出資料的人是誰
+ * @property string $quantity_committed_by 送出名額的人是誰
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $quantity_review_status 名額 review 狀態（waiting|confirmed|editing）
+ * @property string $review_status 資料 review 狀態（waiting|confirmed|editing）
+ * @property string $review_memo 讓學校再次修改的原因
+ * @property string $replied_by 海聯回覆的人員
+ * @property string $replied_at 海聯回覆的時間點
+ * @property string $confirmed_by 海聯審查的人員
+ * @property string $confirmed_at 海聯審查的時間點
+ * @property bool $has_review_fee 是否要收審查費用
+ * @property string $review_fee_detail 審查費用細節
+ * @property string $eng_review_fee_detail 審查費用英文細節
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereAdmissionPlacementRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereAdmissionSelectionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereAdmissionSelectionRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereBirthLimitAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereBirthLimitBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereConfirmedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereConfirmedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereEngMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereEngReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereGenderLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasBirthLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasBuHweiHwaWen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasDisabilities($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasEngTaught($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasForeignSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasReviewFee($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHasSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereMainGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereQuantityCommittedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereQuantityReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereRank($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereRepliedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereRepliedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereReviewStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereSavedId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereSelfEnrollmentQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereSelfEnrollmentRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereSpecialDeptType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentCommittedData whereSubGroup($value)
  */
 class GraduateDepartmentCommittedData extends Model
 {

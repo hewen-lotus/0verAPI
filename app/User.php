@@ -38,6 +38,18 @@ use Carbon\Carbon;
  * @property-read \App\Admin $admin
  * @property-read \App\SchoolEditor $school_editor
  * @property-read \App\SchoolReviewer $school_reviewer
+ * @property string $name
+ * @property string $eng_name
+ * @property string $last_login_at 上次登入時間
+ * @property string $created_by
+ * @property string $updated_by
+ * @property string $deleted_by
+ * @method static \Illuminate\Database\Query\Builder|\App\User whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User whereDeletedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User whereEngName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User whereLastLoginAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User whereName($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedBy($value)
  */
 class User extends Authenticatable
 {
