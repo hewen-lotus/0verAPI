@@ -141,6 +141,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentSavedData whereSelfEnrollmentRatifyQuota($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentSavedData whereSpecialDeptType($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentSavedData whereSubGroup($value)
+ * @property string $system 這是碩士還是博士班 QQ
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentSavedData whereSystem($value)
  */
 class GraduateDepartmentSavedData extends Model
 {
