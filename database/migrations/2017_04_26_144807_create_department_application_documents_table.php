@@ -15,7 +15,9 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
     {
         Schema::create('department_application_documents', function (Blueprint $table) {
             $table->string('dept_id')->comment('系所代碼');
+            $table->foreign('dept_id')->references('id')->on('department_data');
             $table->unsignedInteger('document_type_id')->comment('備審資料代碼（系統自動產生）');
+            $table->foreign('document_type_id')->references('id')->on('application_document_types');
             $table->text('description')->comment('詳細說明');
             $table->text('eng_description')->comment('英文的詳細說明');
             $table->boolean('required')->default(0)->comment('備審資料是否為必繳');
@@ -23,11 +25,6 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
             $table->primary(['dept_id', 'document_type_id'], 'pkey');
-        });
-
-        Schema::table('department_application_documents', function (Blueprint $table) {
-            $table->foreign('document_type_id')->references('id')->on('application_document_types');
-            $table->foreign('dept_id')->references('id')->on('department_data');
         });
 
         Schema::create('department_saved_application_documents', function (Blueprint $table) {
@@ -38,6 +35,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->foreign('document_type_id')->references('id')->on('application_document_types');
             $table->text('description')->comment('詳細說明');
             $table->text('eng_description')->comment('英文的詳細說明');
+            $table->boolean('required')->default(0)->comment('備審資料是否為必繳');
             $table->string('modified_by')->comment('按下儲存的人是誰');
             $table->foreign('modified_by')->references('username')->on('users');
             $table->ipAddress('ip_address')->comment('按下儲存的人的IP');
@@ -56,6 +54,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->foreign('document_type_id', 'department_committed_application_documents_doc_type_id_foreign')->references('id')->on('application_document_types');
             $table->string('description')->comment('詳細說明');
             $table->string('eng_description')->comment('英文的詳細說明');
+            $table->boolean('required')->default(0)->comment('備審資料是否為必繳');
             $table->string('committed_by')->comment('按下送出的人是誰');
             $table->foreign('committed_by')->references('username')->on('users');
             $table->ipAddress('ip_address')->comment('按下送出的人的IP');
