@@ -157,6 +157,7 @@ class GraduateDepartmentSavedData extends Model
         'school_code', //學校代碼
         'title', //系所名稱
         'eng_title', //系所英文名稱
+        'system', //這是碩士班還是博士班 QQ
         'description', //選系說明
         'eng_description', //選系英文說明
         'memo', //給海聯的備註
