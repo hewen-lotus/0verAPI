@@ -129,4 +129,9 @@ class GraduateDepartmentData extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function school()
+    {
+        return $this->belongsTo('App\SchoolData', 'school_code', 'id');
+    }
 }

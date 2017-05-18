@@ -136,5 +136,10 @@ class TwoYearTechDepartmentData extends Model
         'evaluation', //系所評鑑等級
     ];
 
-    protected $dates = ['deleted_at']; 
+    protected $dates = ['deleted_at'];
+
+    public function school()
+    {
+        return $this->belongsTo('App\SchoolData', 'school_code', 'id');
+    }
 }

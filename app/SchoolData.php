@@ -121,4 +121,14 @@ class SchoolData extends Model
     {
         return $this->hasMany('App\DepartmentData', 'school_code', 'id');
     }
+
+    public function graduate_department()
+    {
+        return $this->hasMany('App\GraduateDepartmentData', 'school_code', 'id');
+    }
+
+    public function two_year_tech_department()
+    {
+        return $this->hasMany('App\TwoYearTechDepartmentData', 'school_code', 'id');
+    }
 }
