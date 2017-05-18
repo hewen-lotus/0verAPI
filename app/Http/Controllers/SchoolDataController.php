@@ -6,12 +6,11 @@ use Illuminate\Http\Request;
 
 use Auth;
 use Validator;
-use Storage;
 use DB;
 
 use App\SchoolData;
-use App\SchoolCommittedData;
 use App\SchoolSavedData;
+use App\SchoolCommittedData;
 
 class SchoolDataController extends Controller
 {

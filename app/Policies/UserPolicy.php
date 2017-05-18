@@ -12,7 +12,7 @@ class UserPolicy
 
     public function before(User $user)
     {
-        if ((bool)$user->admin->admin == true) {
+        if ((bool)$user->admin->has_admin == true) {
             return true;
         }
     }
@@ -31,7 +31,7 @@ class UserPolicy
      */
     public function list_admin(User $user)
     {
-        return (bool)$user->admin->admin == true;
+        return (bool)$user->admin->has_admin == true;
     }
 
     /**
@@ -54,7 +54,7 @@ class UserPolicy
      */
     public function create_admin(User $user)
     {
-        return (bool)$user->admin->admin == true;
+        return (bool)$user->admin->has_admin == true;
     }
 
     /**
@@ -77,7 +77,7 @@ class UserPolicy
      */
     public function delete_admin(User $user)
     {
-        return (bool)$user->admin->admin == true;
+        return (bool)$user->admin->has_admin == true;
     }
 
     /*
@@ -98,7 +98,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_editor->admin == true;
+        return (bool)$user->school_editor->has_admin == true;
     }
 
     /**
@@ -114,7 +114,7 @@ class UserPolicy
             return true;
         }
 
-        if ((bool)$user->school_editor->admin == true) {
+        if ((bool)$user->school_editor->has_admin == true) {
             return true;
         }
 
@@ -133,7 +133,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_editor->admin == true;
+        return (bool)$user->school_editor->has_admin == true;
     }
 
     /**
@@ -164,7 +164,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_editor->admin == true;
+        return (bool)$user->school_editor->has_admin == true;
     }
 
     /*
@@ -185,7 +185,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_reviewer->admin == true;
+        return (bool)$user->school_reviewer->has_admin == true;
     }
 
     /**
@@ -216,7 +216,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_reviewer->admin == true;
+        return (bool)$user->school_reviewer->has_admin == true;
     }
 
     /**
@@ -247,6 +247,6 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_reviewer->admin == true;
+        return (bool)$user->school_reviewer->has_admin == true;
     }
 }

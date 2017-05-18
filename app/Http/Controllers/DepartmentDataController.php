@@ -4,8 +4,43 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 
+use Auth;
+use Validator;
+use DB;
+
+use App\DepartmentData;
+use App\DepartmentSavedData;
+use App\DepartmentCommittedData;
+
 class DepartmentDataController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth');
+    }
+
+    public function index()
+    {
+        $user = Auth::user();
+
+        if ($user->admin != NULL) {
+            return DepartmentData::all();
+        }
+
+        return DepartmentData::where('id', '=', $user->school_editor->school_code)->first();
+    }
+
+    public function show(Request $request, $school_id)
+    {
+        if (SchoolData::where('id', '=', $school_id)->exists()) {
+            return SchoolData::where('id', '=', $school_id)->with('departments')->first();
+        }
+
+        $messages = array('School Data Not Found!');
+
+        return response()->json(compact('messages'), 404);
+    }
+
     /*
     'id', //系所代碼（系統按規則產生）
     'school_code', //學校代碼

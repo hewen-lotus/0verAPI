@@ -92,4 +92,18 @@ class SchoolEditor extends Model
     {
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
+
+    public function has_banned()
+    {
+        if ($this->deleted_at != NULL) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function last_login_at()
+    {
+        return $this->user->last_login_at;
+    }
 }
