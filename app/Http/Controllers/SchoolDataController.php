@@ -86,7 +86,7 @@ class SchoolDataController extends Controller
             'approval_doc_of_self_enrollment' => 'required_if:has_self_enrollment,1|file', //[自招]核定公文電子檔(file path)
         ]);
 
-        if($validator->fails()) {
+        if ($validator->fails()) {
             $messages = $validator->errors()->all();
             return response()->json(compact('messages'), 400);
         }
@@ -211,7 +211,7 @@ class SchoolDataController extends Controller
                 'ip_address' => $request->ip(),
             ]);
 
-            if($validator->fails()) {
+            if ($validator->fails()) {
                 $messages = $validator->errors()->all();
                 return response()->json(compact('messages'), 400);
             }
@@ -234,6 +234,8 @@ class SchoolDataController extends Controller
                 'has_scholarship' => $request->input('has_scholarship'),
                 'has_five_year_student_allowed' => $request->input('has_five_year_student_allowed'),
                 'has_self_enrollment' => $request->input('has_self_enrollment'),
+                'modified_by' => Auth::id(),
+                'ip_address' => $request->ip(),
             );
 
             if ((bool)$request->input('has_dorm') == true) {
