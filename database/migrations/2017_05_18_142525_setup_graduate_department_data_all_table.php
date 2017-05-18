@@ -69,16 +69,16 @@ class SetupGraduateDepartmentDataAllTable extends Migration
 
         Schema::table('graduate_department_saved_data', function(Blueprint $table)
         {
-            $table->dropForeign('graduate_department_data_main_group_foreign');
-            $table->dropForeign('graduate_department_data_sub_group_foreign');
-            $table->dropForeign('graduate_department_data_evaluation_foreign');
+            $table->dropForeign('graduate_department_saved_data_main_group_foreign');
+            $table->dropForeign('graduate_department_saved_data_sub_group_foreign');
+            $table->dropForeign('graduate_department_saved_data_evaluation_foreign');
         });
 
         Schema::table('graduate_department_committed_data', function(Blueprint $table)
         {
-            $table->dropForeign('graduate_department_data_main_group_foreign');
-            $table->dropForeign('graduate_department_data_sub_group_foreign');
-            $table->dropForeign('graduate_department_data_evaluation_foreign');
+            $table->dropForeign('graduate_department_committed_data_main_group_foreign');
+            $table->dropForeign('graduate_department_committed_data_sub_group_foreign');
+            $table->dropForeign('graduate_department_committed_data_evaluation_foreign');
         });
     }
 }

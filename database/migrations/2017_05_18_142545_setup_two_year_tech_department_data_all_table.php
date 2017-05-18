@@ -69,16 +69,16 @@ class SetupTwoYearTechDepartmentDataAllTable extends Migration
 
         Schema::table('two_year_tech_department_saved_data', function(Blueprint $table)
         {
-            $table->dropForeign('two_year_tech_department_data_main_group_foreign');
-            $table->dropForeign('two_year_tech_department_data_sub_group_foreign');
-            $table->dropForeign('two_year_tech_department_data_evaluation_foreign');
+            $table->dropForeign('two_year_tech_department_saved_data_main_group_foreign');
+            $table->dropForeign('two_year_tech_department_saved_data_sub_group_foreign');
+            $table->dropForeign('two_year_tech_department_saved_data_evaluation_foreign');
         });
 
         Schema::table('two_year_tech_department_committed_data', function(Blueprint $table)
         {
-            $table->dropForeign('two_year_tech_department_data_main_group_foreign');
-            $table->dropForeign('two_year_tech_department_data_sub_group_foreign');
-            $table->dropForeign('two_year_tech_department_data_evaluation_foreign');
+            $table->dropForeign('two_year_tech_department_committed_data_main_group_foreign');
+            $table->dropForeign('two_year_tech_department_committed_data_sub_group_foreign');
+            $table->dropForeign('two_year_tech_department_committed_data_evaluation_foreign');
         });
     }
 }

@@ -17,7 +17,7 @@ class SystemDataTableSeeder extends Seeder
         DB::table('system_data')->insert([
             [
                 'school_code' => '01',
-                'type' => '學士學制',
+                'type_id' => 1,
                 'description' => '中文學制描述',
                 'eng_description' => 'eng_description',
                 'last_year_admission_amount' => '348',
@@ -30,7 +30,7 @@ class SystemDataTableSeeder extends Seeder
 
             [
                 'school_code' => '01',
-                'system' => '碩士學制',
+                'type_id' => 2,
                 'description' => '中文學制描述',
                 'eng_description' => 'eng_description',
                 'last_year_admission_amount' => '387',
@@ -43,7 +43,7 @@ class SystemDataTableSeeder extends Seeder
 
             [
                 'school_code' => '01',
-                'system' => '博士學制',
+                'type_id' => 3,
                 'description' => '中文學制描述',
                 'eng_description' => 'eng_description',
                 'last_year_admission_amount' => '76',

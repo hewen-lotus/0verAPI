@@ -27,7 +27,7 @@ class CreateSystemDataTable extends Migration
             $table->string('created_at');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
-            $table->primary(['school_code', 'type']);
+            $table->primary(['school_code', 'type_id']);
         });
 
         Schema::create('system_saved_data', function (Blueprint $table) {
@@ -95,12 +95,12 @@ class CreateSystemDataTable extends Migration
     {
         Schema::table('system_data', function (Blueprint $table) {
             $table->dropForeign('system_data_school_code_foreign');
-            $table->dropForeign('system_data_type_foreign');
+            $table->dropForeign('system_data_type_id_foreign');
         });
 
         Schema::table('system_saved_data', function (Blueprint $table) {
             $table->dropForeign('system_saved_data_school_code_foreign');
-            $table->dropForeign('system_saved_data_type_foreign');
+            $table->dropForeign('system_saved_data_type_id_foreign');
             $table->dropForeign('system_saved_data_modified_by_foreign');
             $table->dropForeign('system_saved_data_quantity_modified_by_foreign');
         });
@@ -108,7 +108,7 @@ class CreateSystemDataTable extends Migration
         Schema::table('system_committed_data', function (Blueprint $table) {
             $table->dropForeign('system_committed_data_saved_id_foreign');
             $table->dropForeign('system_committed_data_school_code_foreign');
-            $table->dropForeign('system_committed_data_type_foreign');
+            $table->dropForeign('system_committed_data_type_id_foreign');
             $table->dropForeign('system_committed_data_committed_by_foreign');
             $table->dropForeign('system_committed_data_quantity_committed_by_foreign');
             $table->dropForeign('system_committed_data_replied_by_foreign');

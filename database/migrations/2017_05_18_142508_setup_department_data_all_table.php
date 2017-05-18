@@ -69,16 +69,16 @@ class SetupDepartmentDataAllTable extends Migration
 
         Schema::table('department_saved_data', function(Blueprint $table)
         {
-            $table->dropForeign('department_data_main_group_foreign');
-            $table->dropForeign('department_data_sub_group_foreign');
-            $table->dropForeign('department_data_evaluation_foreign');
+            $table->dropForeign('department_saved_data_main_group_foreign');
+            $table->dropForeign('department_saved_data_sub_group_foreign');
+            $table->dropForeign('department_saved_data_evaluation_foreign');
         });
 
         Schema::table('department_committed_data', function(Blueprint $table)
         {
-            $table->dropForeign('department_data_main_group_foreign');
-            $table->dropForeign('department_data_sub_group_foreign');
-            $table->dropForeign('department_data_evaluation_foreign');
+            $table->dropForeign('department_committed_data_main_group_foreign');
+            $table->dropForeign('department_committed_data_sub_group_foreign');
+            $table->dropForeign('department_committed_data_evaluation_foreign');
         });
     }
 }

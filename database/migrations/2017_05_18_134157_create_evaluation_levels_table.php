@@ -36,5 +36,7 @@ class CreateEvaluationLevelsTable extends Migration
         Schema::table('evaluation_levels', function (Blueprint $table) {
             $table->dropForeign('evaluation_levels_created_by_foreign');
         });
+
+        Schema::dropIfExists('evaluation_levels');
     }
 }

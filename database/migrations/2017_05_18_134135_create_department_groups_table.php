@@ -36,5 +36,7 @@ class CreateDepartmentGroupsTable extends Migration
         Schema::table('department_groups', function (Blueprint $table) {
             $table->dropForeign('department_groups_created_by_foreign');
         });
+
+        Schema::dropIfExists('department_groups');
     }
 }
