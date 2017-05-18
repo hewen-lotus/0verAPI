@@ -38,7 +38,7 @@ class CreateSchoolDataTable extends Migration
             $table->boolean('has_five_year_student_allowed')->comment('[中五]我可以招呢');
             $table->text('rule_of_five_year_student')->nullable()->comment('[中五]給海聯看的學則');
             $table->string('rule_doc_of_five_year_student')->nullable()->comment('[中五]學則文件電子擋(file path)');
-            $table->boolean('has_self_enrollment')->nullable()->comment('[自招]是否單獨招收僑生');
+            $table->boolean('has_self_enrollment')->comment('[自招]是否單獨招收僑生');
             $table->string('approve_no_of_self_enrollment')->nullable()->comment('[自招]核定文號');
             $table->string('approval_doc_of_self_enrollment')->nullable()->comment('[自招]核定公文電子檔(file path)');
             $table->string('created_at');
@@ -73,7 +73,7 @@ class CreateSchoolDataTable extends Migration
             $table->boolean('has_five_year_student_allowed')->comment('[中五]我可以招呢');
             $table->text('rule_of_five_year_student')->nullable()->comment('[中五]給海聯看的學則');
             $table->string('rule_doc_of_five_year_student')->nullable()->comment('[中五]學則文件電子擋(file path)');
-            $table->boolean('has_self_enrollment')->nullable()->comment('[自招]是否單獨招收僑生');
+            $table->boolean('has_self_enrollment')->comment('[自招]是否單獨招收僑生');
             $table->string('approve_no_of_self_enrollment')->nullable()->comment('[自招]核定文號');
             $table->string('approval_doc_of_self_enrollment')->nullable()->comment('[自招]核定公文電子檔(file path)');
             $table->string('modified_by')->comment('按下儲存的人是誰');
@@ -113,7 +113,7 @@ class CreateSchoolDataTable extends Migration
             $table->boolean('has_five_year_student_allowed')->comment('[中五]我可以招呢');
             $table->text('rule_of_five_year_student')->nullable()->comment('[中五]給海聯看的學則');
             $table->string('rule_doc_of_five_year_student')->nullable()->comment('[中五]學則文件電子擋(file path)');
-            $table->boolean('has_self_enrollment')->nullable()->comment('[自招]是否單獨招收僑生');
+            $table->boolean('has_self_enrollment')->comment('[自招]是否單獨招收僑生');
             $table->string('approve_no_of_self_enrollment')->nullable()->comment('[自招]核定文號');
             $table->string('approval_doc_of_self_enrollment')->nullable()->comment('[自招]核定公文電子檔(file path)');
             $table->string('committed_by')->comment('按下送出的人是誰');

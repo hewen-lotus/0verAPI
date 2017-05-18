@@ -64,24 +64,26 @@ class SchoolDataController extends Controller
             'eng_address' => 'required|string|max:191', //學校英文地址
             'organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位名稱
             'eng_organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位英文名稱
-            'dorm_info' => 'required|string', //宿舍說明
-            'eng_dorm_info' => 'required|string', //宿舍英文說明
+            'has_dorm' => 'required|boolean', //是否提供宿舍
+            'dorm_info' => 'required_if:has_dorm,1|string', //宿舍說明
+            'eng_dorm_info' => 'required_if:has_dorm,1|string', //宿舍英文說明
             'url' => 'required|url', //學校網站網址
             'eng_url' => 'required|url', //學校英文網站網址
             'type' => 'required|string|in:國立大學,私立大學,國立科技大學,私立科技大學,僑生先修部', //「公、私立」與「大學、科大」之組合＋「僑先部」共五種
             'phone' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
             'fax' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
             'sort_order' => 'required|integer', //學校顯示排序（教育部給）
-            'scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
+            'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
             'scholarship_url' => 'required_if:scholarship,1|url', //僑生專屬獎學金說明網址
             'eng_scholarship_url' => 'required_if:scholarship,1|url', //僑生專屬獎學金英文說明網址
             'scholarship_dept' => 'required_if:scholarship,1|string', //獎學金負責單位名稱
             'eng_scholarship_dept' => 'required_if:scholarship,1|string', //獎學金負責單位英文名稱
-            'five_year_allowed' => 'required|boolean', //[中五]我可以招呢
-            'five_year_rule' => 'required_if:five_year_allowed,1|string', //[中五]給海聯看的學則
-            'approve_no_of_independent_recruitment' => 'present|string', //自招核定文號
-            'approval_document_of_independent_recruitment' => 'required_if:approve_no_of_independent_recruitment,1|file', //自招核定公文電子檔
-            'self_limit' => 'required_if:approve_no_of_independent_recruitment,1|integer|min:0', //自招總額
+            'has_five_year_student_allowed' => 'required|boolean', //[中五]我可以招呢
+            'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|string', //[中五]給海聯看的學則
+            'rule_doc_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|file', //[中五]學則文件電子擋(file path)
+            'has_self_enrollment' => 'required|boolean', //[自招]是否單獨招收僑生
+            'approve_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|string', //[自招]核定文號
+            'approval_doc_of_self_enrollment' => 'required_if:has_self_enrollment,1|file', //[自招]核定公文電子檔(file path)
         ]);
 
         if($validator->fails()) {
@@ -97,19 +99,26 @@ class SchoolDataController extends Controller
             'eng_address' => $request->input('eng_address'),
             'organization' => $request->input('organization'),
             'eng_organization' => $request->input('eng_organization'),
-            'dorm_info' => $request->input('dorm_info'),
-            'eng_dorm_info' => $request->input('eng_dorm_info'),
+            'has_dorm' => $request->input('has_dorm'),
             'url' => $request->input('url'),
             'eng_url' => $request->input('eng_url'),
             'type' => $request->input('type'),
             'phone' => $request->input('phone'),
             'fax' => $request->input('fax'),
             'sort_order' => $request->input('sort_order'),
-            'scholarship' => $request->input('scholarship'),
-            'five_year_allowed' => $request->input('five_year_allowed'),
+            'has_scholarship' => $request->input('has_scholarship'),
+            'has_five_year_student_allowed' => $request->input('has_five_year_student_allowed'),
+            'has_self_enrollment' => $request->input('has_self_enrollment'),
         );
 
-        if ($request->input('scholarship')) {
+        if ((bool)$request->input('has_dorm') == true) {
+            $InsertData += array(
+                'dorm_info' => $request->input('dorm_info'),
+                'eng_dorm_info' => $request->input('eng_dorm_info'),
+            );
+        }
+
+        if ((bool)$request->input('has_scholarship') == true) {
             $InsertData += array(
                 'scholarship_url' => $request->input('scholarship_url'),
                 'eng_scholarship_url' => $request->input('eng_scholarship_url'),
@@ -118,23 +127,31 @@ class SchoolDataController extends Controller
             );
         }
 
-        if ($request->input('five_year_allowed')) {
+        if ((bool)$request->input('has_five_year_student_allowed') == true) {
+            if ($request->file('rule_doc_of_five_year_student')->isValid()) {
+                $extension = $request->rule_doc_of_five_year_student->extension();
+
+                $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
+                    ->storeAs('/', uniqid($request->input('id').'-'.'five_year_rule_doc_').'.'.$extension);
+            }
+
             $InsertData += array(
-                'five_year_rule' => $request->input('five_year_rule'),
+                'rule_of_five_year_student' => $request->input('rule_of_five_year_student'),
+                'rule_doc_of_five_year_student' => $five_year_rule_doc_path,
             );
         }
 
-        if ($request->has('approve_no_of_independent_recruitment')) {
-            $extension = $request->approval_document_of_independent_recruitment->extension();
+        if ((bool)$request->input('has_self_enrollment') == true) {
+            if ($request->file('approval_doc_of_self_enrollment')->isValid()) {
+                $extension = $request->approval_doc_of_self_enrollment->extension();
 
-            $path = $request->file('approval_document_of_independent_recruitment')->storeAs(
-                '/', uniqid().'-'.$request->input('id').'-'.'approval_document.'.$extension
-            );
+                $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
+                    ->storeAs('/', uniqid($request->input('id').'-self_enrollment_approval_doc_').'.'.$extension);
+            }
 
             $InsertData += array(
-                'approve_no_of_independent_recruitment' => $request->input('approve_no_of_independent_recruitment'),
-                'approval_document_of_independent_recruitment' => $path,
-                'self_limit' => $request->input('self_limit', 0),
+                'approve_no_of_self_enrollment' => $request->input('approve_no_of_self_enrollment'),
+                'approval_doc_of_self_enrollment' => $self_enrollment_approval_doc_path,
             );
         }
 
@@ -176,24 +193,26 @@ class SchoolDataController extends Controller
                 'eng_address' => 'required|string|max:191', //學校英文地址
                 'organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位名稱
                 'eng_organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位英文名稱
-                'dorm_info' => 'required|string', //宿舍說明
-                'eng_dorm_info' => 'required|string', //宿舍英文說明
+                'has_dorm' => 'required|boolean', //是否提供宿舍
+                'dorm_info' => 'required_if:has_dorm,1|string', //宿舍說明
+                'eng_dorm_info' => 'required_if:has_dorm,1|string', //宿舍英文說明
                 'url' => 'required|url', //學校網站網址
                 'eng_url' => 'required|url', //學校英文網站網址
                 'type' => 'required|string|in:國立大學,私立大學,國立科技大學,私立科技大學,僑生先修部', //「公、私立」與「大學、科大」之組合＋「僑先部」共五種
                 'phone' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
                 'fax' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
                 'sort_order' => 'required|integer', //學校顯示排序（教育部給）
-                'scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
+                'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
                 'scholarship_url' => 'required_if:scholarship,1|url', //僑生專屬獎學金說明網址
                 'eng_scholarship_url' => 'required_if:scholarship,1|url', //僑生專屬獎學金英文說明網址
                 'scholarship_dept' => 'required_if:scholarship,1|string', //獎學金負責單位名稱
                 'eng_scholarship_dept' => 'required_if:scholarship,1|string', //獎學金負責單位英文名稱
-                'five_year_allowed' => 'required|boolean', //[中五]我可以招呢
-                'five_year_rule' => 'required_if:five_year_allowed,1|string', //[中五]給海聯看的學則
-                'approve_no_of_independent_recruitment' => 'present|string', //自招核定文號
-                'approval_document_of_independent_recruitment' => 'required_if:approve_no_of_independent_recruitment,1|required_if:approve_no_of_independent_recruitment,'.$LastSavedData->approve_no_of_independent_recruitment.'|file', //自招核定公文電子檔
-                'self_limit' => 'required_if:approve_no_of_independent_recruitment,1|integer|min:0', //自招總額
+                'has_five_year_student_allowed' => 'required|boolean', //[中五]我可以招呢
+                'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|string', //[中五]給海聯看的學則
+                'has_self_enrollment' => 'required|boolean', //[自招]是否單獨招收僑生
+                'approve_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|string', //[自招]核定文號
+                'modified_by' => Auth::id(),
+                'ip_address' => $request->ip(),
             ]);
 
             if($validator->fails()) {
@@ -202,60 +221,89 @@ class SchoolDataController extends Controller
             }
 
             $InsertData = array(
-                'id' =>  $school_id,
+                'id' => $request->input('id'),
                 'title' => $request->input('title'),
                 'eng_title' => $request->input('eng_title'),
                 'address' => $request->input('address'),
                 'eng_address' => $request->input('eng_address'),
                 'organization' => $request->input('organization'),
                 'eng_organization' => $request->input('eng_organization'),
-                'dorm_info' => $request->input('dorm_info'),
-                'eng_dorm_info' => $request->input('eng_dorm_info'),
+                'has_dorm' => $request->input('has_dorm'),
                 'url' => $request->input('url'),
                 'eng_url' => $request->input('eng_url'),
                 'type' => $request->input('type'),
                 'phone' => $request->input('phone'),
                 'fax' => $request->input('fax'),
                 'sort_order' => $request->input('sort_order'),
-                'scholarship' => $request->input('scholarship'),
-                'five_year_allowed' => $request->input('five_year_allowed'),
+                'has_scholarship' => $request->input('has_scholarship'),
+                'has_five_year_student_allowed' => $request->input('has_five_year_student_allowed'),
+                'has_self_enrollment' => $request->input('has_self_enrollment'),
             );
 
-            if ($request->input('scholarship')) {
+            if ((bool)$request->input('has_dorm') == true) {
+                $InsertData += array(
+                    'dorm_info' => $request->input('dorm_info'),
+                    'eng_dorm_info' => $request->input('eng_dorm_info'),
+                );
+            } else {
+                $InsertData += array(
+                    'dorm_info' => NULL,
+                    'eng_dorm_info' => NULL,
+                );
+            }
+
+            if ((bool)$request->input('has_scholarship') == true) {
                 $InsertData += array(
                     'scholarship_url' => $request->input('scholarship_url'),
                     'eng_scholarship_url' => $request->input('eng_scholarship_url'),
                     'scholarship_dept' => $request->input('scholarship_dept'),
                     'eng_scholarship_dept' => $request->input('eng_scholarship_dept'),
                 );
-            }
-
-            if ($request->input('five_year_allowed')) {
+            } else {
                 $InsertData += array(
-                    'five_year_rule' => $request->input('five_year_rule'),
+                    'scholarship_url' => NULL,
+                    'eng_scholarship_url' => NULL,
+                    'scholarship_dept' => NULL,
+                    'eng_scholarship_dept' => NULL,
                 );
             }
 
-            if ($request->has('approve_no_of_independent_recruitment')) {
-                if ($request->input('approve_no_of_independent_recruitment') == $LastSavedData->approve_no_of_independent_recruitment) {
-                    $InsertData += array(
-                        'approve_no_of_independent_recruitment' => $request->input('approve_no_of_independent_recruitment'),
-                        'approval_document_of_independent_recruitment' => $LastSavedData->approve_no_of_independent_recruitment,
-                        'self_limit' => $request->input('self_limit', 0),
-                    );
-                } else {
-                    $extension = $request->approval_document_of_independent_recruitment->extension();
+            if ((bool)$request->input('has_five_year_student_allowed') == true) {
+                if ($request->file('rule_doc_of_five_year_student')->isValid()) {
+                    $extension = $request->rule_doc_of_five_year_student->extension();
 
-                    $path = $request->file('approval_document_of_independent_recruitment')->storeAs(
-                        '/', uniqid().'-'.$request->input('id').'-'.'approval_document.'.$extension
-                    );
-
-                    $InsertData += array(
-                        'approve_no_of_independent_recruitment' => $request->input('approve_no_of_independent_recruitment'),
-                        'approval_document_of_independent_recruitment' => $path,
-                        'self_limit' => $request->input('self_limit', 0),
-                    );
+                    $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
+                        ->storeAs('/', uniqid($request->input('id').'-'.'five_year_rule_doc_').'.'.$extension);
                 }
+
+                $InsertData += array(
+                    'rule_of_five_year_student' => $request->input('rule_of_five_year_student'),
+                    'rule_doc_of_five_year_student' => $five_year_rule_doc_path,
+                );
+            } else {
+                $InsertData += array(
+                    'rule_of_five_year_student' => NULL,
+                    'rule_doc_of_five_year_student' => NULL,
+                );
+            }
+
+            if ((bool)$request->input('has_self_enrollment') == true) {
+                if ($request->file('approval_doc_of_self_enrollment')->isValid()) {
+                    $extension = $request->approval_doc_of_self_enrollment->extension();
+
+                    $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
+                        ->storeAs('/', uniqid($request->input('id').'-self_enrollment_approval_doc_').'.'.$extension);
+                }
+
+                $InsertData += array(
+                    'approve_no_of_self_enrollment' => $request->input('approve_no_of_self_enrollment'),
+                    'approval_doc_of_self_enrollment' => $self_enrollment_approval_doc_path,
+                );
+            } else {
+                $InsertData += array(
+                    'approve_no_of_self_enrollment' => NULL,
+                    'approval_doc_of_self_enrollment' => NULL,
+                );
             }
 
             return SchoolSavedData::create($InsertData);
