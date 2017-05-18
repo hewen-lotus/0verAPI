@@ -157,20 +157,16 @@ class SchoolDataController extends Controller
 
         $SavedInsertData = $InsertData + array('modified_by' => Auth::id(), 'ip_address' => $request->ip());
 
-        $CommittedInsertData = $InsertData + array('modified_by' => Auth::id(), 'ip_address' => $request->ip(), 'review_status' => 'editing');
+        $newDataid = DB::transaction(function () use ($InsertData, $SavedInsertData) {
 
-        $newDataid = DB::transaction(function () use ($InsertData, $SavedInsertData, $CommittedInsertData) {
-
-            $SchoolData = SchoolData::create($InsertData);
+            SchoolData::create($InsertData);
 
             $SchoolSavedData = SchoolSavedData::create($SavedInsertData);
 
-            $SchoolCommittedData = SchoolCommittedData::create($CommittedInsertData);
-
-            return $SchoolCommittedData->history_id;
+            return $SchoolSavedData->history_id;
         });
 
-        return SchoolCommittedData::find($newDataid);
+        return response()->json(SchoolSavedData::find($newDataid), 201);
     }
 
     /**
@@ -274,6 +270,8 @@ class SchoolDataController extends Controller
 
                     $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
                         ->storeAs('/', uniqid($request->input('id').'-'.'five_year_rule_doc_').'.'.$extension);
+                } else {
+                    $five_year_rule_doc_path = $LastSavedData->rule_doc_of_five_year_student;
                 }
 
                 $InsertData += array(
@@ -293,6 +291,8 @@ class SchoolDataController extends Controller
 
                     $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
                         ->storeAs('/', uniqid($request->input('id').'-self_enrollment_approval_doc_').'.'.$extension);
+                } else {
+                    $self_enrollment_approval_doc_path = $LastSavedData->approval_doc_of_self_enrollment;
                 }
 
                 $InsertData += array(
