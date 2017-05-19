@@ -33,7 +33,7 @@ use Carbon\Carbon;
  * @property string $eng_scholarship_dept 獎學金負責單位英文名稱
  * @property bool $five_year_allowed [中五]我可以招呢
  * @property string $five_year_rule [中五]給海聯看的學則
- * @property string $approve_no_of_independent_recruitment 自招核定文號
+ * @property string $approval_no_of_independent_recruitment 自招核定文號
  * @property string $approval_document_of_independent_recruitment 自招核定公文電子檔
  * @property int $self_limit 自招總額
  * @property string $committed_by 按下儲存的人是誰
@@ -49,7 +49,7 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $deleted_at
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereAddress($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereApprovalDocumentOfIndependentRecruitment($value)
- * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereApproveNoOfIndependentRecruitment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereapprovalNoOfIndependentRecruitment($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereCommittedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereConfirmedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereConfirmedBy($value)
@@ -92,11 +92,11 @@ use Carbon\Carbon;
  * @property string $rule_of_five_year_student [中五]給海聯看的學則
  * @property string $rule_doc_of_five_year_student [中五]學則文件電子擋(file path)
  * @property bool $has_self_enrollment [自招]是否單獨招收僑生
- * @property string $approve_no_of_self_enrollment [自招]核定文號
+ * @property string $approval_no_of_self_enrollment [自招]核定文號
  * @property string $approval_doc_of_self_enrollment [自招]核定公文電子檔(file path)
  * @property string $review_memo 讓學校再次修改的原因
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereApprovalDocOfSelfEnrollment($value)
- * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereApproveNoOfSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereapprovalNoOfSelfEnrollment($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasDorm($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasFiveYearStudentAllowed($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereHasScholarship($value)
@@ -143,7 +143,7 @@ class SchoolCommittedData extends Model
         'rule_of_five_year_student', //[中五]給海聯看的學則
         'rule_doc_of_five_year_student', //[中五]學則文件電子擋(file path)
         'has_self_enrollment', //[自招]是否單獨招收僑生
-        'approve_no_of_self_enrollment', //[自招]核定文號
+        'approval_no_of_self_enrollment', //[自招]核定文號
         'approval_doc_of_self_enrollment', //[自招]核定公文電子檔(file path)
         'committed_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
