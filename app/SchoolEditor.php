@@ -63,6 +63,12 @@ class SchoolEditor extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $appends = ['has_banned', 'last_login_at'];
+
+    protected $casts = [
+        'has_admin' => 'boolean',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -78,7 +84,7 @@ class SchoolEditor extends Model
      * @var array
      */
     protected $hidden = [
-        'username', 'password', 'remember_token', 'school_code'
+        'password', 'remember_token', 'school_code'
     ];
 
     protected $dates = ['deleted_at'];
@@ -93,17 +99,12 @@ class SchoolEditor extends Model
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
 
-    public function has_banned()
+    public function getHasBannedAttribute()
     {
         if ($this->deleted_at != NULL) {
+            return true;
+        } else {
             return false;
         }
-
-        return true;
-    }
-
-    public function last_login_at()
-    {
-        return $this->user->last_login_at;
     }
 }

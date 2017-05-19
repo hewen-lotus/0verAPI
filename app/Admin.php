@@ -54,6 +54,10 @@ class Admin extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $casts = [
+        'has_admin' => 'boolean',
+    ];
+
     /**
      * The attributes that are mass assignable.
      *
