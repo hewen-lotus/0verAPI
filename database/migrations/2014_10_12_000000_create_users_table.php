@@ -33,9 +33,8 @@ class CreateUsersTable extends Migration
         Schema::create('school_editors', function (Blueprint $table) {
             $table->string('username')->primary();
             $table->foreign('username')->references('username')->on('users');
-            $table->string('school_code')->comment('該使用者所屬學校代碼');
             $table->string('organization')->comment('該使用者所屬單位名稱');
-            $table->boolean('has_admin')->default(0);
+            $table->boolean('has_admin')->default(false);
             $table->string('last_action_at')->nullable()->comment('上次動作時間');
             $table->string('created_at');
             $table->string('created_by')->nullable();
@@ -51,9 +50,8 @@ class CreateUsersTable extends Migration
         Schema::create('school_reviewers', function (Blueprint $table) {
             $table->string('username')->primary();
             $table->foreign('username')->references('username')->on('users');
-            $table->string('school_code')->comment('該使用者所屬學校代碼');
             $table->string('organization')->comment('該使用者所屬單位名稱');
-            $table->boolean('has_admin')->default(0);
+            $table->boolean('has_admin')->default(false);
             $table->string('last_action_at')->nullable()->comment('上次動作時間');
             $table->string('created_at');
             $table->string('created_by')->nullable();
@@ -69,7 +67,7 @@ class CreateUsersTable extends Migration
         Schema::create('admins', function (Blueprint $table) {
             $table->string('username')->primary();
             $table->foreign('username')->references('username')->on('users');
-            $table->boolean('has_admin')->default(0);
+            $table->boolean('has_admin')->default(false);
             $table->string('last_action_at')->nullable()->comment('上次動作時間');
             $table->string('created_at');
             $table->string('created_by')->nullable();
