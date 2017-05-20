@@ -52,11 +52,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereReviewStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentCommittedApplicationDocument whereSavedId($value)
  */
-class DepartmentCommittedApplicationDocument extends Model
+class DepartmentHistoryApplicationDocument extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'department_committed_application_documents';
+    protected $table = 'dept_history_application_docs';
 
     protected $primaryKey = 'history_id';
 

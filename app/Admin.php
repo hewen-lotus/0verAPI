@@ -64,7 +64,7 @@ class Admin extends Model
      * @var array
      */
     protected $fillable = [
-        'username', 'has_admin', 'last_action_at'
+        'username', 'has_admin', 'last_action_at', 'created_by', 'updated_by', 'deleted_by'
     ];
 
     /**

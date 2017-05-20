@@ -63,7 +63,7 @@ class SchoolEditor extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
-    protected $appends = ['has_banned', 'last_login_at'];
+    protected $appends = ['has_banned'];
 
     protected $casts = [
         'has_admin' => 'boolean',
@@ -75,7 +75,7 @@ class SchoolEditor extends Model
      * @var array
      */
     protected $fillable = [
-        'username', 'school_code', 'organization', 'has_admin', 'last_action_at'
+        'username', 'school_code', 'organization', 'has_admin', 'last_action_at', 'created_by', 'updated_by', 'deleted_by'
     ];
 
     /**
@@ -84,7 +84,7 @@ class SchoolEditor extends Model
      * @var array
      */
     protected $hidden = [
-        'password', 'remember_token', 'school_code'
+        'password', 'remember_token'// 'school_code', 'created_by', 'updated_by', 'deleted_by'
     ];
 
     protected $dates = ['deleted_at'];
@@ -101,10 +101,6 @@ class SchoolEditor extends Model
 
     public function getHasBannedAttribute()
     {
-        if ($this->deleted_at != NULL) {
-            return true;
-        } else {
-            return false;
-        }
+        return $this->deleted_at != NULL;
     }
 }

@@ -106,11 +106,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereRuleOfFiveYearStudent($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolCommittedData whereSavedId($value)
  */
-class SchoolCommittedData extends Model
+class SchoolHistoryData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'school_committed_data';
+    protected $table = 'school_history_data';
 
     protected $primaryKey = 'history_id';
 
@@ -118,7 +118,7 @@ class SchoolCommittedData extends Model
 
     protected $fillable = [
         'id', //學校代碼
-        'saved_id', //對應 saved 表的 id
+        'action', // 儲存或送出
         'title', //學校名稱
         'eng_title', //學校英文名稱
         'address', //學校地址
@@ -145,14 +145,12 @@ class SchoolCommittedData extends Model
         'has_self_enrollment', //[自招]是否單獨招收僑生
         'approval_no_of_self_enrollment', //[自招]核定文號
         'approval_doc_of_self_enrollment', //[自招]核定公文電子檔(file path)
-        'committed_by', //按下送出的人是誰
+        'updated_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
-        'review_status', //waiting|confirmed|editing
+        'info_status', //waiting|confirmed|editing|returned
         'review_memo', //讓學校再次修改的原因
-        'replied_by', //海聯回覆的人員
-        'replied_at', //海聯回覆的時間點
-        'confirmed_by', //海聯審查的人員
-        'confirmed_at', //海聯審查的時間點
+        'review_by', //海聯回覆的人員
+        'review_at', //海聯回覆的時間點
     ];
 
     protected $dates = ['deleted_at'];

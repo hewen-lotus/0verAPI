@@ -36,11 +36,11 @@ class DepartmentApplicationDocument extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'department_application_documents';
+    protected $table = 'dept_application_docs';
 
     protected $dateFormat = Carbon::ISO8601;
 
-    protected $fillable = ['dept_id', 'document_type_id', 'detail', 'eng_detail'];
+    protected $fillable = ['dept_id', 'type_id', 'description', 'eng_description', 'required'];
 
     protected $dates = ['deleted_at'];
 }
