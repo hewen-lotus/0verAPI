@@ -158,13 +158,21 @@ class SchoolEditorController extends Controller
                         TwoYearTechDepartmentEditorPermission::where('username', '=', $request->username)->delete();
                     }
 
-                    return User::where('username', '=', $request->username)
-                        ->with(
-                            'school_editor',
-                            'school_editor.department_permission',
-                            'school_editor.graduate_department_permission',
-                            'school_editor.two_year_tech_department_permission'
-                        )->first();
+                    return response()->json(
+                        User::where('username', '=', $request->username)
+                        ->with([
+                            'school_editor' => function ($query) {
+                                $query->withTrashed();
+                            },
+                            'school_editor.department_permission' => function ($query) {
+                                $query->withTrashed();
+                            },
+                            'school_editor.graduate_department_permission' => function ($query) {
+                                $query->withTrashed();
+                            },
+                            'school_editor.two_year_tech_department_permission' => function ($query) {
+                                $query->withTrashed();
+                            }])->first(), 201);
                 });
             }
 
@@ -188,14 +196,27 @@ class SchoolEditorController extends Controller
      */
     public function show(Request $request, $school_code, $id)
     {
-        if (!SchoolData::where('id', '=', $school_code)->exists()) {
-            $messages = array('This School is NOT exist!');
+        $user = Auth::user();
 
-            return response()->json(compact('messages'), 404);
-        }
+        if (User::where('username', '=', $id)
+            ->whereHas('school_editor', function ($query) use ($school_code) {
+                $query->where('school_code', '=', $school_code);
+            })->exists()) {
+            $editor = User::where('username', '=', $request->username)
+                ->with([
+                    'school_editor',
+                    'school_editor.department_permission',
+                    'school_editor.graduate_department_permission',
+                    'school_editor.two_year_tech_department_permission'
+                ])->first();
 
-        if (User::where('username', '=', $id)->has('school_editor')->exists()) {
-            return User::where('username', '=', $id)->with('school_editor')->first();
+            if ($user->can('view_schooleditor', [$editor, $school_code])) {
+                return $editor;
+            }
+
+            $messages = array('User don\'t have permission to access');
+
+            return response()->json(compact('messages'), 403);
         }
 
         $messages = array('User Data Not Found!');

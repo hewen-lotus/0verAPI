@@ -109,8 +109,10 @@ class UserPolicy
             return true;
         }
 
-        if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
-            return true;
+        if ($user->school_editor != NULL) {
+            if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+                return true;
+            }
         }
 
         return false;
@@ -123,17 +125,21 @@ class UserPolicy
      * @param  \App\User  $editor
      * @return mixed
      */
-    public function view_schooleditor(User $user, User $editor)
+    public function view_schooleditor(User $user, User $editor, $school_code)
     {
         if ($user->admin != NULL) {
             return true;
         }
 
-        if ((bool)$user->school_editor->has_admin) {
-            return true;
+        if ($user->school_editor != NULL ) {
+            if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+                return true;
+            }
+
+            return $user->school_editor->username === $editor->school_editor->username;
         }
 
-        return $user->school_editor->username === $editor->school_editor->username;
+        return false;
     }
 
     /**
@@ -148,8 +154,10 @@ class UserPolicy
             return true;
         }
 
-        if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
-            return true;
+        if ($user->school_editor != NULL ) {
+            if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+                return true;
+            }
         }
 
         return false;
@@ -162,13 +170,21 @@ class UserPolicy
      * @param  \App\User  $editor
      * @return mixed
      */
-    public function update_schooleditor(User $user, User $editor)
+    public function update_schooleditor(User $user, User $editor, $school_code)
     {
         if ($user->admin != NULL) {
             return true;
         }
 
-        return $user->school_editor->username === $editor->school_editor->username;
+        if ($user->school_editor != NULL ) {
+            if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+                return true;
+            }
+
+            return $user->school_editor->username === $editor->school_editor->username;
+        }
+
+        return false;
     }
 
     /**
@@ -177,13 +193,19 @@ class UserPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function delete_schooleditor(User $user)
+    public function delete_schooleditor(User $user, User $editor, $school_code)
     {
         if ($user->admin != NULL) {
             return true;
         }
 
-        return (bool)$user->school_editor->has_admin;
+        if ($user->school_editor != NULL ) {
+            if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code && $user->school_editor->username != $editor->school_editor->username) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /*
