@@ -31,7 +31,7 @@ class CreateSystemDataTable extends Migration
             $table->enum('quota_status', ['editing', 'waiting', 'returned', 'confirmed'])->comment('名額狀態（editing|waiting|returned|confirmed');
             $table->text('review_memo')->nullable()->comment('海聯審閱備註');
             $table->string('review_by')->nullable()->comment('海聯審閱人員');
-            $table->foreign('review_by')->references('username')->on('admins');
+            $table->foreign('review_by')->references('username')->on('users');
             $table->string('review_at')->nullable()->comment('海聯審閱的時間點');
             $table->string('created_by')->nullable()->comment('此歷史紀錄建立者');
             $table->foreign('created_by')->references('username')->on('users');
@@ -52,13 +52,13 @@ class CreateSystemDataTable extends Migration
             $table->unsignedInteger('ratify_expanded_quota')->nullable()->comment('本學年教育部核定擴增名額（二技參照學士）');
             $table->unsignedInteger('ratify_quota_for_self_enrollment')->nullable()->comment('教育部核定單獨招收名額（只有學士班有）');
             $table->string('confirmed_by')->nullable()->comment('資料由哪位海聯人員確認匯入的');
-            $table->foreign('confirmed_by')->references('username')->on('admins');
+            $table->foreign('confirmed_by')->references('username')->on('users');
             $table->string('confirmed_at')->nullable()->comment('資料確認匯入的時間');
             $table->unsignedInteger('history_id')->nullable()->comment('從哪一筆歷史紀錄匯入的');
             $table->foreign('history_id')->references('history_id')->on('system_history_data');
             $table->string('created_at');
             $table->string('updated_by')->nullable()->comment('資料最後更新者');
-            $table->foreign('updated_by')->references('username')->on('admins');
+            $table->foreign('updated_by')->references('username')->on('users');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
             $table->primary(['school_code', 'type_id']);

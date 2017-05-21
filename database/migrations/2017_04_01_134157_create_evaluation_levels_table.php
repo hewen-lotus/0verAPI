@@ -20,7 +20,7 @@ class CreateEvaluationLevelsTable extends Migration
             $table->string('eng_title')->comment('評鑑等級英文名稱');
             $table->string('created_at');
             $table->string('created_by')->nullable();
-            $table->foreign('created_by')->references('username')->on('admins');
+            $table->foreign('created_by')->references('username')->on('users');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
         });
