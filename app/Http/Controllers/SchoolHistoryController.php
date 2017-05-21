@@ -94,7 +94,7 @@ class SchoolHistoryController extends Controller
     public function storeDataForSchoolEditor($user, Request $request, $school_id)
     {
         // 確認使用者使否有要求的學校的存取權限
-        if (!$this->authSchoolId($user, $school_id)) {
+        if (!$this->authSchoolId($user, $school_id) || !$user->school_editor->has_admin) {
             $messages = array('User don\'t have permission to access');
             return response()->json(compact('messages'), 403);
         } else {
