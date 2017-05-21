@@ -39,6 +39,9 @@ use Carbon\Carbon;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $department_permission
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $graduate_department_permission
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $two_year_tech_department_permission
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $department_permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $graduate_department_permissions
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $two_year_tech_department_permissions
  */
 class SchoolEditor extends Model
 {

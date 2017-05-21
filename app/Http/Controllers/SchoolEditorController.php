@@ -147,7 +147,7 @@ class SchoolEditorController extends Controller
                     }
 
                     if ((bool)$request->input('has_banned') == true) {
-                        User::where('username', '=', $request->username)->delete();
+                        //User::where('username', '=', $request->username)->delete();
 
                         SchoolEditor::where('username', '=', $request->username)->delete();
 
@@ -158,7 +158,7 @@ class SchoolEditorController extends Controller
                         TwoYearTechDepartmentEditorPermission::where('username', '=', $request->username)->delete();
                     }
 
-                    return User::withTrashed()->where('username', '=', $request->username)
+                    return User::where('username', '=', $request->username)
                         ->with(
                             'school_editor',
                             'school_editor.department_permission',

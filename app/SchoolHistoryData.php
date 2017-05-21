@@ -89,6 +89,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereUrl($value)
  * @mixin \Eloquent
+ * @property-read \App\SchoolData $confirmed
  */
 class SchoolHistoryData extends Model
 {

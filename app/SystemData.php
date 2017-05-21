@@ -41,6 +41,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereUpdatedBy($value)
  * @mixin \Eloquent
+ * @property-read \App\SchoolData $school
+ * @property-read \App\SystemType $type
  */
 class SystemData extends Model
 {

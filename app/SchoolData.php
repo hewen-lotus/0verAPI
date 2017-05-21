@@ -82,6 +82,10 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereUrl($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentData[] $graduate_departments
+ * @property-read \App\SchoolHistoryData $history
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemData[] $systems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentData[] $two_year_tech_departments
  */
 class SchoolData extends Model
 {

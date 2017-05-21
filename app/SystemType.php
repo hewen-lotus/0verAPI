@@ -23,6 +23,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereTitle($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemData[] $data
  */
 class SystemType extends Model
 {
