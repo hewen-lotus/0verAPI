@@ -35,4 +35,8 @@ class SystemType extends Model
     protected $fillable = ['title', 'eng_title'];
 
     protected $dates = ['deleted_at'];
+
+    public function data() {
+        return $this->hasMany('App\SystemData', 'type_id', 'id');
+    }
 }

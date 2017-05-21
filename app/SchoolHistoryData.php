@@ -155,4 +155,9 @@ class SchoolHistoryData extends Model
     {
         return $this->belongsTo('App\User', 'created_by', 'username');
     }
+
+    public function confirmed()
+    {
+        return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
+    }
 }

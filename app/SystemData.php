@@ -54,14 +54,26 @@ class SystemData extends Model
 
     protected $fillable = [
         'school_code', //學校代碼
-        'type', //學制種類（學士, 碩士, 二技, 博士）
+        'type_id', //學制種類（學士, 碩士, 二技, 博士）
         'description', //學制描述
         'eng_description', //'學制描述
         'last_year_admission_amount', //僑生可招收數量（上學年新生總額 10%）（二技參照學士）
         'last_year_surplus_admission_quota', //上學年本地生未招足名額（二技參照學士）
         'ratify_expanded_quota', //本學年教育部核定擴增名額（二技參照學士）
         'ratify_quota_for_self_enrollment', //教育部核定單獨招收名額（只有學士班有）
+        'confirmed_by',
+        'confirmed_at',
+        'history_id',
+        'updated_by'
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function type() {
+        return $this->belongsTo('App\SystemType', 'type_id', 'id');
+    }
+
+    public function school() {
+        return $this->belongsTo('App\SchoolData', 'school_code', 'id');
+    }
 }

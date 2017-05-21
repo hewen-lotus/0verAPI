@@ -141,13 +141,23 @@ class SchoolData extends Model
         return $this->hasMany('App\DepartmentData', 'school_code', 'id');
     }
 
-    public function graduate_department()
+    public function graduate_departments()
     {
         return $this->hasMany('App\GraduateDepartmentData', 'school_code', 'id');
     }
 
-    public function two_year_tech_department()
+    public function two_year_tech_departments()
     {
         return $this->hasMany('App\TwoYearTechDepartmentData', 'school_code', 'id');
+    }
+
+    public function systems()
+    {
+        return $this->hasMany('App\SystemData', 'school_code', 'id');
+    }
+
+    public function history()
+    {
+        return $this->belongsTo('App\SchoolHistoryData', 'history_id', 'history_id');
     }
 }

@@ -78,6 +78,11 @@ class SchoolEditor extends Model
 
     protected $dates = ['deleted_at'];
 
+    public function getHasBannedAttribute()
+    {
+        return $this->deleted_at != NULL;
+    }
+
     public function user()
     {
         return $this->belongsTo('App\User', 'username', 'username');
@@ -88,24 +93,18 @@ class SchoolEditor extends Model
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
 
-    public function department_permission()
+    public function department_permissions()
     {
         return $this->hasMany('App\DepartmentEditorPermission', 'username', 'username');
     }
 
-    public function graduate_department_permission()
+    public function graduate_department_permissions()
     {
         return $this->hasMany('App\GraduateDepartmentEditorPermission', 'username', 'username');
     }
 
-    public function two_year_tech_department_permission()
+    public function two_year_tech_department_permissions()
     {
         return $this->hasMany('App\TwoYearTechDepartmentEditorPermission', 'username', 'username');
     }
-
-    public function getHasBannedAttribute()
-    {
-        return $this->deleted_at != NULL;
-    }
-
 }
