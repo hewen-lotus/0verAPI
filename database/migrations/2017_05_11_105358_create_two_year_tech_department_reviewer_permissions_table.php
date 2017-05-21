@@ -23,7 +23,7 @@ class CreateTwoYearTechDepartmentReviewerPermissionsTable extends Migration
         });
 
         Schema::table('two_year_tech_department_reviewer_permissions', function (Blueprint $table) {
-            $table->foreign('username')->references('username')->on('school_reviewers');
+            $table->foreign('username')->references('username')->on('users');
             $table->foreign('dept_id')->references('id')->on('two_year_tech_department_data');
         });
     }

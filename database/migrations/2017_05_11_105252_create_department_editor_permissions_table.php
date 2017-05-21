@@ -23,7 +23,7 @@ class CreateDepartmentEditorPermissionsTable extends Migration
         });
 
         Schema::table('department_editor_permissions', function (Blueprint $table) {
-            $table->foreign('username')->references('username')->on('school_editors');
+            $table->foreign('username')->references('username')->on('users');
             $table->foreign('dept_id')->references('id')->on('department_data');
         });
     }

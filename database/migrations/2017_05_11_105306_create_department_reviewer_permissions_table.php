@@ -23,7 +23,7 @@ class CreateDepartmentReviewerPermissionsTable extends Migration
         });
 
         Schema::table('department_reviewer_permissions', function (Blueprint $table) {
-            $table->foreign('username')->references('username')->on('school_reviewers');
+            $table->foreign('username')->references('username')->on('users');
             $table->foreign('dept_id')->references('id')->on('department_data');
         });
     }
