@@ -57,6 +57,8 @@ class User extends Authenticatable
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $appends = ['has_banned'];
+
     /**
      * The attributes that are mass assignable.
      *
@@ -76,6 +78,11 @@ class User extends Authenticatable
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function getHasBannedAttribute()
+    {
+        return $this->deleted_at != NULL;
+    }
 
     public function admin()
     {

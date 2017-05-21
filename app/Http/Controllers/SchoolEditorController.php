@@ -7,10 +7,14 @@ use Validator;
 use Hash;
 use Auth;
 use DB;
+use Illuminate\Validation\Rule;
 
 use App\User;
 use App\SchoolEditor;
 use App\SchoolData;
+use App\DepartmentEditorPermission;
+use App\GraduateDepartmentEditorPermission;
+use App\TwoYearTechDepartmentEditorPermission;
 
 class SchoolEditorController extends Controller
 {
@@ -26,7 +30,7 @@ class SchoolEditorController extends Controller
      * @param  string  $school_code
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request, $school_code)
+    public function index($school_code)
     {
         if (SchoolData::where('id', '=', $school_code)->exists()) {
             return User::whereHas('school_editor', function ($query) use ($school_code) {
@@ -48,47 +52,130 @@ class SchoolEditorController extends Controller
      */
     public function store(Request $request, $school_code)
     {
-        if (!SchoolData::where('id', '=', $school_code)->exists()) {
+        $user = Auth::user();
+
+        if ($user->can('create_schooleditor', [User::class, $school_code])) {
+            if (SchoolData::where('id', '=', $school_code)->exists()) {
+                $validator = Validator::make($request->all(), [
+                    'username' => 'required|string|max:191|unique:school_editors,username|unique:users,username',
+                    'password' => 'required|string|min:6',
+                    'email' => 'sometimes|nullable|email',
+                    'name' => 'required|string',
+                    'eng_name' => 'required|string',
+                    'phone' => 'required|string',
+                    'organization' => 'required|string',
+                    'has_admin' => 'present|boolean',
+                    'has_banned' => 'present|boolean',
+                    'departments.bachelor' => 'present|array',
+                    'departments.master' => 'present|array',
+                    'departments.phd' => 'present|array',
+                    'departments.two_year' => 'present|array',
+                    'departments.bachelor.*' => [
+                        'string',
+                        Rule::exists('department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                    'departments.master.*' => [
+                        'string',
+                        Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                    'departments.phd.*' => [
+                        'string',
+                        Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                    'departments.two_year.*' => [
+                        'string',
+                        Rule::exists('two_year_tech_department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                ]);
+
+                if ($validator->fails()) {
+                    $messages = $validator->errors()->all();
+                    return response()->json(compact('messages'), 400);
+                }
+
+                return DB::transaction(function () use ($request, $school_code) {
+                    User::create([
+                        'username' => $request->username,
+                        'password' => Hash::make($request->password),
+                        'email' => $request->email,
+                        'name' => $request->name,
+                        'eng_name' => $request->eng_name,
+                        'phone' => $request->phone,
+                    ]);
+
+                    SchoolEditor::create([
+                        'username' => $request->username,
+                        'school_code' => $school_code,
+                        'organization' => $request->organization,
+                        'has_admin' => $request->input('has_admin', 0),
+                    ]);
+
+                    foreach ($request->input('departments.bachelor') as $bachelor) {
+                        DepartmentEditorPermission::create([
+                            'username' => $request->username,
+                            'dept_id' => $bachelor
+                        ]);
+                    }
+
+                    foreach ($request->input('departments.master') as $master) {
+                        GraduateDepartmentEditorPermission::create([
+                            'username' => $request->username,
+                            'dept_id' => $master
+                        ]);
+                    }
+
+                    foreach ($request->input('departments.phd') as $phd) {
+                        GraduateDepartmentEditorPermission::create([
+                            'username' => $request->username,
+                            'dept_id' => $phd
+                        ]);
+                    }
+
+                    foreach ($request->input('departments.two_year') as $two_year) {
+                        TwoYearTechDepartmentEditorPermission::create([
+                            'username' => $request->username,
+                            'dept_id' => $two_year
+                        ]);
+                    }
+
+                    if ((bool)$request->input('has_banned') == true) {
+                        User::where('username', '=', $request->username)->delete();
+
+                        SchoolEditor::where('username', '=', $request->username)->delete();
+
+                        DepartmentEditorPermission::where('username', '=', $request->username)->delete();
+
+                        GraduateDepartmentEditorPermission::where('username', '=', $request->username)->delete();
+
+                        TwoYearTechDepartmentEditorPermission::where('username', '=', $request->username)->delete();
+                    }
+
+                    return User::withTrashed()->where('username', '=', $request->username)
+                        ->with(
+                            'school_editor',
+                            'school_editor.department_permission',
+                            'school_editor.graduate_department_permission',
+                            'school_editor.two_year_tech_department_permission'
+                        )->first();
+                });
+            }
+
             $messages = array('This School is NOT exist!');
 
             return response()->json(compact('messages'), 404);
         }
 
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:191|unique:school_editors,username|unique:users,username',
-            'password' => 'required|string|min:6',
-            'email' => 'sometimes|nullable|email',
-            'name' => 'required|string',
-            'eng_name' => 'required|string',
-            'phone' => 'required|string',
-            'organization' => 'required|string',
-            'has_admin' => 'sometimes|required|boolean'
-        ]);
+        $messages = array('User don\'t have permission to access');
 
-        if ($validator->fails()) {
-            $messages = $validator->errors()->all();
-            return response()->json(compact('messages'), 400);
-        }
-
-        return DB::transaction(function () use ($request, $school_code) {
-            User::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'email' => $request->email,
-                'name' => $request->name,
-                'eng_name' => $request->eng_name,
-                'phone' => $request->phone,
-            ]);
-
-            SchoolEditor::create([
-                'username' => $request->username,
-                'school_code' => $school_code,
-                'organization' => $request->organization,
-                'has_admin' => $request->input('has_admin', 0),
-            ]);
-
-            return User::where('username', '=', $request->username)->with('school_editor')->first();
-        });
+        return response()->json(compact('messages'), 403);
     }
 
     /**

@@ -37,7 +37,13 @@ class Admin extends Model
 
     protected $table = 'admins';
 
+    protected $primaryKey = 'username';
+
+    public $incrementing = false;
+
     protected $dateFormat = Carbon::ISO8601;
+
+    protected $appends = ['has_banned'];
 
     protected $casts = [
         'has_admin' => 'boolean',
@@ -62,6 +68,11 @@ class Admin extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function getHasBannedAttribute()
+    {
+        return $this->deleted_at != NULL;
+    }
 
     public function user()
     {

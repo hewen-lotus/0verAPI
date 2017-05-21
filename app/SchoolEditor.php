@@ -43,6 +43,10 @@ class SchoolEditor extends Model
 
     protected $table = 'school_editors';
 
+    protected $primaryKey = 'username';
+
+    public $incrementing = false;
+
     protected $dateFormat = Carbon::ISO8601;
 
     protected $appends = ['has_banned'];
@@ -79,6 +83,21 @@ class SchoolEditor extends Model
     public function school()
     {
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
+    }
+
+    public function department_permission()
+    {
+        return $this->hasMany('App\DepartmentEditorPermission', 'username', 'username');
+    }
+
+    public function graduate_department_permission()
+    {
+        return $this->hasMany('App\GraduateDepartmentEditorPermission', 'username', 'username');
+    }
+
+    public function two_year_tech_department_permission()
+    {
+        return $this->hasMany('App\TwoYearTechDepartmentEditorPermission', 'username', 'username');
     }
 
     public function getHasBannedAttribute()

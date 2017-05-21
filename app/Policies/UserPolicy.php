@@ -4,15 +4,14 @@ namespace App\Policies;
 
 use App\User;
 use Illuminate\Auth\Access\HandlesAuthorization;
-use phpDocumentor\Reflection\Types\Null_;
 
 class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user)
+    public function before(User $user, $ability)
     {
-        if ((bool)$user->admin->has_admin == true) {
+        if ($user->admin != NULL && (bool)$user->admin->has_admin) {
             return true;
         }
     }
@@ -31,7 +30,11 @@ class UserPolicy
      */
     public function list_admin(User $user)
     {
-        return (bool)$user->admin->has_admin == true;
+        if ($user->admin != NULL) {
+            return (bool)$user->admin->has_admin;
+        }
+
+        return false;
     }
 
     /**
@@ -54,7 +57,11 @@ class UserPolicy
      */
     public function create_admin(User $user)
     {
-        return (bool)$user->admin->has_admin == true;
+        if ($user->admin != NULL) {
+            return (bool)$user->admin->has_admin;
+        }
+
+        return false;
     }
 
     /**
@@ -77,7 +84,11 @@ class UserPolicy
      */
     public function delete_admin(User $user)
     {
-        return (bool)$user->admin->has_admin == true;
+        if ($user->admin != NULL) {
+            return (bool)$user->admin->has_admin;
+        }
+
+        return false;
     }
 
     /*
@@ -92,13 +103,17 @@ class UserPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function list_schooleditor(User $user)
+    public function list_schooleditor(User $user, $school_code)
     {
         if ($user->admin != NULL) {
             return true;
         }
 
-        return (bool)$user->school_editor->has_admin == true;
+        if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -114,7 +129,7 @@ class UserPolicy
             return true;
         }
 
-        if ((bool)$user->school_editor->has_admin == true) {
+        if ((bool)$user->school_editor->has_admin) {
             return true;
         }
 
@@ -127,13 +142,17 @@ class UserPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create_schooleditor(User $user)
+    public function create_schooleditor(User $user, $school_code)
     {
         if ($user->admin != NULL) {
             return true;
         }
 
-        return (bool)$user->school_editor->has_admin == true;
+        if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
@@ -164,7 +183,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_editor->has_admin == true;
+        return (bool)$user->school_editor->has_admin;
     }
 
     /*
@@ -185,7 +204,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_reviewer->has_admin == true;
+        return (bool)$user->school_reviewer->has_admin;
     }
 
     /**
@@ -216,7 +235,7 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_reviewer->has_admin == true;
+        return (bool)$user->school_reviewer->has_admin;
     }
 
     /**
@@ -247,6 +266,6 @@ class UserPolicy
             return true;
         }
 
-        return (bool)$user->school_reviewer->has_admin == true;
+        return (bool)$user->school_reviewer->has_admin;
     }
 }

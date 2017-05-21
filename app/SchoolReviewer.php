@@ -42,6 +42,10 @@ class SchoolReviewer extends Model
 
     protected $table = 'school_reviewers';
 
+    protected $primaryKey = 'username';
+
+    public $incrementing = false;
+
     protected $dateFormat = Carbon::ISO8601;
 
     protected $casts = [
