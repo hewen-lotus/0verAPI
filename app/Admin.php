@@ -30,6 +30,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUsername($value)
  * @mixin \Eloquent
+ * @property-read mixed $has_banned
  */
 class Admin extends Model
 {

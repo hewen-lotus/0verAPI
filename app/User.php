@@ -44,6 +44,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUsername($value)
  * @mixin \Eloquent
+ * @property-read mixed $has_banned
  */
 class User extends Authenticatable
 {

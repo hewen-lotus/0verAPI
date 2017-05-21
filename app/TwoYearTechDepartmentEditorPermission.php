@@ -8,6 +8,23 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 
+/**
+ * App\TwoYearTechDepartmentEditorPermission
+ *
+ * @property string $username
+ * @property string $dept_id
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\TwoYearTechDepartmentData $department
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereDeptId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereUsername($value)
+ * @mixin \Eloquent
+ */
 class TwoYearTechDepartmentEditorPermission extends Model
 {
     use SoftDeletes;
