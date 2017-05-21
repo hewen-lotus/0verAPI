@@ -24,7 +24,7 @@ class SchoolHistoryController extends Controller
     }
 
     /**
-     * 取得學校資訊（校名、介紹等）與所有系所資訊
+     * 取得學校資訊的歷史版本
      *
      * @param  string $school_id
      * @return \Illuminate\Http\Response
@@ -35,19 +35,26 @@ class SchoolHistoryController extends Controller
 
         // 確認使用者權限
         if ($user->school_editor) {
-
+            // 確認使用者使否有要求的學校的存取權限
             if ($school_id != $user->school_editor->school_code && $school_id != 'me') {
                 $messages = array('User don\'t have permission to access');
                 return response()->json(compact('messages'), 403);
             }
 
-            if ($histories_id == 'latest') {
-                $schoolData = SchoolHistoryData::select()->where('id', '=', $user->school_editor->school_code)->with('created_by', 'review_by')->latest()->first();
-            } else {
+            // 確認使用者使否有要求的歷史版本的存取權限
+            if ($histories_id != 'latest') {
                 $messages = array('User don\'t have permission to access');
                 return response()->json(compact('messages'), 403);
             }
 
+            // 整理資料
+            $schoolData = SchoolHistoryData::select()
+                ->where('id', '=', $user->school_editor->school_code)
+                ->with('created_by.user', 'review_by.user')
+                ->latest()
+                ->first();
+
+            // 回傳結果
             if ($schoolData) {
                 return $schoolData;
             } else {
