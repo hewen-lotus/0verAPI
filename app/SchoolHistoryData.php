@@ -70,6 +70,6 @@ class SchoolHistoryData extends Model
 
     public function created_by()
     {
-        return $this->belongsTo('App\SchoolEditor', 'created_by', 'username');
+        return $this->belongsTo('App\User', 'created_by', 'username');
     }
 }
