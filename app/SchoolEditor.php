@@ -45,7 +45,7 @@ class SchoolEditor extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
-    protected $appends = ['has_banned', 'user'];
+    protected $appends = ['has_banned'];
 
     protected $casts = [
         'has_admin' => 'boolean',
@@ -84,11 +84,6 @@ class SchoolEditor extends Model
     public function getHasBannedAttribute()
     {
         return $this->deleted_at != NULL;
-    }
-
-    public function getUserAttribute()
-    {
-        return $this->belongsTo('App\User', 'username', 'username');
     }
 
 }

@@ -50,7 +50,7 @@ class SchoolHistoryController extends Controller
             // 整理資料
             $schoolData = SchoolHistoryData::select()
                 ->where('id', '=', $user->school_editor->school_code)
-                ->with('creator.user', 'reviewer.user')
+                ->with('creator.school_editor', 'reviewer.admin')
                 ->latest()
                 ->first();
 

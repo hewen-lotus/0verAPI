@@ -148,7 +148,7 @@ class SchoolHistoryData extends Model
 
     public function reviewer()
     {
-        return $this->belongsTo('App\Admin', 'review_by', 'username');
+        return $this->belongsTo('App\User', 'review_by', 'username');
     }
 
     public function creator()
