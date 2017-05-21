@@ -7,6 +7,8 @@ use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvid
 
 use App\User;
 use App\Policies\UserPolicy;
+use App\SchoolHistoryData;
+use App\Policies\SchoolHistoryDataPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -18,6 +20,7 @@ class AuthServiceProvider extends ServiceProvider
     protected $policies = [
         'App\Model' => 'App\Policies\ModelPolicy',
         User::class => UserPolicy::class,
+        SchoolHistoryData::class => SchoolHistoryDataPolicy::class,
     ];
 
     /**

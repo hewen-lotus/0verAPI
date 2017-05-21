@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Policies;
+
+use App\User;
+use App\SchoolHistoryData;
+use Illuminate\Auth\Access\HandlesAuthorization;
+
+class SchoolHistoryDataPolicy
+{
+    use HandlesAuthorization;
+
+    public function before(User $user, $ability)
+    {
+        if ($user->admin != NULL) {
+            return true;
+        }
+    }
+
+    /**
+     * Determine whether the user can view the schoolHistoryData.
+     *
+     * @param  \App\User  $user
+     * @param  string $school_id
+     * @param  string $histories_id
+     * @return mixed
+     */
+    public function view(User $user, $school_id, $histories_id)
+    {
+        if ($user->school_editor != NULL) {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can create schoolHistoryDatas.
+     *
+     * @param  \App\User  $user
+     * @param  string  $school_id
+     * @return mixed
+     */
+    public function create(User $user, $school_id)
+    {
+        if ($user->school_editor != NULL) {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') || (bool)$user->school_editor->has_admin) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Determine whether the user can update the schoolHistoryData.
+     *
+     * @param  \App\User  $user
+     * @param  \App\SchoolHistoryData  $schoolHistoryData
+     * @return mixed
+     */
+    public function update(User $user, SchoolHistoryData $schoolHistoryData)
+    {
+        //
+    }
+
+    /**
+     * Determine whether the user can delete the schoolHistoryData.
+     *
+     * @param  \App\User  $user
+     * @param  \App\SchoolHistoryData  $schoolHistoryData
+     * @return mixed
+     */
+    public function delete(User $user, SchoolHistoryData $schoolHistoryData)
+    {
+        //
+    }
+}
