@@ -43,11 +43,11 @@ class CreateSchoolDataTable extends Migration
             $table->string('approval_no_of_self_enrollment')->nullable()->comment('[自招]核定文號');
             $table->string('approval_doc_of_self_enrollment')->nullable()->comment('[自招]核定公文電子檔(file path)');
             $table->string('confirmed_by')->nullable()->comment('資料由哪位海聯人員確認匯入的');
-            $table->foreign('confirmed_by')->references('username')->on('admins');
+            $table->foreign('confirmed_by')->references('username')->on('users');
             $table->string('confirmed_at')->nullable()->comment('資料確認匯入的時間');
             $table->string('created_at');
             $table->string('updated_by')->nullable()->comment('資料最後更新者');
-            $table->foreign('updated_by')->references('username')->on('admins');
+            $table->foreign('updated_by')->references('username')->on('users');
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
         });
@@ -87,7 +87,7 @@ class CreateSchoolDataTable extends Migration
             $table->enum('info_status', ['editing', 'waiting', 'returned', 'confirmed'])->comment('資料狀態（editing|waiting|returned|confirmed');
             $table->text('review_memo')->nullable()->comment('海聯審閱備註');
             $table->string('review_by')->nullable()->comment('海聯審閱人員');
-            $table->foreign('review_by')->references('username')->on('admins');
+            $table->foreign('review_by')->references('username')->on('users');
             $table->string('review_at')->nullable()->comment('海聯審閱的時間點');
             $table->string('created_by')->nullable()->comment('此歷史紀錄建立者');
             $table->foreign('created_by')->references('username')->on('users');
