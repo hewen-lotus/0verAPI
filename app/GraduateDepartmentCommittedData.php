@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Carbon\Carbon;
 
+/**
+ * App\GraduateDepartmentCommittedData
+ *
+ * @mixin \Eloquent
+ */
 class GraduateDepartmentCommittedData extends Model
 {
     use SoftDeletes;

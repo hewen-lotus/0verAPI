@@ -7,6 +7,11 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Carbon\Carbon;
 
+/**
+ * App\SystemCommittedData
+ *
+ * @mixin \Eloquent
+ */
 class SystemCommittedData extends Model
 {
     use SoftDeletes;

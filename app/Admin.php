@@ -7,6 +7,30 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Carbon\Carbon;
 
+/**
+ * App\Admin
+ *
+ * @property string $username
+ * @property bool $has_admin
+ * @property string $last_action_at 上次動作時間
+ * @property \Carbon\Carbon $created_at
+ * @property string $created_by
+ * @property \Carbon\Carbon $updated_at
+ * @property string $updated_by
+ * @property \Carbon\Carbon $deleted_at
+ * @property string $deleted_by
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereDeletedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereHasAdmin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereLastActionAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUsername($value)
+ * @mixin \Eloquent
+ */
 class Admin extends Model
 {
     use SoftDeletes;

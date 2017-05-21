@@ -50,7 +50,7 @@ class SchoolHistoryController extends Controller
             // 整理資料
             $schoolData = SchoolHistoryData::select()
                 ->where('id', '=', $user->school_editor->school_code)
-                ->with('created_by.user', 'review_by.user')
+                ->with('creator.user', 'reviewer.user')
                 ->latest()
                 ->first();
 
@@ -245,7 +245,7 @@ class SchoolHistoryController extends Controller
     public function update(Request $request, $school_id)
     {
         if (SchoolData::where('id', '=', $school_id)->exists()) {
-            $LastSavedData = SchoolSavedData::where('id', '=', $school_id)
+            $LastSavedData = SchoolData::where('id', '=', $school_id)
                 ->orderBy('history_id', 'desc')->first();
 
             $validator = Validator::make($request->all(), [
