@@ -121,7 +121,7 @@ class CreateTwoYearTechDepartmentDataTable extends Migration
             $table->foreign('review_by')->references('username')->on('admins');
             $table->string('review_at')->nullable()->comment('海聯審閱的時間點');
             $table->string('created_by')->comment('此歷史紀錄建立者');
-            $table->foreign('created_by')->references('username')->on('school_editors');
+            $table->foreign('created_by')->references('username')->on('users');
             $table->string('created_at')->nullable();
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
