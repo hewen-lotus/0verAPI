@@ -101,11 +101,19 @@ class SchoolHistoryData extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $dates = ['deleted_at'];
+
     protected $casts = [
         'has_dorm' => 'boolean',
         'has_scholarship' => 'boolean',
         'has_five_year_student_allowed' => 'boolean',
         'has_self_enrollment' => 'boolean'
+    ];
+
+    protected $hidden = [
+        // 'history_id',
+        'action',
+        'sort_order'
     ];
 
     protected $fillable = [
@@ -145,7 +153,6 @@ class SchoolHistoryData extends Model
         'review_at', //海聯回覆的時間點
     ];
 
-    protected $dates = ['deleted_at'];
 
     public function reviewer()
     {
