@@ -27,13 +27,13 @@ Route::post('/users/login', 'Auth\LoginController@UserLogin');
 
 Route::post('/users/logout', 'Auth\LoginController@UserLogout');
 
-Route::resource('/admins', 'AdminController');
-
-Route::resource('/schools', 'SchoolDataController');
-
 Route::resource('/schools.editors', 'SchoolEditorController');
 
-//Route::resource('/users', 'SchoolUserController');
+Route::resource('/schools.histories', 'SchoolHistoryController');
+
+Route::resource('/schools.systems.histories', 'SystemHistoryController');
+
+Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryController');
 
 Route::post('/personal-and-priority-data-importer', 'PersonalAndPriorityDataImportController@import');
 

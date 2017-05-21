@@ -116,6 +116,14 @@ class SchoolHistoryData extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $casts = [
+        'has_dorm' => 'boolean',
+        'has_scholarship' => 'boolean',
+        'has_five_year_student_allowed' => 'boolean',
+        'has_self_enrollment' => 'boolean',
+        'url' => 'string'
+    ];
+
     protected $fillable = [
         'id', //學校代碼
         'action', // 儲存或送出
@@ -145,7 +153,7 @@ class SchoolHistoryData extends Model
         'has_self_enrollment', //[自招]是否單獨招收僑生
         'approval_no_of_self_enrollment', //[自招]核定文號
         'approval_doc_of_self_enrollment', //[自招]核定公文電子檔(file path)
-        'updated_by', //按下送出的人是誰
+        'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
         'info_status', //waiting|confirmed|editing|returned
         'review_memo', //讓學校再次修改的原因
@@ -154,4 +162,14 @@ class SchoolHistoryData extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function review_by()
+    {
+        return $this->belongsTo('App\Admin', 'review_by', 'username');
+    }
+
+    public function created_by()
+    {
+        return $this->belongsTo('App\SchoolEditor', 'created_by', 'username');
+    }
 }
