@@ -10,13 +10,6 @@ class SchoolHistoryDataPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
-    {
-        if ($user->admin != NULL) {
-            return true;
-        }
-    }
-
     /**
      * Determine whether the user can view the schoolHistoryData.
      *
@@ -27,6 +20,10 @@ class SchoolHistoryDataPolicy
      */
     public function view(User $user, $school_id, $histories_id)
     {
+        if ($user->admin != NULL && $school_id != 'me') {
+            return true;
+        }
+
         if ($user->school_editor != NULL) {
             if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
                 return true;
@@ -45,6 +42,10 @@ class SchoolHistoryDataPolicy
      */
     public function create(User $user, $school_id)
     {
+        if ($user->admin != NULL && $school_id != 'me') {
+            return true;
+        }
+
         if ($user->school_editor != NULL) {
             if (($user->school_editor->school_code == $school_id || $school_id == 'me') || (bool)$user->school_editor->has_admin) {
                 return true;

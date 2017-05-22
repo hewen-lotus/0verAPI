@@ -21,10 +21,9 @@ class AdminController extends Controller
     /**
      * Display a listing of the resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function index(Request $request)
+    public function index()
     {
         $user = Auth::user();
 
@@ -32,22 +31,20 @@ class AdminController extends Controller
             return User::has('admin')->with('admin')->get();
         }
 
-        return User::whereHas('admin', function ($query) use ($user) {
-            $query->where('username', '=', $user->username)->orWhere('admin', '=', true);
-        })->with('admin')->get();
+        $messages = array('User don\'t have permission to access');
 
+        return response()->json(compact('messages'), 403);
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @param  string  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(Request $request, $id)
+    public function show($id)
     {
-        if (Admin::where('username', '=', $id)->has('admin')->exists()) {
+        if (User::where('username', '=', $id)->has('admin')->exists()) {
             $data = User::where('username', '=', $id)->with('admin')->first();
 
             $user = Auth::user();
@@ -55,6 +52,10 @@ class AdminController extends Controller
             if ($user->can('view_admin', $data)) {
                 return $data;
             }
+
+            $messages = array('User don\'t have permission to access');
+
+            return response()->json(compact('messages'), 403);
         }
 
         $messages = array('User Data Not Found!');
@@ -72,40 +73,64 @@ class AdminController extends Controller
     {
         $user = Auth::user();
 
-        $this->authorize('create_admin', User::class);
+        if ($user->can('create_admin', User::class)) {
+            $validator = Validator::make($request->all(), [
+                'username' => 'required|string|max:191|unique:admins,username|unique:users,username',
+                'password' => 'required|string|min:6',
+                'email' => 'sometimes|nullable|email',
+                'name' => 'required|string',
+                'eng_name' => 'required|string',
+                'phone' => 'required|string',
+                'has_admin' => 'present|boolean',
+                'has_banned' => 'present|boolean',
+            ]);
 
-        $validator = Validator::make($request->all(), [
-            'username' => 'required|string|max:191|unique:admins,username|unique:users,username',
-            'password' => 'required|string|min:6',
-            'email' => 'sometimes|nullable|email',
-            'chinese_name' => 'required|string',
-            'english_name' => 'required|string',
-            'phone' => 'required|string',
-            'admin' => 'sometimes|required|boolean'
-        ]);
+            if ($validator->fails()) {
+                $messages = $validator->errors()->all();
+                return response()->json(compact('messages'), 400);
+            }
 
-        if ($validator->fails()) {
-            $messages = $validator->errors()->all();
-            return response()->json(compact('messages'), 400);
+            return DB::transaction(function () use ($request) {
+                User::create([
+                    'username' => $request->username,
+                    'password' => Hash::make($request->password),
+                    'email' => $request->email,
+                    'name' => $request->name,
+                    'eng_name' => $request->eng_name,
+                    'phone' => $request->phone,
+                    'created_by' => Auth::id(),
+                    'updated_by' => Auth::id(),
+                ]);
+
+                Admin::create([
+                    'username' => $request->username,
+                    'has_admin' => $request->input('has_admin', 0),
+                    'created_by' => Auth::id(),
+                    'updated_by' => Auth::id(),
+                ]);
+
+                if ((bool)$request->input('has_banned')) {
+                    //User::where('username', '=', $request->username)->delete();
+
+                    Admin::where('username', '=', $request->username)->update([
+                        'deleted_by' => Auth::id(),
+                    ]);
+
+                    Admin::where('username', '=', $request->username)->delete();
+                }
+
+                return response()->json(User::where('username', '=', $request->username)
+                    ->with([
+                        'admin' => function ($query) {
+                            $query->withTrashed();
+                        }
+                    ])->first(), 201);
+            });
         }
 
-        return DB::transaction(function () use ($request) {
-            User::create([
-                'username' => $request->username,
-                'password' => Hash::make($request->password),
-                'email' => $request->email,
-                'chinese_name' => $request->chinese_name,
-                'english_name' => $request->english_name,
-                'phone' => $request->phone,
-            ]);
+        $messages = array('User don\'t have permission to access');
 
-            Admin::create([
-                'username' => $request->username,
-                'admin' => $request->input('admin', 0),
-            ]);
-
-            return User::where('username', '=', $request->username)->with('admin')->first();
-        });
+        return response()->json(compact('messages'), 403);
     }
 
     /**
@@ -126,10 +151,11 @@ class AdminController extends Controller
                 $validator = Validator::make($request->all(), [
                     'password' => 'sometimes|required|string|min:6',
                     'email' => 'sometimes|nullable|email',
-                    'chinese_name' => 'sometimes|required|string',
-                    'english_name' => 'sometimes|required|string',
-                    'phone' => 'sometimes|required|string',
-                    'admin' => 'sometimes|required|boolean'
+                    'name' => 'required|string',
+                    'eng_name' => 'required|string',
+                    'phone' => 'required|string',
+                    'has_admin' => 'present|boolean',
+                    'has_banned' => 'present|boolean',
                 ]);
 
                 if ($validator->fails()) {
@@ -138,7 +164,12 @@ class AdminController extends Controller
                 }
 
                 return DB::transaction(function () use ($request, $user, $id) {
-                    $updateData = array();
+                    $updateData = array(
+                        'name' => $request->name,
+                        'eng_name' => $request->eng_name,
+                        'phone' => $request->phone,
+                        'updated_by' => Auth::id(),
+                    );
 
                     if ($request->has('password')) {
                         $updateData += array(
@@ -152,35 +183,42 @@ class AdminController extends Controller
                         );
                     }
 
-                    if ($request->has('chinese_name')) {
-                        $updateData += array(
-                            'chinese_name' => $request->chinese_name
-                        );
-                    }
-
-                    if ($request->has('english_name')) {
-                        $updateData += array(
-                            'english_name' => $request->english_name
-                        );
-                    }
-
-                    if ($request->has('phone')) {
-                        $updateData += array(
-                            'phone' => $request->phone
-                        );
-                    }
-
                     User::where('username', '=', $id)->update($updateData);
 
-                    if ($request->has('admin') && (bool)$user->admin->admin && $user->username != $id) {
-                        Admin::where('username', '=', $id)->update([
-                            'admin' => $request->input('admin', 0)
-                        ]);
+                    if ((bool)$user->admin->has_admin && $user->username != $id) {
+                        if ($request->has('has_admin')) {
+                            Admin::where('username', '=', $id)->update([
+                                'has_admin' => $request->input('has_admin', 0),
+                                'updated_by' => Auth::id(),
+                            ]);
+                        }
+
+                        if ((bool)$request->input('has_banned')) {
+                            Admin::where('username', '=', $id)->update([
+                                'deleted_by' => Auth::id(),
+                            ]);
+
+                            Admin::where('username', '=', $id)->delete();
+                        } else {
+                            Admin::where('username', '=', $id)->update([
+                                'deleted_by' => NULL,
+                            ]);
+
+                            Admin::where('username', '=', $id)->restore();
+                        }
                     }
 
-                    return User::where('username', '=', $id)->with('admin')->first();
+                    return User::where('username', '=', $id)->with([
+                        'admin' => function ($query) {
+                            $query->withTrashed();
+                        }
+                    ])->first();
                 });
             }
+
+            $messages = array('User don\'t have permission to access');
+
+            return response()->json(compact('messages'), 403);
         }
 
         $messages = array('User Data Not Found!');
@@ -196,6 +234,7 @@ class AdminController extends Controller
      */
     public function destroy($id)
     {
+        /*
         $user = Auth::user();
 
         if ($user->username == $id) {
@@ -215,5 +254,6 @@ class AdminController extends Controller
         $messages = array('User Data Not Found!');
 
         return response()->json(compact('messages'), 404);
+        */
     }
 }

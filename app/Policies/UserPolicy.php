@@ -9,13 +9,6 @@ class UserPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
-    {
-        if ($user->admin != NULL && (bool)$user->admin->has_admin) {
-            return true;
-        }
-    }
-
     /*
     |--------------------------------------------------------------------------
     | admin's
@@ -46,6 +39,10 @@ class UserPolicy
      */
     public function view_admin(User $user, User $admin)
     {
+        if ($user->admin != NULL && (bool)$user->admin->has_admin) {
+            return true;
+        }
+
         return $user->admin->username === $admin->admin->username;
     }
 
@@ -73,6 +70,10 @@ class UserPolicy
      */
     public function update_admin(User $user, User $admin)
     {
+        if ($user->admin != NULL && (bool)$user->admin->has_admin) {
+            return true;
+        }
+
         return $user->admin->username === $admin->admin->username;
     }
 
@@ -84,8 +85,8 @@ class UserPolicy
      */
     public function delete_admin(User $user)
     {
-        if ($user->admin != NULL) {
-            return (bool)$user->admin->has_admin;
+        if ($user->admin != NULL && (bool)$user->admin->has_admin) {
+            return true;
         }
 
         return false;
@@ -105,12 +106,12 @@ class UserPolicy
      */
     public function list_schooleditor(User $user, $school_code)
     {
-        if ($user->admin != NULL) {
+        if ($user->admin != NULL && $school_code != 'me') {
             return true;
         }
 
         if ($user->school_editor != NULL) {
-            if ((bool)$user->school_editor->has_admin && $user->school_editor->school_code == $school_code) {
+            if ((bool)$user->school_editor->has_admin && ($user->school_editor->school_code == $school_code || $school_code == 'me')) {
                 return true;
             }
         }
@@ -127,7 +128,7 @@ class UserPolicy
      */
     public function view_schooleditor(User $user, User $editor, $school_code)
     {
-        if ($user->admin != NULL) {
+        if ($user->admin != NULL && $school_code != 'me') {
             return true;
         }
 
@@ -150,7 +151,7 @@ class UserPolicy
      */
     public function create_schooleditor(User $user, $school_code)
     {
-        if ($user->admin != NULL) {
+        if ($user->admin != NULL && $school_code != 'me') {
             return true;
         }
 
@@ -172,7 +173,7 @@ class UserPolicy
      */
     public function update_schooleditor(User $user, User $editor, $school_code)
     {
-        if ($user->admin != NULL) {
+        if ($user->admin != NULL && $school_code != 'me') {
             return true;
         }
 
@@ -195,7 +196,7 @@ class UserPolicy
      */
     public function delete_schooleditor(User $user, User $editor, $school_code)
     {
-        if ($user->admin != NULL) {
+        if ($user->admin != NULL && $school_code != 'me') {
             return true;
         }
 

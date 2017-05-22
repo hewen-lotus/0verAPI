@@ -32,15 +32,27 @@ class SchoolEditorController extends Controller
      */
     public function index($school_code)
     {
-        if (SchoolData::where('id', '=', $school_code)->exists()) {
-            return User::whereHas('school_editor', function ($query) use ($school_code) {
-                $query->where('school_code', '=', $school_code);
-            })->with('school_editor')->get();
+        $user = Auth::user();
+
+        if ($user->can('list_schooleditor', [User::class, $school_code])) {
+            if ($school_code == 'me') {
+                $school_code = $user->school_editor->school_code;
+            }
+
+            if (SchoolData::where('id', '=', $school_code)->exists()) {
+                return User::whereHas('school_editor', function ($query) use ($school_code) {
+                    $query->where('school_code', '=', $school_code);
+                })->with('school_editor')->get();
+            }
+
+            $messages = array('This School is NOT exist!');
+
+            return response()->json(compact('messages'), 404);
         }
 
-        $messages = array('This School is NOT exist!');
+        $messages = array('User don\'t have permission to access');
 
-        return response()->json(compact('messages'), 404);
+        return response()->json(compact('messages'), 403);
     }
 
     /**
@@ -146,7 +158,7 @@ class SchoolEditorController extends Controller
                         ]);
                     }
 
-                    if ((bool)$request->input('has_banned') == true) {
+                    if ((bool)$request->input('has_banned')) {
                         //User::where('username', '=', $request->username)->delete();
 
                         SchoolEditor::where('username', '=', $request->username)->delete();
