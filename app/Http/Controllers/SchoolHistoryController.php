@@ -29,6 +29,13 @@ class SchoolHistoryController extends Controller
     {
         $user = Auth::user();
 
+        // 接受 me 參數
+        if ($user->school_editor != NULL) {
+            if ($school_id == 'me') {
+                $school_id = $user->school_editor->school_code;
+            }
+        }
+
         if (SchoolHistoryData::where('id', '=', $school_id)->exists()) {
             // 確認使用者權限
             if ($user->can('view', [SchoolHistoryData::class, $school_id, $histories_id])) {
@@ -58,6 +65,11 @@ class SchoolHistoryController extends Controller
 
         // 確認使用者權限
         if ($user->can('create', [SchoolHistoryData::class, $school_id])) {
+            // 接受 me 參數
+            if ($school_id == 'me') {
+                $school_id = $user->school_editor->school_code;
+            }
+
             $historyData = SchoolHistoryData::select()
                 ->where('id', '=', $school_id)
                 ->latest()
