@@ -77,7 +77,7 @@ class AdminController extends Controller
             $validator = Validator::make($request->all(), [
                 'username' => 'required|string|max:191|unique:admins,username|unique:users,username',
                 'password' => 'required|string|min:6',
-                'email' => 'sometimes|nullable|email',
+                'email' => 'present|email',
                 'name' => 'required|string',
                 'eng_name' => 'required|string',
                 'phone' => 'required|string',
@@ -149,8 +149,8 @@ class AdminController extends Controller
 
             if ($user->can('update_admin', $data)) {
                 $validator = Validator::make($request->all(), [
-                    'password' => 'sometimes|required|string|min:6',
-                    'email' => 'sometimes|nullable|email',
+                    'password' => 'present|string|min:6',
+                    'email' => 'present|email',
                     'name' => 'required|string',
                     'eng_name' => 'required|string',
                     'phone' => 'required|string',
