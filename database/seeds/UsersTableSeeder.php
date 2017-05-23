@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
         DB::table('users')->insert([
             [
                 'username' => 'admin1',
-                'password' => Hash::make('admin123!@#'),
+                'password' => Hash::make( hash('sha256', 'admin123!@#') ),
                 'email' => 'a@a.a',
                 'name' => '管理者一號',
                 'eng_name' => 'admin1',
@@ -28,7 +28,7 @@ class UsersTableSeeder extends Seeder
 
             [
                 'username' => 'admin2',
-                'password' => Hash::make('admin123!@#'),
+                'password' => Hash::make( hash('sha256', 'admin123!@#') ),
                 'email' => 'b@a.a',
                 'name' => '管理者二號',
                 'eng_name' => 'admin2',
@@ -39,7 +39,7 @@ class UsersTableSeeder extends Seeder
 
             [
                 'username' => 'admin3',
-                'password' => Hash::make('admin123!@#'),
+                'password' => Hash::make( hash('sha256', 'admin123!@#') ),
                 'email' => 'a@b.a',
                 'name' => '管理者三號',
                 'eng_name' => 'admin2',
@@ -50,7 +50,7 @@ class UsersTableSeeder extends Seeder
 
             [
                 'username' => 'editor1',
-                'password' => Hash::make('admin123!@#'),
+                'password' => Hash::make( hash('sha256', 'admin123!@#') ),
                 'email' => 'a@a.a',
                 'name' => 'A編輯',
                 'eng_name' => 'english_name',
@@ -61,7 +61,7 @@ class UsersTableSeeder extends Seeder
 
             [
                 'username' => 'editor2',
-                'password' => Hash::make('admin123!@#'),
+                'password' => Hash::make( hash('sha256', 'admin123!@#') ),
                 'email' => 'b@a.a',
                 'name' => 'B編輯',
                 'eng_name' => 'english_name',
@@ -72,7 +72,7 @@ class UsersTableSeeder extends Seeder
 
             [
                 'username' => 'editor3',
-                'password' => Hash::make('admin123!@#'),
+                'password' => Hash::make( hash('sha256', 'admin123!@#') ),
                 'email' => 'c@a.a',
                 'name' => 'C編輯',
                 'eng_name' => 'english_name',
