@@ -133,6 +133,7 @@ class SchoolHistoryController extends Controller
                 'type' => $historyData->type,
                 'sort_order' => $historyData->sort_order,
                 // 基本資料
+                'action' => $request->input('action'),
                 'address' => $request->input('address'),
                 'eng_address' => $request->input('eng_address'),
                 'organization' => $request->input('organization'),
