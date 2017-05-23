@@ -96,7 +96,7 @@ class LoginController extends Controller
     {
         if (Auth::check()) {
             return User::where('username', '=', Auth::id())
-                ->with('admin', 'school_editor', 'school_reviewer')->first();
+                ->with('admin', 'school_editor.school', 'school_reviewer.school')->first();
         }
 
         return response()->json(['messages' => ['Not Logged in!']], 401);
