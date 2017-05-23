@@ -226,34 +226,4 @@ class AdminController extends Controller
         return response()->json(compact('messages'), 404);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        /*
-        $user = Auth::user();
-
-        if ($user->username == $id) {
-            $messages = array('Can\'t Delete YourSelf!');
-
-            return response()->json(compact('messages'), 400);
-        }
-
-        if (User::where('username', '=', $id)->exists()) {
-            if ($user->can('delete_admin', User::class)) {
-                User::where('username', '=', $id)->delete();
-
-                return User::withTrashed()->where('username', '=', $id)->first();
-            }
-        }
-
-        $messages = array('User Data Not Found!');
-
-        return response()->json(compact('messages'), 404);
-        */
-    }
 }
