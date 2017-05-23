@@ -123,10 +123,11 @@ class UserPolicy
      * Determine whether the user can view the editor.
      *
      * @param  \App\User  $user
-     * @param  \App\User  $editor
+     * @param  string $school_code
+     * @param  string $id
      * @return mixed
      */
-    public function view_schooleditor(User $user, User $editor, $school_code)
+    public function view_schooleditor(User $user, $school_code, $id)
     {
         if ($user->admin != NULL && $school_code != 'me') {
             return true;
@@ -137,7 +138,7 @@ class UserPolicy
                 return true;
             }
 
-            return $user->school_editor->username === $editor->school_editor->username;
+            return $user->school_editor->username == $id;
         }
 
         return false;
@@ -171,7 +172,7 @@ class UserPolicy
      * @param  \App\User  $editor
      * @return mixed
      */
-    public function update_schooleditor(User $user, User $editor, $school_code)
+    public function update_schooleditor(User $user, $school_code, $id)
     {
         if ($user->admin != NULL && $school_code != 'me') {
             return true;
@@ -182,7 +183,7 @@ class UserPolicy
                 return true;
             }
 
-            return $user->school_editor->username === $editor->school_editor->username;
+            return $user->school_editor->username == $id;
         }
 
         return false;

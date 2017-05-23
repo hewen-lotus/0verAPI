@@ -67,11 +67,16 @@ class SchoolEditorController extends Controller
         $user = Auth::user();
 
         if ($user->can('create_schooleditor', [User::class, $school_code])) {
+
+            if ($school_code == 'me') {
+                $school_code = $user->school_editor->school_code;
+            }
+
             if (SchoolData::where('id', '=', $school_code)->exists()) {
                 $validator = Validator::make($request->all(), [
                     'username' => 'required|string|max:191|unique:school_editors,username|unique:users,username',
                     'password' => 'required|string|min:6',
-                    'email' => 'sometimes|nullable|email',
+                    'email' => 'present|email',
                     'name' => 'required|string',
                     'eng_name' => 'required|string',
                     'phone' => 'required|string',
@@ -121,6 +126,8 @@ class SchoolEditorController extends Controller
                         'name' => $request->name,
                         'eng_name' => $request->eng_name,
                         'phone' => $request->phone,
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id()
                     ]);
 
                     SchoolEditor::create([
@@ -128,6 +135,8 @@ class SchoolEditorController extends Controller
                         'school_code' => $school_code,
                         'organization' => $request->organization,
                         'has_admin' => $request->input('has_admin', 0),
+                        'created_by' => Auth::id(),
+                        'updated_by' => Auth::id()
                     ]);
 
                     foreach ($request->input('departments.bachelor') as $bachelor) {
@@ -161,6 +170,10 @@ class SchoolEditorController extends Controller
                     if ((bool)$request->input('has_banned')) {
                         //User::where('username', '=', $request->username)->delete();
 
+                        SchoolEditor::where('username', '=', $request->username)->update([
+                            'deleted_by' => Auth::id(),
+                        ]);
+
                         SchoolEditor::where('username', '=', $request->username)->delete();
 
                         DepartmentEditorPermission::where('username', '=', $request->username)->delete();
@@ -184,7 +197,8 @@ class SchoolEditorController extends Controller
                             },
                             'school_editor.two_year_tech_department_permission' => function ($query) {
                                 $query->withTrashed();
-                            }])->first(), 201);
+                            }
+                        ])->first(), 201);
                 });
             }
 
@@ -210,30 +224,32 @@ class SchoolEditorController extends Controller
     {
         $user = Auth::user();
 
-        if (User::where('username', '=', $id)
-            ->whereHas('school_editor', function ($query) use ($school_code) {
-                $query->where('school_code', '=', $school_code);
-            })->exists()) {
-            $editor = User::where('username', '=', $request->username)
-                ->with([
-                    'school_editor',
-                    'school_editor.department_permission',
-                    'school_editor.graduate_department_permission',
-                    'school_editor.two_year_tech_department_permission'
-                ])->first();
-
-            if ($user->can('view_schooleditor', [$editor, $school_code])) {
-                return $editor;
+        if ($user->can('view_schooleditor', [User::class, $school_code, $id])) {
+            if ($school_code == 'me') {
+                $school_code = $user->school_editor->school_code;
             }
 
-            $messages = array('User don\'t have permission to access');
+            if (User::where('username', '=', $id)
+                ->whereHas('school_editor', function ($query) use ($school_code) {
+                    $query->where('school_code', '=', $school_code);
+                })->exists()) {
+                return User::where('username', '=', $id)
+                    ->with([
+                        'school_editor',
+                        'school_editor.department_permission',
+                        'school_editor.graduate_department_permission',
+                        'school_editor.two_year_tech_department_permission'
+                    ])->first();
+            }
 
-            return response()->json(compact('messages'), 403);
+            $messages = array('User Data Not Found!');
+
+            return response()->json(compact('messages'), 404);
         }
 
-        $messages = array('User Data Not Found!');
+        $messages = array('User don\'t have permission to access');
 
-        return response()->json(compact('messages'), 404);
+        return response()->json(compact('messages'), 403);
     }
 
     /**
@@ -246,97 +262,167 @@ class SchoolEditorController extends Controller
      */
     public function update(Request $request, $school_code, $id)
     {
-        if (!SchoolData::where('id', '=', $school_code)->exists()) {
-            $messages = array('This School is NOT exist!');
+        $user = Auth::user();
+
+        if ($user->can('update_schooleditor', [User::class, $school_code, $id])) {
+            if ($school_code == 'me') {
+                $school_code = $user->school_editor->school_code;
+            }
+
+            if (User::where('username', '=', $id)
+                ->whereHas('school_editor', function ($query) use ($school_code) {
+                    $query->where('school_code', '=', $school_code);
+                })->exists()
+            ) {
+                $validator = Validator::make($request->all(), [
+                    'password' => 'present|string|min:6',
+                    'email' => 'present|email',
+                    'name' => 'required|string',
+                    'eng_name' => 'required|string',
+                    'phone' => 'required|string',
+                    'organization' => 'required|string',
+                    'has_admin' => 'present|boolean',
+                    'has_banned' => 'present|boolean',
+                    'departments.bachelor' => 'present|array',
+                    'departments.master' => 'present|array',
+                    'departments.phd' => 'present|array',
+                    'departments.two_year' => 'present|array',
+                    'departments.bachelor.*' => [
+                        'string',
+                        Rule::exists('department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                    'departments.master.*' => [
+                        'string',
+                        Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                    'departments.phd.*' => [
+                        'string',
+                        Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                    'departments.two_year.*' => [
+                        'string',
+                        Rule::exists('two_year_tech_department_data', 'id')->where(function ($query) use ($school_code) {
+                            $query->where('school_code', $school_code);
+                        })
+                    ],
+                ]);
+
+                if ($validator->fails()) {
+                    $messages = $validator->errors()->all();
+
+                    return response()->json(compact('messages'), 400);
+                }
+
+                return DB::transaction(function () use ($request, $user, $school_code, $id) {
+                    DepartmentEditorPermission::where('username', '=', $id)->forceDelete();
+
+                    GraduateDepartmentEditorPermission::where('username', '=', $id)->forceDelete();
+
+                    TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->forceDelete();
+
+                    $UserUpdateData = array(
+                        'email' => $request->email,
+                        'name' => $request->name,
+                        'eng_name' => $request->eng_name,
+                        'phone' => $request->phone,
+                        'updated_by' => Auth::id()
+                    );
+
+                    $EditorUpdateData = array(
+                        'organization' => $request->organization,
+                        'has_admin' => $request->input('has_admin', 0),
+                        'updated_by' => Auth::id()
+                    );
+
+                    if ($request->has('password')) {
+                        $UserUpdateData += array(
+                            'password' => Hash::make($request->password)
+                        );
+                    }
+
+                    User::where('username', '=', $id)->update($UserUpdateData);
+
+                    SchoolEditor::where('username', '=', $id)->update($EditorUpdateData);
+
+                    foreach ($request->input('departments.bachelor') as $bachelor) {
+                        DepartmentEditorPermission::create([
+                            'username' => $id,
+                            'dept_id' => $bachelor
+                        ]);
+                    }
+
+                    foreach ($request->input('departments.master') as $master) {
+                        GraduateDepartmentEditorPermission::create([
+                            'username' => $id,
+                            'dept_id' => $master
+                        ]);
+                    }
+
+                    foreach ($request->input('departments.phd') as $phd) {
+                        GraduateDepartmentEditorPermission::create([
+                            'username' => $id,
+                            'dept_id' => $phd
+                        ]);
+                    }
+
+                    foreach ($request->input('departments.two_year') as $two_year) {
+                        TwoYearTechDepartmentEditorPermission::create([
+                            'username' => $id,
+                            'dept_id' => $two_year
+                        ]);
+                    }
+
+                    if (($user->admin != NULL || (bool)$user->school_editor->has_admin) && $user->username != $id) {
+                        if ((bool)$request->input('has_banned')) {
+                            //User::where('username', '=', $request->username)->delete();
+
+                            SchoolEditor::where('username', '=', $id)->update([
+                                'deleted_by' => Auth::id(),
+                            ]);
+
+                            SchoolEditor::where('username', '=', $id)->delete();
+
+                            DepartmentEditorPermission::where('username', '=', $id)->delete();
+
+                            GraduateDepartmentEditorPermission::where('username', '=', $id)->delete();
+
+                            TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->delete();
+                        }
+                    }
+
+                    return response()->json(
+                        User::where('username', '=', $id)
+                            ->with([
+                                'school_editor' => function ($query) {
+                                    $query->withTrashed();
+                                },
+                                'school_editor.department_permission' => function ($query) {
+                                    $query->withTrashed();
+                                },
+                                'school_editor.graduate_department_permission' => function ($query) {
+                                    $query->withTrashed();
+                                },
+                                'school_editor.two_year_tech_department_permission' => function ($query) {
+                                    $query->withTrashed();
+                                }
+                            ])->first());
+                });
+            }
+
+            $messages = array('User Data Not Found!');
 
             return response()->json(compact('messages'), 404);
         }
 
-        if (SchoolEditor::where('username', '=', $id)->exists()) {
-            $validator = Validator::make($request->all(), [
-                'password' => 'sometimes|string|min:6',
-                'email' => 'sometimes|nullable|email',
-                'chinese_name' => 'sometimes|required|string',
-                'english_name' => 'sometimes|required|string',
-                'phone' => 'sometimes|required|string',
-                //'school_code' => 'required|exists:school_data,id',
-                'organization' => 'sometimes|required|string',
-                'admin' => 'sometimes|required|boolean'
-            ]);
+        $messages = array('User don\'t have permission to access');
 
-            if ($validator->fails()) {
-                $messages = $validator->errors()->all();
-                return response()->json(compact('messages'), 400);
-            }
-
-            return DB::transaction(function () use ($request, $id) {
-                $UserUpdateData = array();
-
-                $EditorUpdateData = array();
-
-                if ($request->has('password')) {
-                    $UserUpdateData += array(
-                        'password' => Hash::make($request->password)
-                    );
-                }
-
-                if ($request->has('email')) {
-                    $UserUpdateData += array(
-                        'email' => $request->email
-                    );
-                }
-
-                if ($request->has('chinese_name')) {
-                    $UserUpdateData += array(
-                        'chinese_name' => $request->chinese_name
-                    );
-                }
-
-                if ($request->has('english_name')) {
-                    $UserUpdateData += array(
-                        'english_name' => $request->english_name
-                    );
-                }
-
-                if ($request->has('phone')) {
-                    $UserUpdateData += array(
-                        'phone' => $request->phone
-                    );
-                }
-
-                if ($request->has('organization')) {
-                    $EditorUpdateData += array(
-                        'organization' => $request->organization
-                    );
-                }
-
-                if ($request->has('admin')) {
-                    $EditorUpdateData += array(
-                        'admin' => $request->admin
-                    );
-                }
-
-                User::where('username', '=', $id)->update($UserUpdateData);
-
-                SchoolEditor::where('username', '=', $id)->update($EditorUpdateData);
-
-                return User::where('username', '=', $id)->with('school_editor')->first();
-            });
-        }
-
-        $messages = array('User Data Not Found!');
-
-        return response()->json(compact('messages'), 404);
+        return response()->json(compact('messages'), 403);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  string  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy($id)
-    {
-        //
-    }
 }
