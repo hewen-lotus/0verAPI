@@ -208,21 +208,23 @@ class SchoolHistoryController extends Controller
 
     public function getDataById($id, $status_code = 200)
     {
-        $LastSchoolData = SchoolHistoryData::where('id', '=', $id)
+        $data = SchoolHistoryData::where('id', '=', $id)
             ->with('creator.school_editor', 'reviewer.admin')
             ->latest()
             ->first();
 
-        if ($LastSchoolData->info_status == 'editing' || $LastSchoolData->info_status == 'returned') {
-            $LastReturnedSchoolData = SchoolHistoryData::where('id', '=', $id)
+        if ($data->info_status == 'editing' || $data->info_status == 'returned') {
+            $lastReturnedData = SchoolHistoryData::where('id', '=', $id)
                 ->where('info_status', '=', 'returned')
                 ->with('creator.school_editor', 'reviewer.admin')
                 ->latest()
                 ->first();
         } else {
-            $LastReturnedSchoolData = NULL;
+            $lastReturnedData = NULL;
         }
 
-        return response()->json(compact('LastSchoolData', 'LastReturnedSchoolData'), $status_code);
+        $data->last_returned_data = $lastReturnedData;
+
+        return response()->json($data, $status_code);
     }
 }
