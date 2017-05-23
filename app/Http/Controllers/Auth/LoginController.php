@@ -72,7 +72,7 @@ class LoginController extends Controller
         }
 
         return User::where('username', '=', $credentials['username'])
-            ->with('admin', 'school_editor', 'school_reviewer')->first();
+            ->with('admin', 'school_editor.school', 'school_reviewer.school')->first();
     }
 
     /*
