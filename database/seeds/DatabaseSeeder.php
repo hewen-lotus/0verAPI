@@ -15,6 +15,7 @@ class DatabaseSeeder extends Seeder
         // $this->call(LocalesTableSeeder::class);
         $this->call(SystemTypesTableSeeder::class);
         $this->call(DepartmentGroupsTableSeeder::class);
+        $this->call(EvaluationLevelsTableSeeder::class);
 
         if (App::environment('local', 'develop')) {
             $this->call(UsersTableSeeder::class);
@@ -28,6 +29,7 @@ class DatabaseSeeder extends Seeder
             $this->call(SystemDataTableSeeder::class);
             $this->call(GraduateSystemDataTableSeeder::class);
             $this->call(ApplicationDocumentTypesTableSeeder::class);
+            // $this->call(DepartmentDataTableSeeder::class);
         }
     }
 }
