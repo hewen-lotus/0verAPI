@@ -15,7 +15,7 @@ class SystemHistoryController extends Controller
     {
         $this->middleware('auth');
 
-        $this->isLocked = collect(['waiting', 'confirmed']);
+        $this->isLockedCollection = collect(['waiting', 'confirmed']);
 
         $this->system_id = collect([
             'bachelor' => 1,
@@ -29,7 +29,7 @@ class SystemHistoryController extends Controller
             4 => 4,
         ]);
 
-        $this->selectColumns = collect([
+        $this->columnsCollection = collect([
             'quota' => [
                 'school_code', //學校代碼
                 'last_year_admission_amount', //僑生可招收數量（上學年新生總額 10%）（二技參照學士）
@@ -73,6 +73,7 @@ class SystemHistoryController extends Controller
 
         // 確認使用者權限
         if ($user->can('view_info', [SystemHistoryData::class, $school_id, $dataType, $histories_id])) {
+            // 設定 school id（可能是 me）
             $school_id = $user->school_editor->school_code;
 
             // mapping 學制 id
@@ -86,7 +87,7 @@ class SystemHistoryController extends Controller
             // TODO 要包含 $user 擁有權限的系所列表
 
             // 依照要求拿取資料
-            $data = SystemHistoryData::select($this->selectColumns->get('info'))
+            $data = SystemHistoryData::select($this->columnsCollection->get('info'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
                 ->with('creator.school_editor', 'reviewer.admin')
@@ -102,7 +103,7 @@ class SystemHistoryController extends Controller
         } else if ($user->can('view_quota', [SystemHistoryData::class, $school_id, $dataType, $histories_id])) {
             $school_id = $user->school_editor->school_code;
 
-            // mapping 學制 id
+            // mapping 學制 id (預設為 0)
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
@@ -114,7 +115,7 @@ class SystemHistoryController extends Controller
             // TODO 要包含所有系所名額資訊
 
             // 依照要求拿取資料
-            $data = SystemHistoryData::select($this->selectColumns->get('quota'))
+            $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
                 ->with('creator.school_editor', 'reviewer.admin')
@@ -148,9 +149,10 @@ class SystemHistoryController extends Controller
 
         // 確認使用者權限
         if ($user->can('create_info', [SystemHistoryData::class, $school_id, $dataType])) {
+            // 設定 school id（可能是 me）
             $school_id = $user->school_editor->school_code;
 
-            // mapping 學制 id
+            // mapping 學制 id（預設為 0）
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
@@ -167,10 +169,9 @@ class SystemHistoryController extends Controller
 
             // TODO 回傳結果要包含系所檢表 like getInfoDataWithDepartments()
 
-            $historyInfoStatus = $historyData->info_status;
-
             // 確認歷史版本是否被 lock
-            if ($this->isLocked->contains($historyInfoStatus)) {
+            $historyInfoStatus = $historyData->info_status;
+            if ($this->isLockedCollection->contains($historyInfoStatus)) {
                 $messages = array('Data is locked');
                 return response()->json(compact('messages'), 403);
             }
@@ -184,7 +185,7 @@ class SystemHistoryController extends Controller
 
             // 設定資料驗證欄位
             $validationRules = array(
-                'action' => 'required|string', //動作
+                'action' => 'required|in:save,commit|string', //動作
                 'description' => 'required|string|max:191', //學制敘述
                 'eng_description' => 'required|string|max:191' //學制英文敘述
             );
@@ -223,7 +224,7 @@ class SystemHistoryController extends Controller
         } else if ($user->can('create_quota', [SystemHistoryData::class, $school_id, $dataType])) {
             $school_id = $user->school_editor->school_code;
 
-            // mapping 學制 id
+            // mapping 學制 id (預設為 0)
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
@@ -247,7 +248,7 @@ class SystemHistoryController extends Controller
             $historyQuotaStatus = $historyData->quota_status;
 
             // 確認歷史版本是否被 lock
-            if ($this->isLocked->contains($historyQuotaStatus)) {
+            if ($this->isLockedCollection->contains($historyQuotaStatus)) {
                 $messages = array('Data is locked');
                 return response()->json(compact('messages'), 403);
             }
@@ -261,7 +262,7 @@ class SystemHistoryController extends Controller
 
             // 設定資料驗證欄位
             $validationRules = [
-                'action' => 'required|string', //動作
+                'action' => 'required|in:save,commit|string', //動作
                 'last_year_surplus_admission_quota' => 'required|integer' // 未招足名額
             ];
 
@@ -314,7 +315,7 @@ class SystemHistoryController extends Controller
         // TODO 若最新資料為 editing or returned，review_by, review_at, review_memo 需為最新一筆狀態為 returned 的內容
 
         // 依照要求拿取資料
-        return SystemHistoryData::select($this->selectColumns->get($dataType))
+        return SystemHistoryData::select($this->columnsCollection->get($dataType))
             ->where('history_id', '=', $id)
             ->with('creator.school_editor', 'reviewer.admin')
             ->first();
