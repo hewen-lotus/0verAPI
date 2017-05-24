@@ -82,7 +82,7 @@ class SystemHistoryController extends Controller
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
-                $messages = array('System not found.');
+                $messages = array('System history version not found.');
                 return response()->json(compact('messages'), 404);
             }
 
@@ -109,7 +109,7 @@ class SystemHistoryController extends Controller
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
-                $messages = array('System not found.');
+                $messages = array('System history version not found.');
 
                 return response()->json(compact('messages'), 404);
             }
@@ -158,7 +158,7 @@ class SystemHistoryController extends Controller
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
-                $messages = array('System not found.');
+                $messages = array('System history version not found.');
                 return response()->json(compact('messages'), 404);
             }
 
@@ -168,6 +168,12 @@ class SystemHistoryController extends Controller
                 ->where('type_id', '=', $system_id)
                 ->latest()
                 ->first();
+
+            // 無歷史版本 => 無此學制
+            if ($historyData == NULL) {
+                $messages = array('System history version not found.');
+                return response()->json(compact('messages'), 404);
+            }
 
             // TODO 回傳結果要包含系所檢表 like getInfoDataWithDepartments()
 
@@ -230,7 +236,7 @@ class SystemHistoryController extends Controller
             $system_id = $this->system_id->get($system_id, 0);
 
             if ($system_id == 0) {
-                $messages = array('System not found.');
+                $messages = array('System history version not found.');
                 return response()->json(compact('messages'), 404);
             }
 
