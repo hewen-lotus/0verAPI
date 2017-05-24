@@ -154,4 +154,9 @@ class GraduateDepartmentData extends Model
     {
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
+
+    public function editor_permission()
+    {
+        return $this->hasMany('App\GraduateDepartmentEditorPermission', 'dept_id', 'id');
+    }
 }
