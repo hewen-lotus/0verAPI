@@ -40,8 +40,8 @@ class CreateDepartmentDataTable extends Migration
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
             $table->string('special_dept_type')->nullable()->comment('特殊系所（醫、牙、中醫、藝術）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
-            $table->unsignedInteger('admission_placement_ratify_quota')->comment('教育部核定聯合分發名額');
-            $table->unsignedInteger('admission_selection_ratify_quota')->comment('教育部核定個人申請名額');
+            $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
+            $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
             $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
@@ -99,8 +99,8 @@ class CreateDepartmentDataTable extends Migration
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
             $table->string('special_dept_type')->nullable()->comment('特殊系所（醫、牙、中醫、藝術）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
-            $table->unsignedInteger('admission_placement_ratify_quota')->comment('教育部核定聯合分發名額');
-            $table->unsignedInteger('admission_selection_ratify_quota')->comment('教育部核定個人申請名額');
+            $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
+            $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
             $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
