@@ -9,6 +9,8 @@ use App\User;
 use App\Policies\UserPolicy;
 use App\SchoolHistoryData;
 use App\Policies\SchoolHistoryDataPolicy;
+use App\SystemHistoryData;
+use App\Policies\SystemHistoryDataPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -21,6 +23,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\Model' => 'App\Policies\ModelPolicy',
         User::class => UserPolicy::class,
         SchoolHistoryData::class => SchoolHistoryDataPolicy::class,
+        SystemHistoryData::class => SystemHistoryDataPolicy::class,
     ];
 
     /**
