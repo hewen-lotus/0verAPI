@@ -38,7 +38,7 @@ class CreateDepartmentDataTable extends Migration
             $table->unsignedInteger('self_enrollment_quota')->nullable()->comment('自招名額');
             $table->boolean('has_special_class')->comment('是否招收僑生專班');
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
-            $table->string('special_dept_type')->nullable()->comment('特殊系所（醫、牙、中醫、藝術）');
+            $table->string('special_dept_type')->nullable()->comment('特殊系所（醫學系、牙醫學系、中醫學系、藝術相關學系）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
             $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
             $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
@@ -48,8 +48,8 @@ class CreateDepartmentDataTable extends Migration
             $table->string('birth_limit_after')->nullable()->comment('限…之後出生');
             $table->string('birth_limit_before')->nullable()->comment('限…之前出生');
             $table->boolean('has_review_fee')->comment('是否要收審查費用');
-            $table->text('review_fee_detail')->comment('審查費用細節');
-            $table->text('eng_review_fee_detail')->comment('審查費用英文細節');
+            $table->text('review_fee_detail')->nullable()->comment('審查費用細節');
+            $table->text('eng_review_fee_detail')->nullable()->comment('審查費用英文細節');
             $table->boolean('has_eng_taught')->comment('全英文授課');
             $table->boolean('has_disabilities')->comment('是否招收身障學生');
             $table->boolean('has_BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
@@ -107,8 +107,8 @@ class CreateDepartmentDataTable extends Migration
             $table->string('birth_limit_after')->nullable()->comment('限…之後出生');
             $table->string('birth_limit_before')->nullable()->comment('限…之前出生');
             $table->boolean('has_review_fee')->comment('是否要收審查費用');
-            $table->text('review_fee_detail')->comment('審查費用細節');
-            $table->text('eng_review_fee_detail')->comment('審查費用英文細節');
+            $table->text('review_fee_detail')->nullable()->comment('審查費用細節');
+            $table->text('eng_review_fee_detail')->nullable()->comment('審查費用英文細節');
             $table->boolean('has_eng_taught')->comment('全英文授課');
             $table->boolean('has_disabilities')->comment('是否招收身障學生');
             $table->boolean('has_BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
