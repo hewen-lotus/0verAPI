@@ -17,9 +17,9 @@ class SystemHistoryDataPolicy
      * @param  \App\SystemHistoryData  $systemHistoryData
      * @return mixed
      */
-    public function view_quota(User $user, SystemHistoryData $systemHistoryData, $school_id)
+    public function view_quota(User $user, $school_id, $dataType, $histories_id)
     {
-        if ($user->school_editor != NULL) {
+        if ($user->school_editor != NULL && (bool)$user->school_editor->has_admin && $dataType == 'quota') {
             if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
                 return true;
             }
@@ -35,9 +35,9 @@ class SystemHistoryDataPolicy
      * @param  \App\SystemHistoryData  $systemHistoryData
      * @return mixed
      */
-    public function view_info(User $user, SystemHistoryData $systemHistoryData, $school_id)
+    public function view_info(User $user, $school_id, $dataType, $histories_id)
     {
-        if ($user->school_editor != NULL) {
+        if ($user->school_editor != NULL && $dataType != 'quota') {
             if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
                 return true;
             }
@@ -52,10 +52,10 @@ class SystemHistoryDataPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create_quota(User $user)
+    public function create_quota(User $user, $school_id, $dataType)
     {
-        if ($user->school_editor != NULL) {
-            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
+        if ($user->school_editor != NULL && $dataType == 'quota') {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && (bool)$user->school_editor->has_admin) {
                 return true;
             }
         }
@@ -69,10 +69,10 @@ class SystemHistoryDataPolicy
      * @param  \App\User  $user
      * @return mixed
      */
-    public function create_info(User $user)
+    public function create_info(User $user, $school_id, $dataType)
     {
-        if ($user->school_editor != NULL) {
-            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
+        if ($user->school_editor != NULL && $dataType != 'quota') {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && (bool)$user->school_editor->has_admin) {
                 return true;
             }
         }

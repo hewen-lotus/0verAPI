@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder
             $this->call(SchoolHistoryDataTableSeeder::class);
             $this->call(SchoolEditorsTableSeeder::class);
             $this->call(SchoolReviewersTableSeeder::class);
+            $this->call(SystemHistoryDataTableSeeder::class);
+            $this->call(GraduateSystemHistoryDataTableSeeder::class);
             $this->call(SystemDataTableSeeder::class);
+            $this->call(GraduateSystemDataTableSeeder::class);
             $this->call(ApplicationDocumentTypesTableSeeder::class);
         }
     }
