@@ -20,7 +20,8 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
-            $table->enum('system', ['Master', 'PhD'])->comment('這是碩士班還是博士班 QQ');
+            $table->unsignedInteger('system_id')->comment('這是碩士班還是博士班 QQ');
+            $table->foreign('system_id')->references('id')->on('system_types');
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->comment('給海聯的備註');
@@ -34,19 +35,19 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->unsignedInteger('self_enrollment_quota')->nullable()->comment('自招名額');
             $table->boolean('has_special_class')->comment('是否招收僑生專班');
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
-            $table->string('special_dept_type')->nullable()->comment('特殊系所（醫、牙、中醫、藝術）');
+            $table->string('special_dept_type')->nullable()->comment('特殊系所（醫學系、牙醫學系、中醫學系、藝術相關學系）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
-            $table->unsignedInteger('admission_placement_ratify_quota')->comment('教育部核定聯合分發名額');
-            $table->unsignedInteger('admission_selection_ratify_quota')->comment('教育部核定個人申請名額');
-            $table->unsignedInteger('self_enrollment_ratify_quota')->comment('教育部核定單獨招收(自招)名額');
+            $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
+            $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
+            $table->unsignedInteger('self_enrollment_ratify_quota')->nullable()->comment('教育部核定單獨招收(自招)名額');
             $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
             $table->string('birth_limit_after')->nullable()->comment('限…之後出生');
             $table->string('birth_limit_before')->nullable()->comment('限…之前出生');
             $table->boolean('has_review_fee')->comment('是否要收審查費用');
-            $table->text('review_fee_detail')->comment('審查費用細節');
-            $table->text('eng_review_fee_detail')->comment('審查費用英文細節');
+            $table->text('review_fee_detail')->nullable()->comment('審查費用細節');
+            $table->text('eng_review_fee_detail')->nullable()->comment('審查費用英文細節');
             $table->boolean('has_eng_taught')->comment('全英文授課');
             $table->boolean('has_disabilities')->comment('是否招收身障學生');
             $table->boolean('has_BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
@@ -75,7 +76,8 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->foreign('school_code')->references('id')->on('school_data');
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
-            $table->enum('system', ['Master', 'PhD'])->comment('這是碩士還是博士班 QQ');
+            $table->unsignedInteger('system_id')->comment('這是碩士班還是博士班 QQ');
+            $table->foreign('system_id')->references('id')->on('system_types');
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->comment('給海聯的備註');
@@ -89,19 +91,19 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->unsignedInteger('self_enrollment_quota')->nullable()->comment('自招名額');
             $table->boolean('has_special_class')->comment('是否招收僑生專班');
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
-            $table->string('special_dept_type')->nullable()->comment('特殊系所（醫、牙、中醫、藝術）');
+            $table->string('special_dept_type')->nullable()->comment('特殊系所（醫學系、牙醫學系、中醫學系、藝術相關學系）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
-            $table->unsignedInteger('admission_placement_ratify_quota')->comment('教育部核定聯合分發名額');
-            $table->unsignedInteger('admission_selection_ratify_quota')->comment('教育部核定個人申請名額');
-            $table->unsignedInteger('self_enrollment_ratify_quota')->comment('教育部核定單獨招收(自招)名額');
+            $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
+            $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
+            $table->unsignedInteger('self_enrollment_ratify_quota')->nullable()->comment('教育部核定單獨招收(自招)名額');
             $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
             $table->string('birth_limit_after')->nullable()->comment('限…之後出生');
             $table->string('birth_limit_before')->nullable()->comment('限…之前出生');
             $table->boolean('has_review_fee')->comment('是否要收審查費用');
-            $table->text('review_fee_detail')->comment('審查費用細節');
-            $table->text('eng_review_fee_detail')->comment('審查費用英文細節');
+            $table->text('review_fee_detail')->nullable()->comment('審查費用細節');
+            $table->text('eng_review_fee_detail')->nullable()->comment('審查費用英文細節');
             $table->boolean('has_eng_taught')->comment('全英文授課');
             $table->boolean('has_disabilities')->comment('是否招收身障學生');
             $table->boolean('has_BuHweiHwaWen')->comment('是否招收不具華文基礎學生');
@@ -141,6 +143,7 @@ class CreateGraduateDepartmentDataTable extends Migration
     {
 
         Schema::table('graduate_department_data', function (Blueprint $table) {
+            $table->dropForeign('graduate_department_data_system_id_foreign');
             $table->dropForeign('graduate_department_data_school_code_foreign');
             $table->dropForeign('graduate_department_data_confirmed_by_foreign');
             $table->dropForeign('graduate_department_data_history_id_foreign');
@@ -151,6 +154,7 @@ class CreateGraduateDepartmentDataTable extends Migration
         });
 
         Schema::table('graduate_department_history_data', function (Blueprint $table) {
+            $table->dropForeign('graduate_department_history_data_system_id_foreign');
             $table->dropForeign('graduate_department_history_data_id_foreign');
             $table->dropForeign('graduate_department_history_data_school_code_foreign');
             $table->dropForeign('graduate_department_history_data_review_by_foreign');
