@@ -157,4 +157,9 @@ class TwoYearTechDepartmentData extends Model
     {
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
+
+    public function editor_permission()
+    {
+        return $this->hasMany('App\TwoYearTechDepartmentEditorPermission', 'dept_id', 'id');
+    }
 }

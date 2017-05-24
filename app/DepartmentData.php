@@ -161,4 +161,9 @@ class DepartmentData extends Model
     {
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
+
+    public function editor_permission()
+    {
+        return $this->hasMany('App\DepartmentEditorPermission', 'dept_id', 'id');
+    }
 }

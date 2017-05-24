@@ -92,7 +92,26 @@ class SystemHistoryController extends Controller
             $data = SystemHistoryData::select($this->columnsCollection->get('info'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
-                ->with('type', 'creator.school_editor', 'reviewer.admin', 'departments', 'graduate_departments', 'two_year_tech_departments')
+                ->with([
+                    'type',
+                    'creator.school_editor',
+                    'reviewer.admin',
+                    'departments' => function ($query) {
+                        $query->whereHas('editor_permission', function ($query1) {
+                            $query1->where('username', '=', Auth::id());
+                        });
+                    },
+                    'graduate_departments' => function ($query) {
+                        $query->whereHas('editor_permission', function ($query1) {
+                            $query1->where('username', '=', Auth::id());
+                        });
+                    },
+                    'two_year_tech_departments' => function ($query) {
+                        $query->whereHas('editor_permission', function ($query1) {
+                            $query1->where('username', '=', Auth::id());
+                        });
+                    }
+                ])
                 ->latest()
                 ->first();
 
