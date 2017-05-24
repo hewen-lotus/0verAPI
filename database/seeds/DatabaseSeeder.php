@@ -25,6 +25,7 @@ class DatabaseSeeder extends Seeder
             $this->call(SystemHistoryDataTableSeeder::class);
             $this->call(GraduateSystemHistoryDataTableSeeder::class);
             $this->call(SystemDataTableSeeder::class);
+            $this->call(GraduateSystemDataTableSeeder::class);
             $this->call(ApplicationDocumentTypesTableSeeder::class);
         }
     }
