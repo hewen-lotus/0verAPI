@@ -32,6 +32,7 @@ class SystemHistoryController extends Controller
         $this->columnsCollection = collect([
             'quota' => [
                 'school_code', //學校代碼
+                'type_id',
                 'last_year_admission_amount', //僑生可招收數量（上學年新生總額 10%）（二技參照學士）
                 'last_year_surplus_admission_quota', //上學年本地生未招足名額（二技參照學士）
                 'ratify_expanded_quota', //本學年教育部核定擴增名額（二技參照學士）
@@ -45,6 +46,7 @@ class SystemHistoryController extends Controller
             ],
             'info' => [
                 'school_code', //學校代碼
+                'type_id',
                 'description', //學制描述
                 'eng_description', //'學制描述
                 'created_by', //按下送出的人是誰
@@ -90,7 +92,7 @@ class SystemHistoryController extends Controller
             $data = SystemHistoryData::select($this->columnsCollection->get('info'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
-                ->with('creator.school_editor', 'reviewer.admin')
+                ->with('type', 'creator.school_editor', 'reviewer.admin', 'departments', 'graduate_departments', 'two_year_tech_departments')
                 ->latest()
                 ->first();
 
@@ -118,7 +120,7 @@ class SystemHistoryController extends Controller
             $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
-                ->with('creator.school_editor', 'reviewer.admin')
+                ->with('type', 'creator.school_editor', 'reviewer.admin', 'departments', 'graduate_departments', 'two_year_tech_departments')
                 ->latest()
                 ->first();
 
