@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use function foo\func;
 use Illuminate\Http\Request;
 
 use Auth;
@@ -17,7 +18,7 @@ class SystemHistoryController extends Controller
 
         $this->isLockedCollection = collect(['waiting', 'confirmed']);
 
-        $this->system_id = collect([
+        $this->systemIdCollection = collect([
             'bachelor' => 1,
             1 => 1,
             'two-year' => 2,
@@ -29,6 +30,7 @@ class SystemHistoryController extends Controller
             4 => 4,
         ]);
 
+        // 學制欄位，依資料類型分
         $this->columnsCollection = collect([
             'quota' => [
                 'school_code', //學校代碼
@@ -59,8 +61,94 @@ class SystemHistoryController extends Controller
             ]
         ]);
 
-        $this->departmentsWithCollection = collect([
-            1 => 'departments',
+        // 系所名額欄位，依學制分
+        $this->departmentQuotaColumnsCollection = collect([
+            1 => [
+                'id',
+                'school_code',
+                'sort_order',
+                'title',
+                'eng_title',
+                'has_special_class',
+                'has_self_enrollment',
+                'self_enrollment_quota',
+                'admission_selection_quota',
+                'last_year_admission_placement_quota', // 學士班才有
+                'last_year_admission_placement_amount', // 學士班才有
+                'admission_placement_quota', // 學士班才有
+                'decrease_reason_of_admission_placement', // 學士班才有
+                'created_at',
+                'created_by',
+                'info_status', //waiting|confirmed|editing|returned
+                'quota_status', //waiting|confirmed|editing|returned
+            ],
+            2 => [
+                'id',
+                'school_code',
+                'sort_order',
+                'title',
+                'eng_title',
+                'has_special_class',
+                'has_self_enrollment',
+                'self_enrollment_quota',
+                'admission_selection_quota',
+                'created_at',
+                'created_by',
+                'info_status', //waiting|confirmed|editing|returned
+                'quota_status', //waiting|confirmed|editing|returned
+            ],
+            3 => [
+                'id',
+                'school_code',
+                'sort_order',
+                'title',
+                'eng_title',
+                'has_special_class',
+                'has_self_enrollment',
+                'self_enrollment_quota',
+                'admission_selection_quota',
+                'created_at',
+                'created_by',
+                'info_status', //waiting|confirmed|editing|returned
+                'quota_status', //waiting|confirmed|editing|returned
+            ],
+            4 => [
+                'id',
+                'school_code',
+                'sort_order',
+                'title',
+                'eng_title',
+                'has_special_class',
+                'has_self_enrollment',
+                'self_enrollment_quota',
+                'admission_selection_quota',
+                'created_at',
+                'created_by',
+                'info_status', //waiting|confirmed|editing|returned
+                'quota_status', //waiting|confirmed|editing|returned
+            ]
+        ]);
+
+        // 系所資訊欄位
+        $this->departmentInfoColumns = [
+                'id',
+                'school_code',
+                'sort_order',
+                'title',
+                'eng_title',
+                'has_special_class',
+                'has_self_enrollment',
+                'self_enrollment_quota',
+                'admission_selection_quota',
+                'created_at',
+                'created_by',
+                'info_status', //waiting|confirmed|editing|returned
+                'quota_status', //waiting|confirmed|editing|returned
+        ];
+
+        // 系所函式名反查
+        $this->departmentsKeyCollection = collect([
+            1 => 'bachelor_departments',
             2 => 'two_year_tech_departments',
             3 => 'master_departments',
             4 => 'phd_departments'
@@ -86,20 +174,26 @@ class SystemHistoryController extends Controller
             $school_id = $user->school_editor->school_code;
 
             // mapping 學制 id
-            $system_id = $this->system_id->get($system_id, 0);
+            $system_id = $this->systemIdCollection->get($system_id, 0);
 
             if ($system_id == 0) {
                 $messages = array('System history version not found.');
                 return response()->json(compact('messages'), 404);
             }
 
-            // 要求包含 $user 擁有權限的系所列表
+            // 擷取資料，並依照學制取得其下所有 $user 擁有權限的系所的 info
+            $departmentKey = $this->departmentsKeyCollection->get($system_id);
+
             if ($user->school_editor->has_admin) {
-                $departmentsWith = [$this->departmentsWithCollection->get($system_id)];
+                $departmentsWith = [
+                    $departmentKey => function($query) {
+                        $query->select($this->departmentInfoColumns);
+                    }
+                ];
             } else {
                 $departmentsWith = [
-                    $this->departmentsWithCollection->get($system_id) => function ($query) {
-                        $query->whereHas('editor_permission', function ($query1) {
+                    $departmentKey => function ($query) {
+                        $query->select($this->departmentInfoColumns)->whereHas('editor_permission', function ($query1) {
                             $query1->where('username', '=', Auth::id());
                         });
                     }
@@ -121,6 +215,10 @@ class SystemHistoryController extends Controller
                 ->first();
 
             if ($data) {
+                // 系所資料彙整至同一欄位
+                $data->departments = $data->$departmentKey;
+                unset($data->$departmentKey);
+
                 return response()->json($data, 200);
             } else {
                 $messages = array('System Data Not Found!');
@@ -130,7 +228,7 @@ class SystemHistoryController extends Controller
             $school_id = $user->school_editor->school_code;
 
             // mapping 學制 id (預設為 0)
-            $system_id = $this->system_id->get($system_id, 0);
+            $system_id = $this->systemIdCollection->get($system_id, 0);
 
             if ($system_id == 0) {
                 $messages = array('System history version not found.');
@@ -138,17 +236,29 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 404);
             }
 
-            // TODO 要包含所有系所名額資訊
+            // 擷取資料，並依照學制取得其下所有系所名額資訊
+            $departmentKey = $this->departmentsKeyCollection->get($system_id);
+            $departmentQuotaColumns = $this->departmentQuotaColumnsCollection->get($system_id);
 
-            // 依照要求拿取資料
             $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
-                ->with('type', 'creator.school_editor', 'reviewer.admin', $this->departmentsWithCollection->get($system_id) )
+                ->with([
+                    'type',
+                    'creator.school_editor',
+                    'reviewer.admin',
+                    $departmentKey => function($query) use ($departmentQuotaColumns) {
+                        $query->select($departmentQuotaColumns);
+                    }
+                ])
                 ->latest()
                 ->first();
 
             if ($data) {
+                // 系所資料彙整至同一欄位
+                $data->departments = $data->$departmentKey;
+                unset($data->$departmentKey);
+
                 return response()->json($data, 200);
             } else {
                 $messages = array('System Data Not Found!');
@@ -179,7 +289,7 @@ class SystemHistoryController extends Controller
             $school_id = $user->school_editor->school_code;
 
             // mapping 學制 id（預設為 0）
-            $system_id = $this->system_id->get($system_id, 0);
+            $system_id = $this->systemIdCollection->get($system_id, 0);
 
             if ($system_id == 0) {
                 $messages = array('System history version not found.');
@@ -256,8 +366,8 @@ class SystemHistoryController extends Controller
         } else if ($user->can('create_quota', [SystemHistoryData::class, $school_id, $dataType])) {
             $school_id = $user->school_editor->school_code;
 
-            // mapping 學制 id (預設為 0)
-            $system_id = $this->system_id->get($system_id, 0);
+            // mapping 學制 id (預設為 0)∂
+            $system_id = $this->systemIdCollection->get($system_id, 0);
 
             if ($system_id == 0) {
                 $messages = array('System history version not found.');

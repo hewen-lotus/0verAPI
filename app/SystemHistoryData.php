@@ -123,7 +123,7 @@ class SystemHistoryData extends Model
         return $this->belongsTo('App\SchoolData', 'school_code', 'id');
     }
 
-    public function departments()
+    public function bachelor_departments()
     {
         return $this->hasMany('App\DepartmentHistoryData', 'school_code', 'school_code');
     }
