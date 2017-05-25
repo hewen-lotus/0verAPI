@@ -8,44 +8,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Carbon\Carbon;
 
-/**
- * App\User
- *
- * @property string $username
- * @property string $password
- * @property string $email
- * @property string $name
- * @property string $eng_name
- * @property string $phone 聯絡電話
- * @property string $last_login_at 上次登入時間
- * @property \Carbon\Carbon $created_at
- * @property string $created_by
- * @property \Carbon\Carbon $updated_at
- * @property string $updated_by
- * @property \Carbon\Carbon $deleted_at
- * @property string $deleted_by
- * @property string $remember_token
- * @property-read \App\Admin $admin
- * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
- * @property-read \App\SchoolEditor $school_editor
- * @property-read \App\SchoolReviewer $school_reviewer
- * @method static \Illuminate\Database\Query\Builder|\App\User whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereCreatedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereDeletedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereEmail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereEngName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereLastLoginAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereName($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User wherePassword($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User wherePhone($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereRememberToken($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\User whereUsername($value)
- * @mixin \Eloquent
- * @property-read mixed $has_banned
- */
 class User extends Authenticatable
 {
     use Notifiable, SoftDeletes;

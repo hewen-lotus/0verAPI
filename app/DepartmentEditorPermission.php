@@ -7,23 +7,6 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Carbon\Carbon;
 
-/**
- * App\DepartmentEditorPermission
- *
- * @property string $username
- * @property string $dept_id
- * @property \Carbon\Carbon $created_at
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
- * @property-read \App\DepartmentData $department
- * @property-read \App\User $user
- * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereDeptId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereUsername($value)
- * @mixin \Eloquent
- */
 class DepartmentEditorPermission extends Model
 {
     use SoftDeletes;
