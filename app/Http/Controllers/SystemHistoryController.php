@@ -309,8 +309,6 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 404);
             }
 
-            // TODO 回傳結果要包含系所檢表 like getInfoDataWithDepartments()
-
             // 確認歷史版本是否被 lock
             $historyInfoStatus = $historyData->info_status;
             if ($this->isLockedCollection->contains($historyInfoStatus)) {
@@ -361,6 +359,8 @@ class SystemHistoryController extends Controller
             // 寫入資料
             $resultData = SystemHistoryData::create($insertData);
 
+            // TODO 回傳結果要包含系所檢表 like getInfoDataWithDepartments()
+
             // 回傳剛建立的資料
             return response()->json($this->getDataById($resultData->history_id, 'info'), 201);
         } else if ($user->can('create_quota', [SystemHistoryData::class, $school_id, $dataType])) {
@@ -386,6 +386,7 @@ class SystemHistoryController extends Controller
             // TODO 要檢查學校有無開放自招
             // TODO 要檢查系所有無開放自招（二技很複雜）
             // TODO 要可以控制系所的自招與否？（二技很複雜）
+            // TODO 要檢查學士班聯合分發總量是否低於去年
 
             $historyQuotaStatus = $historyData->quota_status;
 
@@ -405,7 +406,25 @@ class SystemHistoryController extends Controller
             // 設定資料驗證欄位
             $validationRules = [
                 'action' => 'required|in:save,commit|string', //動作
-                'last_year_surplus_admission_quota' => 'required|integer' // 未招足名額
+                'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
+                'departments.*.id' => [
+                    'required|string',
+                    Rule::exists('department_history_data', 'id')->where(function ($query) use ($school_code) {
+                        $query->where('school_code', $school_code);
+                    })
+                ],
+                'departments.*.has_self_enrollment' => [
+                    'required|boolean',
+                    Rule::exists('school_history_data', 'has_self_enrollment')->where(function ($query) use ($school_code) {
+                        $query->where('school_code', $school_code);
+                    })
+                ],
+                'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|boolean',
+                'departments.*.admission_selection_quota' => 'required|integer',
+//                TODO 若 admission_placement_quota 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小，需要填 decrease_reason_of_admission_placement
+//                'departments.*.admission_placement_quota' => [
+//                    'required|min:不會了啦|integer',
+//                ]
             ];
 
             // 整理輸入資料
