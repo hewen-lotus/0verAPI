@@ -187,13 +187,13 @@ class SystemHistoryController extends Controller
             if ($user->school_editor->has_admin) {
                 $departmentsWith = [
                     $departmentKey => function($query) {
-                        $query->select($this->departmentInfoColumns);
+                        $query->select($this->departmentInfoColumns)->with('creator.school_editor');
                     }
                 ];
             } else {
                 $departmentsWith = [
                     $departmentKey => function ($query) {
-                        $query->select($this->departmentInfoColumns)->whereHas('editor_permission', function ($query1) {
+                        $query->select($this->departmentInfoColumns)->with('creator.school_editor')->whereHas('editor_permission', function ($query1) {
                             $query1->where('username', '=', Auth::id());
                         });
                     }
@@ -248,7 +248,7 @@ class SystemHistoryController extends Controller
                     'creator.school_editor',
                     'reviewer.admin',
                     $departmentKey => function($query) use ($departmentQuotaColumns) {
-                        $query->select($departmentQuotaColumns);
+                        $query->select($departmentQuotaColumns)->with('creator.school_editor');
                     }
                 ])
                 ->latest()

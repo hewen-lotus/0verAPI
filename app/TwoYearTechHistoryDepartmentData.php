@@ -178,4 +178,19 @@ class TwoYearTechHistoryDepartmentData extends Model
     {
         return $this->hasMany('App\TwoYearTechDepartmentEditorPermission', 'dept_id', 'id');
     }
+
+    public function reviewer()
+    {
+        return $this->belongsTo('App\User', 'review_by', 'username');
+    }
+
+    public function creator()
+    {
+        return $this->belongsTo('App\User', 'created_by', 'username');
+    }
+
+    public function confirmed()
+    {
+        return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
+    }
 }
