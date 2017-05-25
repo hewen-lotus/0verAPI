@@ -25,6 +25,8 @@ use Carbon\Carbon;
  * @property string $updated_by 資料最後更新者
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\SchoolData $school
+ * @property-read \App\SystemType $type
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereConfirmedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereConfirmedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereCreatedAt($value)
@@ -41,8 +43,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereUpdatedBy($value)
  * @mixin \Eloquent
- * @property-read \App\SchoolData $school
- * @property-read \App\SystemType $type
  */
 class SystemData extends Model
 {

@@ -16,6 +16,7 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemData[] $data
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereDeletedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereEngTitle($value)
@@ -23,7 +24,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereTitle($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemData[] $data
  */
 class SystemType extends Model
 {

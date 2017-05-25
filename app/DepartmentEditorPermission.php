@@ -15,7 +15,7 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
- * @property-read \App\DepartmentData $department
+ * @property-read \App\DepartmentHistoryData $department
  * @property-read \App\User $user
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentEditorPermission whereDeletedAt($value)

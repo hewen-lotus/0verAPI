@@ -19,6 +19,7 @@ use Carbon\Carbon;
  * @property string $updated_by
  * @property \Carbon\Carbon $deleted_at
  * @property string $deleted_by
+ * @property-read mixed $has_banned
  * @property-read \App\User $user
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereCreatedBy($value)
@@ -30,7 +31,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUsername($value)
  * @mixin \Eloquent
- * @property-read mixed $has_banned
  */
 class Admin extends Model
 {

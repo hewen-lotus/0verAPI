@@ -26,6 +26,7 @@ use Carbon\Carbon;
  * @property string $deleted_by
  * @property string $remember_token
  * @property-read \App\Admin $admin
+ * @property-read mixed $has_banned
  * @property-read \Illuminate\Notifications\DatabaseNotificationCollection|\Illuminate\Notifications\DatabaseNotification[] $notifications
  * @property-read \App\SchoolEditor $school_editor
  * @property-read \App\SchoolReviewer $school_reviewer
@@ -44,7 +45,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\User whereUsername($value)
  * @mixin \Eloquent
- * @property-read mixed $has_banned
  */
 class User extends Authenticatable
 {

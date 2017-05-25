@@ -8,8 +8,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 use Carbon\Carbon;
 
 /**
- * App\TwoYearTechDepartmentData
+ * App\TwoYearTechHistoryDepartmentData
  *
+ * @property int $history_id
  * @property string $id 系所代碼（系統按規則產生）
  * @property string $school_code 學校代碼
  * @property string $title 系所名稱
@@ -45,78 +46,74 @@ use Carbon\Carbon;
  * @property bool $has_eng_taught 全英文授課
  * @property bool $has_disabilities 是否招收身障學生
  * @property bool $has_BuHweiHwaWen 是否招收不具華文基礎學生
- * @property int $main_group 主要隸屬學群代碼
- * @property int $sub_group 次要隸屬學群代碼
- * @property int $evaluation 系所評鑑等級
- * @property string $confirmed_by 資料由哪位海聯人員確認匯入的
- * @property string $confirmed_at 資料確認匯入的時間
- * @property \Carbon\Carbon $created_at
- * @property string $updated_by 資料最後更新者
- * @property \Carbon\Carbon $updated_at
- * @property \Carbon\Carbon $deleted_at
- * @property int $history_id 從哪一筆歷史紀錄匯入的
- * @property-read \App\SchoolData $school
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereAdmissionPlacementRatifyQuota($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereAdmissionSelectionQuota($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereAdmissionSelectionRatifyQuota($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereApprovalDocOfSpecialClass($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereApproveNoOfSpecialClass($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereBirthLimitAfter($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereBirthLimitBefore($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereConfirmedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereConfirmedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereCreatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereDeletedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereDescription($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngDescription($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngMemo($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngReviewFeeDetail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngTitle($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEngUrl($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereEvaluation($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereGenderLimit($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasBirthLimit($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasBuHweiHwaWen($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasDisabilities($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasEngTaught($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasForeignSpecialClass($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasReviewFee($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasSelfEnrollment($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHasSpecialClass($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereHistoryId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereId($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereLastYearPersonalApplyAmount($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereLastYearPersonalApplyOffer($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereMainGroup($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereMemo($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereRank($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereReviewFeeDetail($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSchoolCode($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSelfEnrollmentQuota($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSelfEnrollmentRatifyQuota($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSortOrder($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSpecialDeptType($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereSubGroup($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereTitle($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereUpdatedAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereUpdatedBy($value)
- * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereUrl($value)
- * @mixin \Eloquent
  * @property string $ip_address 按下送出的人的IP
  * @property string $info_status 資料狀態（editing|waiting|returned|confirmed
  * @property string $quota_status 名額狀態（editing|waiting|returned|confirmed
+ * @property int $main_group 主要隸屬學群代碼
+ * @property int $sub_group 次要隸屬學群代碼
+ * @property int $evaluation 系所評鑑等級
  * @property string $review_memo 海聯審閱備註
  * @property string $review_by 海聯審閱人員
  * @property string $review_at 海聯審閱的時間點
  * @property string $created_by 此歷史紀錄建立者
+ * @property \Carbon\Carbon $created_at
+ * @property \Carbon\Carbon $updated_at
+ * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\SchoolData $confirmed
+ * @property-read \App\User $creator
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $editor_permission
+ * @property-read \App\User $reviewer
+ * @property-read \App\SchoolData $school
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereAdmissionPlacementRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereAdmissionSelectionQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereAdmissionSelectionRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereApprovalDocOfSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereApproveNoOfSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereBirthLimitAfter($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereBirthLimitBefore($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereEngDescription($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereEngMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereEngReviewFeeDetail($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereEngTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereEngUrl($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereEvaluation($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereGenderLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasBirthLimit($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasBuHweiHwaWen($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasDisabilities($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasEngTaught($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasForeignSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasReviewFee($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasSelfEnrollment($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasSpecialClass($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHistoryId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereInfoStatus($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereLastYearPersonalApplyAmount($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereLastYearPersonalApplyOffer($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereMainGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereMemo($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereQuotaStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereRank($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewFeeDetail($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereSchoolCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereSelfEnrollmentQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereSelfEnrollmentRatifyQuota($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereSortOrder($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereSpecialDeptType($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereSubGroup($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereTitle($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereUrl($value)
+ * @mixin \Eloquent
  */
 class TwoYearTechHistoryDepartmentData extends Model
 {

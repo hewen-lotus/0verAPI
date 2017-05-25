@@ -48,8 +48,9 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @property-read \App\SchoolData $confirmed
  * @property-read \App\User $creator
- * @property-read \App\Admin $reviewer
+ * @property-read \App\User $reviewer
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereAction($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereAddress($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereApprovalDocOfSelfEnrollment($value)
@@ -89,7 +90,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereUrl($value)
  * @mixin \Eloquent
- * @property-read \App\SchoolData $confirmed
  */
 class SchoolHistoryData extends Model
 {

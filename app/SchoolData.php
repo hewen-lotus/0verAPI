@@ -45,8 +45,10 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $deleted_at
  * @property int $history_id 從哪一筆歷史紀錄匯入的
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentData[] $departments
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentData[] $graduate_department
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentData[] $two_year_tech_department
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentData[] $graduate_departments
+ * @property-read \App\SchoolHistoryData $history
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemData[] $systems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentData[] $two_year_tech_departments
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereAddress($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereApprovalDocOfSelfEnrollment($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereApprovalNoOfSelfEnrollment($value)
@@ -82,10 +84,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereUrl($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentData[] $graduate_departments
- * @property-read \App\SchoolHistoryData $history
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemData[] $systems
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentData[] $two_year_tech_departments
  */
 class SchoolData extends Model
 {

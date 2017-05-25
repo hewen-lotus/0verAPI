@@ -30,13 +30,14 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $created_at
  * @property \Carbon\Carbon $updated_at
  * @property \Carbon\Carbon $deleted_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentHistoryData[] $bachelor_departments
  * @property-read \App\SystemData $confirmed
  * @property-read \App\User $creator
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentData[] $departments
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentData[] $graduate_departments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $master_departments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $phd_departments
  * @property-read \App\User $reviewer
  * @property-read \App\SchoolData $school
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentData[] $two_year_tech_departments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechHistoryDepartmentData[] $two_year_tech_departments
  * @property-read \App\SystemType $type
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereAction($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereCreatedAt($value)
@@ -59,8 +60,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereTypeId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereUpdatedAt($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $master_departments
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $phd_departments
  */
 class SystemHistoryData extends Model
 {

@@ -21,9 +21,12 @@ use Carbon\Carbon;
  * @property \Carbon\Carbon $deleted_at
  * @property string $deleted_by
  * @property string $school_code 該使用者所屬學校代碼
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $department_permissions
  * @property-read mixed $has_banned
- * @property-read \App\User $user
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $graduate_department_permissions
  * @property-read \App\SchoolData $school
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $two_year_tech_department_permissions
+ * @property-read \App\User $user
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereCreatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereCreatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereDeletedAt($value)
@@ -36,12 +39,6 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUsername($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $department_permission
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $graduate_department_permission
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $two_year_tech_department_permission
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $department_permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $graduate_department_permissions
- * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $two_year_tech_department_permissions
  */
 class SchoolEditor extends Model
 {
