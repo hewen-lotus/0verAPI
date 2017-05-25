@@ -85,6 +85,7 @@ return [
     'unique'               => 'The :attribute has already been taken.',
     'uploaded'             => 'The :attribute failed to upload.',
     'url'                  => 'The :attribute format is invalid.',
+    'if_reason_required'   => '若 :other 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小， :attribute 為必填。',
 
     /*
     |--------------------------------------------------------------------------

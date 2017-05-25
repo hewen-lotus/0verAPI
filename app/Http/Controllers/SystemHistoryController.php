@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use function foo\func;
 use Illuminate\Http\Request;
 
 use Auth;
 use Validator;
+use Illuminate\Validation\Rule;
 
 use App\SystemHistoryData;
+use App\DepartmentHistoryData;
 
 class SystemHistoryController extends Controller
 {
@@ -330,10 +331,10 @@ class SystemHistoryController extends Controller
                 'eng_description' => 'required|string' //學制英文敘述
             );
 
-            // 設定資料驗證器
+            // 驗證輸入資料
             $validator = Validator::make($request->all(), $validationRules);
 
-            // 驗證輸入資料
+            // 輸入資料驗證沒過
             if ($validator->fails()) {
                 $messages = $validator->errors()->all();
                 return response()->json(compact('messages'), 400);
@@ -403,29 +404,40 @@ class SystemHistoryController extends Controller
                 $quotaStatus = 'editing';
             }
 
+            if ($system_id == 1) { // 學士學制
+                $historyDepartmentData = DepartmentHistoryData::select()
+                    ->where('school_code', '=', $school_id)
+                    ->latest()
+                    ->first();
+            }
+
             // 設定資料驗證欄位
             $validationRules = [
                 'action' => 'required|in:save,commit|string', //動作
                 'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
                 'departments.*.id' => [
                     'required|string',
-                    Rule::exists('department_history_data', 'id')->where(function ($query) use ($school_code) {
-                        $query->where('school_code', $school_code);
+                    Rule::exists('department_history_data', 'id')->where(function ($query) use ($school_id) {
+                        $query->where('school_code', $school_id);
                     })
                 ],
-                'departments.*.has_self_enrollment' => [
-                    'required|boolean',
-                    Rule::exists('school_history_data', 'has_self_enrollment')->where(function ($query) use ($school_code) {
-                        $query->where('school_code', $school_code);
-                    })
-                ],
-                'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|boolean',
+                'departments.*.has_self_enrollment' => 'required|boolean',
+                'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|integer',
                 'departments.*.admission_selection_quota' => 'required|integer',
-//                TODO 若 admission_placement_quota 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小，需要填 decrease_reason_of_admission_placement
-//                'departments.*.admission_placement_quota' => [
-//                    'required|min:不會了啦|integer',
-//                ]
+                //(好難，但是做好了 QQ) TODO 若 admission_placement_quota 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小，需要填 decrease_reason_of_admission_placement
+                'departments.*.admission_placement_quota' => 'required|integer',
+                'departments.*.decrease_reason_of_admission_placement' =>
+                    'if_reason_required:admission_placement_quota,'.$historyDepartmentData->last_year_admission_placement_quota.','.$historyDepartmentData->last_year_admission_placement_amount.'|string',
             ];
+
+            // 驗證輸入資料
+            $validator = Validator::make($request->all(), $validationRules);
+
+            // 輸入資料驗證沒過
+            if ($validator->fails()) {
+                $messages = $validator->errors()->all();
+                return response()->json(compact('messages'), 400);
+            }
 
             // 整理輸入資料
             $InsertData = array(
@@ -442,15 +454,6 @@ class SystemHistoryController extends Controller
                 'action' => $request->input('action'),
                 'last_year_surplus_admission_quota' => $historyData->last_year_surplus_admission_quota
             );
-
-            // 設定資料驗證器
-            $validator = Validator::make($request->all(), $validationRules);
-
-            // 驗證輸入資料
-            if ($validator->fails()) {
-                $messages = $validator->errors()->all();
-                return response()->json(compact('messages'), 400);
-            }
 
             // 二技班無 `last_year_surplus_admission_quota`（參照學士班）
             if ($system_id != 2) {
