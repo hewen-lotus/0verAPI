@@ -31,6 +31,8 @@ class DatabaseSeeder extends Seeder
             $this->call(ApplicationDocumentTypesTableSeeder::class);
             $this->call(DepartmentDataTableSeeder::class);
             $this->call(DepartmentHistoryDataTableSeeder::class);
+            $this->call(GraduateDepartmentDataTableSeeder::class);
+            $this->call(GraduateDepartmentHistoryDataTableSeeder::class);
         }
     }
 }
