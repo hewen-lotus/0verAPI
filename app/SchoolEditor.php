@@ -7,6 +7,39 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 use Carbon\Carbon;
 
+/**
+ * App\SchoolEditor
+ *
+ * @property string $username
+ * @property string $organization 該使用者所屬單位名稱
+ * @property bool $has_admin
+ * @property string $last_action_at 上次動作時間
+ * @property \Carbon\Carbon $created_at
+ * @property string $created_by
+ * @property \Carbon\Carbon $updated_at
+ * @property string $updated_by
+ * @property \Carbon\Carbon $deleted_at
+ * @property string $deleted_by
+ * @property string $school_code 該使用者所屬學校代碼
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $department_permissions
+ * @property-read mixed $has_banned
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $graduate_department_permissions
+ * @property-read \App\SchoolData $school
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $two_year_tech_department_permissions
+ * @property-read \App\User $user
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereCreatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereDeletedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereDeletedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereHasAdmin($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereLastActionAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereOrganization($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereSchoolCode($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUpdatedAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUpdatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUsername($value)
+ * @mixin \Eloquent
+ */
 class SchoolEditor extends Model
 {
     use SoftDeletes;
