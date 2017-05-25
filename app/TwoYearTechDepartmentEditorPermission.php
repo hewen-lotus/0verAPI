@@ -64,6 +64,6 @@ class TwoYearTechDepartmentEditorPermission extends Model
 
     public function department()
     {
-        return $this->belongsTo('App\TwoYearTechDepartmentData', 'dept_id', 'id');
+        return $this->belongsTo('App\TwoYearTechHistoryDepartmentData', 'dept_id', 'id');
     }
 }

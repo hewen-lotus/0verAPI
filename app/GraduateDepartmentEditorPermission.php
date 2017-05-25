@@ -63,6 +63,6 @@ class GraduateDepartmentEditorPermission extends Model
 
     public function department()
     {
-        return $this->belongsTo('App\GraduateDepartmentData', 'dept_id', 'id');
+        return $this->belongsTo('App\GraduateDepartmentHistoryData', 'dept_id', 'id');
     }
 }

@@ -58,6 +58,13 @@ class SystemHistoryController extends Controller
                 'review_at', //海聯回覆的時間點
             ]
         ]);
+
+        $this->departmentsWithCollection = collect([
+            1 => 'departments',
+            2 => 'two_year_tech_departments',
+            3 => 'master_departments',
+            4 => 'phd_departments'
+        ]);
     }
 
     /**
@@ -86,32 +93,30 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 404);
             }
 
-            // TODO 要包含 $user 擁有權限的系所列表
+            // 要求包含 $user 擁有權限的系所列表
+            if ($user->school_editor->has_admin) {
+                $departmentsWith = [$this->departmentsWithCollection->get($system_id)];
+            } else {
+                $departmentsWith = [
+                    $this->departmentsWithCollection->get($system_id) => function ($query) {
+                        $query->whereHas('editor_permission', function ($query1) {
+                            $query1->where('username', '=', Auth::id());
+                        });
+                    }
+                ];
+            }
 
             // 依照要求拿取資料
             $data = SystemHistoryData::select($this->columnsCollection->get('info'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
-                ->with([
-                    'type',
-                    'creator.school_editor',
-                    'reviewer.admin',
-                    'departments' => function ($query) {
-                        $query->whereHas('editor_permission', function ($query1) {
-                            $query1->where('username', '=', Auth::id());
-                        });
-                    },
-                    'graduate_departments' => function ($query) {
-                        $query->whereHas('editor_permission', function ($query1) {
-                            $query1->where('username', '=', Auth::id());
-                        });
-                    },
-                    'two_year_tech_departments' => function ($query) {
-                        $query->whereHas('editor_permission', function ($query1) {
-                            $query1->where('username', '=', Auth::id());
-                        });
-                    }
-                ])
+                ->with(
+                    [
+                        'type',
+                        'creator.school_editor',
+                        'reviewer.admin'
+                    ] + $departmentsWith
+                )
                 ->latest()
                 ->first();
 
@@ -139,7 +144,7 @@ class SystemHistoryController extends Controller
             $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
-                ->with('type', 'creator.school_editor', 'reviewer.admin', 'departments', 'graduate_departments', 'two_year_tech_departments')
+                ->with('type', 'creator.school_editor', 'reviewer.admin', $this->departmentsWithCollection->get($system_id) )
                 ->latest()
                 ->first();
 

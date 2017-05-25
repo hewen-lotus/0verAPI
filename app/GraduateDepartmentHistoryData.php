@@ -100,23 +100,43 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property int $system_id 這是碩士班還是博士班 QQ
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $info_status 資料狀態（editing|waiting|returned|confirmed
+ * @property string $quota_status 名額狀態（editing|waiting|returned|confirmed
+ * @property string $review_memo 海聯審閱備註
+ * @property string $review_by 海聯審閱人員
+ * @property string $review_at 海聯審閱的時間點
+ * @property string $created_by 此歷史紀錄建立者
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentEditorPermission[] $editor_permission
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereInfoStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereQuotaStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereReviewAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereReviewBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereReviewMemo($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereSystemId($value)
  */
-class GraduateDepartmentData extends Model
+class GraduateDepartmentHistoryData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'graduate_department_data';
+    protected $table = 'graduate_department_history_data';
 
     public $incrementing = false;
+
+    protected $dates = ['deleted_at'];
 
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
+        'history_id',
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
         'title', //系所名稱
         'eng_title', //系所英文名稱
-        'system', //這是碩士班還是博士班 QQ
+        'system_id', //這是碩士班還是博士班 QQ
         'description', //選系說明
         'eng_description', //選系英文說明
         'memo', //給海聯的備註
@@ -132,10 +152,10 @@ class GraduateDepartmentData extends Model
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
         'gender_limit', //性別限制
-        'admission_placement_ratify_quota', //教育部核定聯合分發名額
-        'admission_selection_ratify_quota', //教育部核定個人申請名額
-        'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
-        'rank', //志願排名
+        //'admission_placement_ratify_quota', //教育部核定聯合分發名額
+        //'admission_selection_ratify_quota', //教育部核定個人申請名額
+        //'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
+        //'rank', //志願排名
         'sort_order', //輸出排序
         'has_birth_limit', //是否限制出生日期
         'birth_limit_after', //限…之後出生
@@ -148,7 +168,6 @@ class GraduateDepartmentData extends Model
         'evaluation', //系所評鑑等級
     ];
 
-    protected $dates = ['deleted_at'];
 
     public function school()
     {
@@ -159,4 +178,6 @@ class GraduateDepartmentData extends Model
     {
         return $this->hasMany('App\GraduateDepartmentEditorPermission', 'dept_id', 'id');
     }
+
 }
+

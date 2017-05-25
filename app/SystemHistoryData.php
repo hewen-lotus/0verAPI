@@ -59,6 +59,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereTypeId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $master_departments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $phd_departments
  */
 class SystemHistoryData extends Model
 {
@@ -123,17 +125,24 @@ class SystemHistoryData extends Model
 
     public function departments()
     {
-        return $this->hasMany('App\DepartmentData', 'school_code', 'school_code');
+        return $this->hasMany('App\DepartmentHistoryData', 'school_code', 'school_code');
     }
 
-    public function graduate_departments()
+    public function master_departments()
     {
-        return $this->hasMany('App\GraduateDepartmentData', 'school_code', 'school_code');
+        return $this->hasMany('App\GraduateDepartmentHistoryData', 'school_code', 'school_code')
+            ->where('system_id', '=', 3);
+    }
+
+    public function phd_departments()
+    {
+        return $this->hasMany('App\GraduateDepartmentHistoryData', 'school_code', 'school_code')
+            ->where('system_id', '=', 4);
     }
 
     public function two_year_tech_departments()
     {
-        return $this->hasMany('App\TwoYearTechDepartmentData', 'school_code', 'school_code');
+        return $this->hasMany('App\TwoYearTechHistoryDepartmentData', 'school_code', 'school_code');
     }
 
     public function type()

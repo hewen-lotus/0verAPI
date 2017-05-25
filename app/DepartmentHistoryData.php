@@ -106,19 +106,39 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property string $action
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $info_status 資料狀態（editing|waiting|returned|confirmed
+ * @property string $quota_status 名額狀態（editing|waiting|returned|confirmed
+ * @property string $review_memo 海聯審閱備註
+ * @property string $review_by 海聯審閱人員
+ * @property string $review_at 海聯審閱的時間點
+ * @property string $created_by 此歷史紀錄建立者
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentEditorPermission[] $editor_permission
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereAction($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereInfoStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereQuotaStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereReviewAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereReviewBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereReviewMemo($value)
  */
-class DepartmentData extends Model
+class DepartmentHistoryData extends Model
 {
     use SoftDeletes;
 
-    protected $table = 'department_data';
+    protected $table = 'department_history_data';
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $dates = ['deleted_at'];
+
     protected $fillable = [
+        'history_id',
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
-        'card_code', //讀卡代碼
+        //'card_code', //讀卡代碼
         'title', //系所名稱
         'eng_title', //系所英文名稱
         'description', //選系說明
@@ -138,10 +158,10 @@ class DepartmentData extends Model
         'self_enrollment_quota', //自招名額
         'has_special_class', //是否招收僑生專班
         'has_foreign_special_class', //是否招收外生專班
-        'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
+        //'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
         'gender_limit', //性別限制
-        'admission_placement_ratify_quota', //教育部核定聯合分發名額
-        'admission_selection_ratify_quota', //教育部核定個人申請名額
+        //'admission_placement_ratify_quota', //教育部核定聯合分發名額
+        //'admission_selection_ratify_quota', //教育部核定個人申請名額
         'rank', //志願排名
         'sort_order', //輸出排序
         'has_birth_limit', //是否限制出生日期
@@ -155,7 +175,6 @@ class DepartmentData extends Model
         'evaluation', //系所評鑑等級
     ];
 
-    protected $dates = ['deleted_at'];
 
     public function school()
     {

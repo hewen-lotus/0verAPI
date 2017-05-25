@@ -102,18 +102,34 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property string $ip_address 按下送出的人的IP
+ * @property string $info_status 資料狀態（editing|waiting|returned|confirmed
+ * @property string $quota_status 名額狀態（editing|waiting|returned|confirmed
+ * @property string $review_memo 海聯審閱備註
+ * @property string $review_by 海聯審閱人員
+ * @property string $review_at 海聯審閱的時間點
+ * @property string $created_by 此歷史紀錄建立者
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentEditorPermission[] $editor_permission
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereCreatedBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereInfoStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereIpAddress($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereQuotaStatus($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewBy($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereReviewMemo($value)
  */
-class TwoYearTechDepartmentData extends Model
+class TwoYearTechHistoryDepartmentData extends Model
 {
     use SoftDeletes;
 
     public $incrementing = false;
 
-    protected $table = 'two_year_tech_department_data';
+    protected $table = 'two_year_tech_department_history_data';
 
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
+        'history_id',
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
         'title', //系所名稱
@@ -135,10 +151,10 @@ class TwoYearTechDepartmentData extends Model
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
         'gender_limit', //性別限制
-        'admission_placement_ratify_quota', //教育部核定聯合分發名額
-        'admission_selection_ratify_quota', //教育部核定個人申請名額
-        'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
-        'rank', //志願排名
+        //'admission_placement_ratify_quota', //教育部核定聯合分發名額
+        //'admission_selection_ratify_quota', //教育部核定個人申請名額
+        //'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
+        //'rank', //志願排名
         'sort_order', //輸出排序
         'has_birth_limit', //是否限制出生日期
         'birth_limit_after', //限…之後出生
