@@ -33,6 +33,8 @@ class DatabaseSeeder extends Seeder
             $this->call(DepartmentHistoryDataTableSeeder::class);
             $this->call(GraduateDepartmentDataTableSeeder::class);
             $this->call(GraduateDepartmentHistoryDataTableSeeder::class);
+            $this->call(TechDepartmentDataTableSeeder::class);
+            $this->call(TechDepartmentHistoryDataTableSeeder::class);
         }
     }
 }
