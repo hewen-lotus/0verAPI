@@ -18,11 +18,20 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
-        Validator::extend('if_reason_required', function ($attribute, $value, $parameters, $validator) {
-            // 若 admission_placement_quota 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小，需要填 decrease_reason_of_admission_placement
-            $minimalvalue = min($parameters[1], $parameters[2]);
+        Validator::extend('if_decrease_reason_required', function ($attribute, $value, $parameters, $validator) {
+            $dept_id = $parameters[0];
 
-            if ($parameters[0] > $minimalvalue) {
+            $admission_placement_quota = $parameters[1];
+
+            $departmentHistoryData = \App\DepartmentHistoryData::select()
+                ->where('id', '=', $dept_id)
+                ->latest()
+                ->first();
+
+            // 若 admission_placement_quota 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小，需要填 decrease_reason_of_admission_placement
+            $minimalvalue = min($departmentHistoryData->last_year_admission_placement_quota, $departmentHistoryData->last_year_admission_placement_amount);
+
+            if ($admission_placement_quota > $minimalvalue) {
                 return true;
             } else {
                 return !empty($value);
