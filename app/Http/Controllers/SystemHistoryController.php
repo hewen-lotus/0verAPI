@@ -414,12 +414,6 @@ class SystemHistoryController extends Controller
                 ->first();
 
             if ($system_id == 1) { // 學士學制
-                // 取得系所資料歷史版本 TODO 這樣只有拿到一筆系所資料，應該要
-                $departmentHistoryData = DepartmentHistoryData::select()
-                    ->where('school_code', '=', $school_id)
-                    ->latest()
-                    ->first();
-
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
