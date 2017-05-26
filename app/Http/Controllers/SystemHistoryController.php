@@ -316,12 +316,24 @@ class SystemHistoryController extends Controller
                 ->latest()
                 ->first();
 
-            // TODO 要包含所有系所名額
-            // TODO 要檢查名額總量（二技與學士班共用）
-            // TODO 要檢查學校有無開放自招
-            // TODO 要檢查系所有無開放自招（二技很複雜）
-            // TODO 要可以控制系所的自招與否？（二技很複雜）
             // TODO 要檢查學士班聯合分發總量是否低於去年 (Done by richegg @ line 434)
+
+            // TODO 大前提：校有 has_self_enrollment，系才可自招
+
+            // TODO 二技前提： (屍體 by yuer @ line 514)
+            // 有 has_RiJian => 可個人申請可自招
+            // 沒 has_RiJian，但有 has_special_class => 可個人申請不可自招
+            // 沒 has_RiJian，也沒 has_special_class => 都不行
+
+            // TODO 驗證名額：
+            // 若是碩博，則 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
+            // 必須讓該學制所有系所的 admission_selection_quota + self_enrollment_quota <= 可招生總量
+
+            // 若是學士，則 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
+            // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
+
+            // 若是二技，則 可招生總量為 學士班的 (last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota)
+            // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
 
             $historyQuotaStatus = $historyData->quota_status;
 
@@ -584,6 +596,10 @@ class SystemHistoryController extends Controller
             ])
             ->latest()
             ->first();
+
+        // TODO 要拿到該校的 has_enrollment
+        // TODO 若為學士或二技，要拿到另一個學制的自招額度總和跟個人申請總和
+        // TODO 若為二技，則 last_year_surplus_admission_quota、last_year_admission_amount、ratify_expanded_quota 要從學士的資料拿
 
         if ($data) {
             // 系所資料彙整至同一欄位
