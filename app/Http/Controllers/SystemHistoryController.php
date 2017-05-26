@@ -7,6 +7,7 @@ use App\TwoYearTechHistoryDepartmentData;
 use App\GraduateDepartmentHistoryData;
 use Illuminate\Http\Request;
 
+use DB;
 use Auth;
 use Validator;
 use Illuminate\Validation\Rule;
@@ -185,49 +186,7 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 404);
             }
 
-            // 擷取資料，並依照學制取得其下所有 $user 擁有權限的系所的 info
-            $departmentKey = $this->departmentsKeyCollection->get($system_id);
-
-            if ($user->school_editor->has_admin) {
-                $departmentsWith = [
-                    $departmentKey => function($query) {
-                        $query->select($this->departmentInfoColumns)->with('creator.school_editor');
-                    }
-                ];
-            } else {
-                $departmentsWith = [
-                    $departmentKey => function ($query) {
-                        $query->select($this->departmentInfoColumns)->with('creator.school_editor')->whereHas('editor_permission', function ($query1) {
-                            $query1->where('username', '=', Auth::id());
-                        });
-                    }
-                ];
-            }
-
-            // 依照要求拿取資料
-            $data = SystemHistoryData::select($this->columnsCollection->get('info'))
-                ->where('school_code', '=', $school_id)
-                ->where('type_id', '=', $system_id)
-                ->with(
-                    [
-                        'type',
-                        'creator.school_editor',
-                        'reviewer.admin'
-                    ] + $departmentsWith
-                )
-                ->latest()
-                ->first();
-
-            if ($data) {
-                // 系所資料彙整至同一欄位
-                $data->departments = $data->$departmentKey;
-                unset($data->$departmentKey);
-
-                return response()->json($data, 200);
-            } else {
-                $messages = array('System Data Not Found!');
-                return response()->json(compact('messages'), 404);
-            }
+            return $this->return_info($school_id, $system_id);
         } else if ($user->can('view_quota', [SystemHistoryData::class, $school_id, $dataType, $histories_id])) {
             $school_id = $user->school_editor->school_code;
 
@@ -240,34 +199,7 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 404);
             }
 
-            // 擷取資料，並依照學制取得其下所有系所名額資訊
-            $departmentKey = $this->departmentsKeyCollection->get($system_id);
-            $departmentQuotaColumns = $this->departmentQuotaColumnsCollection->get($system_id);
-
-            $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
-                ->where('school_code', '=', $school_id)
-                ->where('type_id', '=', $system_id)
-                ->with([
-                    'type',
-                    'creator.school_editor',
-                    'reviewer.admin',
-                    $departmentKey => function($query) use ($departmentQuotaColumns) {
-                        $query->select($departmentQuotaColumns)->with('creator.school_editor');
-                    }
-                ])
-                ->latest()
-                ->first();
-
-            if ($data) {
-                // 系所資料彙整至同一欄位
-                $data->departments = $data->$departmentKey;
-                unset($data->$departmentKey);
-
-                return response()->json($data, 200);
-            } else {
-                $messages = array('System Data Not Found!');
-                return response()->json(compact('messages'), 404);
-            }
+            return $this->return_quota($school_id, $system_id);
         } else {
             $messages = array('User don\'t have permission to access');
             return response()->json(compact('messages'), 403);
@@ -365,8 +297,7 @@ class SystemHistoryController extends Controller
 
             // TODO 回傳結果要包含系所檢表 like getInfoDataWithDepartments()
 
-            // 回傳剛建立的資料
-            return response()->json($this->getDataById($resultData->history_id, 'info'), 201);
+            return $this->return_info($school_id, $system_id, 201);
         } else if ($user->can('create_quota', [SystemHistoryData::class, $school_id, $dataType])) {
             $school_id = $user->school_editor->school_code;
 
@@ -390,7 +321,7 @@ class SystemHistoryController extends Controller
             // TODO 要檢查學校有無開放自招
             // TODO 要檢查系所有無開放自招（二技很複雜）
             // TODO 要可以控制系所的自招與否？（二技很複雜）
-            // TODO 要檢查學士班聯合分發總量是否低於去年
+            // TODO 要檢查學士班聯合分發總量是否低於去年 (Done by richegg @ line 434)
 
             $historyQuotaStatus = $historyData->quota_status;
 
@@ -433,7 +364,6 @@ class SystemHistoryController extends Controller
                     'departments.*.decrease_reason_of_admission_placement' =>
                         'if_decrease_reason_required:id,admission_placement_quota|string',
                 ];
-
             } else if ($system_id == 2) {
                 // 設定資料驗證欄位
                 $validationRules = [
@@ -442,7 +372,7 @@ class SystemHistoryController extends Controller
                     'departments.*.id' => [
                         'required',
                         'string',
-                        Rule::exists('two_year_tech_department_history_data', 'id')->where(function ($query) use ($school_id) {
+                        Rule::exists('two_year_tech_department_data', 'id')->where(function ($query) use ($school_id) {
                             $query->where('school_code', $school_id);
                         })
                     ],
@@ -458,7 +388,7 @@ class SystemHistoryController extends Controller
                     'departments.*.id' => [
                         'required',
                         'string',
-                        Rule::exists('graduate_department_history_data', 'id')->where(function ($query) use ($school_id) {
+                        Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_id) {
                             $query->where('school_code', $school_id);
                         })
                     ],
@@ -477,163 +407,242 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 400);
             }
 
-            // 整理輸入資料
-            $InsertData = [
-                'school_code' => $school_id,
-                'type_id' => $system_id,
-                'quota_status' => $quotaStatus,
-                'created_by' => $user->username,
-                'ip_address' => $request->ip(),
-                // 不可修改的資料承襲上次版本內容
-                'info_status' => $historyData->info_status,
-                'description' => $historyData->description,
-                'eng_description' => $historyData->eng_description,
-                'last_year_admission_amount' => $historyData->last_year_admission_amount,
-                'ratify_expanded_quota' => $historyData->ratify_expanded_quota,
-                // 可修改的資料
-                'action' => $request->input('action')
-            ];
+            $newSystemHistoryData = DB::transaction(function () use ($request, $system_id, $school_id, $user, $quotaStatus, $schoolHistoryData, $historyData){
+                // 整理輸入資料
+                $InsertData = [
+                    'school_code' => $school_id,
+                    'type_id' => $system_id,
+                    'quota_status' => $quotaStatus,
+                    'created_by' => $user->username,
+                    'ip_address' => $request->ip(),
+                    // 不可修改的資料承襲上次版本內容
+                    'info_status' => $historyData->info_status,
+                    'description' => $historyData->description,
+                    'eng_description' => $historyData->eng_description,
+                    'last_year_admission_amount' => $historyData->last_year_admission_amount,
+                    'ratify_expanded_quota' => $historyData->ratify_expanded_quota,
+                    // 可修改的資料
+                    'action' => $request->input('action')
+                ];
 
-            // 二技班無 `last_year_surplus_admission_quota`（參照學士班）
-            if ($system_id != 2) {
-                $InsertData += array(
-                    'last_year_surplus_admission_quota' => $request->input('last_year_surplus_admission_quota')
-                );
-            }
+                // 二技班無 `last_year_surplus_admission_quota`（參照學士班）
+                if ($system_id != 2) {
+                    $InsertData += array(
+                        'last_year_surplus_admission_quota' => $request->input('last_year_surplus_admission_quota')
+                    );
+                }
 
-            // 整理系所輸入資料
-            foreach ($request->input('departments') as $department) {
-                // TODO 依照學制不同，將每個系所插入
-                if ($system_id == 1) {
-                    // 取得系所資料歷史版本 TODO 這樣只有拿到一筆系所資料，應該要
-                    $departmentHistoryData = DepartmentHistoryData::select()
-                        ->where('school_code', '=', $school_id)
-                        ->latest()
-                        ->first();
+                $newData = SystemHistoryData::create($InsertData);
 
-                    $departmentInsertData = [
-                        'id' => $departmentHistoryData->id,
-                        'school_code' => $departmentHistoryData->school_code,
-                        'sort_order' => $departmentHistoryData->sort_order,
-                        'title' => $departmentHistoryData->title,
-                        'eng_title' => $departmentHistoryData->eng_title,
-                        'has_special_class' => $departmentHistoryData->has_special_class,
-                        'created_by' => $user->username,
-                        'info_status' => $departmentHistoryData->info_status,
-                        'quota_status' => $quotaStatus,
-                        'last_year_surplus_admission_quota' => $department->last_year_surplus_admission_quota,
-                        'admission_selection_quota' => $department->admission_selection_quota,
-                        'admission_placement_quota' => $department->admission_placement_quota
-                    ];
+                // 整理系所輸入資料
+                foreach ($request->input('departments') as $department) {
+                    // TODO 依照學制不同，將每個系所插入
+                    if ($system_id == 1) {
+                        $departmentHistoryData = DepartmentHistoryData::select()
+                            ->where('school_code', '=', $school_id)
+                            ->where('id', '=', $department->id)
+                            ->latest()
+                            ->first();
 
-                    // 校有自招才可自招
-                    if ($schoolHistoryData->has_self_enrollment) {
-                        $departmentInsertData += array(
-                            'has_self_enrollment' => $department->has_self_enrollment,
-                            'self_enrollment_quota' => $department->self_enrollment_quota
-                        );
-                    }
+                        $departmentInsertData = [
+                            'id' => $departmentHistoryData->id,
+                            'school_code' => $departmentHistoryData->school_code,
+                            'sort_order' => $departmentHistoryData->sort_order,
+                            'title' => $departmentHistoryData->title,
+                            'eng_title' => $departmentHistoryData->eng_title,
+                            'has_special_class' => $departmentHistoryData->has_special_class,
+                            'created_by' => $user->username,
+                            'info_status' => $departmentHistoryData->info_status,
+                            'quota_status' => $quotaStatus,
+                            'last_year_surplus_admission_quota' => $department->last_year_surplus_admission_quota,
+                            'admission_selection_quota' => $department->admission_selection_quota,
+                            'admission_placement_quota' => $department->admission_placement_quota
+                        ];
 
-                    // 本年度分發名額需比去年分發的名額與實際錄取量都還小，就得填減招原因
-                    if ($department->admission_placement_quota < $departmentHistoryData->last_year_admission_placement_quota
-                        && $department->admission_placement_quota < $departmentHistoryData->last_year_admission_placement_amount) {
-                        $departmentInsertData += array(
-                            'decrease_reason_of_admission_placement' => $department->decrease_reason_of_admission_placement
-                        );
-                    }
-                } else if ($system_id == 2) {
-                    // 取得系所資料歷史版本
-                    $departmentHistoryData = TwoYearTechHistoryDepartmentData::select()
-                        ->where('school_code', '=', $school_id)
-                        ->latest()
-                        ->first();
-
-                    $departmentInsertData = [
-                        'id' => $departmentHistoryData->id,
-                        'school_code' => $departmentHistoryData->school_code,
-                        'sort_order' => $departmentHistoryData->sort_order,
-                        'title' => $departmentHistoryData->title,
-                        'eng_title' => $departmentHistoryData->eng_title,
-                        'has_special_class' => $departmentHistoryData->has_special_class,
-                        'has_RiJian' => $departmentHistoryData->has_RiJian,
-                        'created_by' => $user->username,
-                        'info_status' => $departmentHistoryData->info_status,
-                        'quota_status' => $quotaStatus
-                    ];
-
-                    // 校有自招才可自招
-                    if ($schoolHistoryData->has_self_enrollment) {
-                        // 有日間二技部，可自招可聯招
-                        if ($departmentHistoryData->has_RiJian) {
-                            $InsertData += [
-                                'admission_selection_quota' => $department->admission_selection_quota,
+                        // 校有自招才可自招
+                        if ($schoolHistoryData->has_self_enrollment) {
+                            $departmentInsertData += array(
                                 'has_self_enrollment' => $department->has_self_enrollment,
                                 'self_enrollment_quota' => $department->self_enrollment_quota
-                            ];
-                        } else {
-                            // 沒日間二技部，有開專班，可聯招
-                            if ($departmentHistoryData->has_special_class) {
-                                $InsertData += [
-                                    'admission_selection_quota' => $department->admission_selection_quota
+                            );
+                        }
+
+                        // 本年度分發名額需比去年分發的名額與實際錄取量都還小，就得填減招原因
+                        if ($department->admission_placement_quota < $departmentHistoryData->last_year_admission_placement_quota
+                            && $department->admission_placement_quota < $departmentHistoryData->last_year_admission_placement_amount
+                        ) {
+                            $departmentInsertData += array(
+                                'decrease_reason_of_admission_placement' => $department->decrease_reason_of_admission_placement
+                            );
+                        }
+
+                        DepartmentHistoryData::create($departmentInsertData);
+                    } else if ($system_id == 2) {
+                        // 取得系所資料歷史版本
+                        $departmentHistoryData = TwoYearTechHistoryDepartmentData::select()
+                            ->where('school_code', '=', $school_id)
+                            ->where('id', '=', $department->id)
+                            ->latest()
+                            ->first();
+
+                        $departmentInsertData = [
+                            'id' => $departmentHistoryData->id,
+                            'school_code' => $departmentHistoryData->school_code,
+                            'sort_order' => $departmentHistoryData->sort_order,
+                            'title' => $departmentHistoryData->title,
+                            'eng_title' => $departmentHistoryData->eng_title,
+                            'has_special_class' => $departmentHistoryData->has_special_class,
+                            'has_RiJian' => $departmentHistoryData->has_RiJian,
+                            'created_by' => $user->username,
+                            'info_status' => $departmentHistoryData->info_status,
+                            'quota_status' => $quotaStatus
+                        ];
+
+                        // 校有自招才可自招
+                        if ($schoolHistoryData->has_self_enrollment) {
+                            // 有日間二技部，可自招可聯招
+                            if ($departmentHistoryData->has_RiJian) {
+                                $departmentInsertData += [
+                                    'admission_selection_quota' => $department->admission_selection_quota,
+                                    'has_self_enrollment' => $department->has_self_enrollment,
+                                    'self_enrollment_quota' => $department->self_enrollment_quota
                                 ];
+                            } else {
+                                // 沒日間二技部，有開專班，可聯招
+                                if ($departmentHistoryData->has_special_class) {
+                                    $departmentInsertData += [
+                                        'admission_selection_quota' => $department->admission_selection_quota
+                                    ];
+                                }
                             }
                         }
-                    }
-                } else {
-                    // 碩博一樣
-                    // 取得系所資料歷史版本
-                    $departmentHistoryData = GraduateDepartmentHistoryData::select()
-                        ->where('school_code', '=', $school_id)
-                        ->where('system_id', '=', $system_id)
-                        ->latest()
-                        ->first();
 
-                    $departmentInsertData = [
-                        'id' => $departmentHistoryData->id,
-                        'school_code' => $departmentHistoryData->school_code,
-                        'system_id' => $system_id,
-                        'sort_order' => $departmentHistoryData->sort_order,
-                        'title' => $departmentHistoryData->title,
-                        'eng_title' => $departmentHistoryData->eng_title,
-                        'has_special_class' => $departmentHistoryData->has_special_class,
-                        'created_by' => $user->username,
-                        'info_status' => $departmentHistoryData->info_status,
-                        'quota_status' => $quotaStatus,
-                        'last_year_surplus_admission_quota' => $department->last_year_surplus_admission_quota,
-                        'admission_selection_quota' => $department->admission_selection_quota
-                    ];
+                        TwoYearTechHistoryDepartmentData::create($departmentInsertData);
+                    } else {
+                        // 碩博一樣
+                        // 取得系所資料歷史版本
+                        $departmentHistoryData = GraduateDepartmentHistoryData::select()
+                            ->where('school_code', '=', $school_id)
+                            ->where('id', '=', $department->id)
+                            ->where('system_id', '=', $system_id)
+                            ->latest()
+                            ->first();
 
-
-                    // 校有自招才可自招
-                    if ($schoolHistoryData->has_self_enrollment) {
-                        $departmentInsertData += [
-                            'has_self_enrollment' => $request->input('has_self_enrollment'),
-                            'self_enrollment_quota' => $request->input('self_enrollment_quota')
+                        $departmentInsertData = [
+                            'id' => $departmentHistoryData->id,
+                            'school_code' => $departmentHistoryData->school_code,
+                            'system_id' => $system_id,
+                            'sort_order' => $departmentHistoryData->sort_order,
+                            'title' => $departmentHistoryData->title,
+                            'eng_title' => $departmentHistoryData->eng_title,
+                            'has_special_class' => $departmentHistoryData->has_special_class,
+                            'created_by' => $user->username,
+                            'info_status' => $departmentHistoryData->info_status,
+                            'quota_status' => $quotaStatus,
+                            'last_year_surplus_admission_quota' => $department->last_year_surplus_admission_quota,
+                            'admission_selection_quota' => $department->admission_selection_quota
                         ];
+
+                        // 校有自招才可自招
+                        if ($schoolHistoryData->has_self_enrollment) {
+                            $departmentInsertData += [
+                                'has_self_enrollment' => $request->input('has_self_enrollment'),
+                                'self_enrollment_quota' => $request->input('self_enrollment_quota')
+                            ];
+                        }
+
+                        GraduateDepartmentHistoryData::create($departmentInsertData);
                     }
                 }
-            }
 
-            // TODO 學制資訊依不同學制寫入不同張表
-            $resultData = SystemHistoryData::create($InsertData);
+                return $newData;
+            });
 
-
-            // 回傳剛建立的資料
-            return response()->json($this->getDataById($resultData->history_id, 'quota'), 201);
+            return $this->return_quota($school_id, $system_id, 201);
         } else {
             $messages = array('User don\'t have permission to access');
             return response()->json(compact('messages'), 403);
         }
     }
 
-    public function getDataById($id, $dataType)
+    public function return_quota($school_id, $system_id, $status_code = 200)
     {
-        // TODO 若最新資料為 editing or returned，review_by, review_at, review_memo 需為最新一筆狀態為 returned 的內容
+        // 擷取資料，並依照學制取得其下所有系所名額資訊
+        $departmentKey = $this->departmentsKeyCollection->get($system_id);
+        $departmentQuotaColumns = $this->departmentQuotaColumnsCollection->get($system_id);
+
+        $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', $system_id)
+            ->with([
+                'type',
+                'creator.school_editor',
+                'reviewer.admin',
+                $departmentKey => function($query) use ($departmentQuotaColumns) {
+                    $query->select($departmentQuotaColumns)->with('creator.school_editor');
+                }
+            ])
+            ->latest()
+            ->first();
+
+        if ($data) {
+            // 系所資料彙整至同一欄位
+            $data->departments = $data->$departmentKey;
+            unset($data->$departmentKey);
+
+            return response()->json($data, $status_code);
+        } else {
+            $messages = array('System Data Not Found!');
+            return response()->json(compact('messages'), 404);
+        }
+    }
+
+    public function return_info($school_id, $system_id, $status_code = 200)
+    {
+        $user = Auth::user();
+
+        // 擷取資料，並依照學制取得其下所有 $user 擁有權限的系所的 info
+        $departmentKey = $this->departmentsKeyCollection->get($system_id);
+
+        if ($user->school_editor->has_admin) {
+            $departmentsWith = [
+                $departmentKey => function ($query) {
+                    $query->select($this->departmentInfoColumns)->with('creator.school_editor');
+                }
+            ];
+        } else {
+            $departmentsWith = [
+                $departmentKey => function ($query) {
+                    $query->select($this->departmentInfoColumns)->with('creator.school_editor')->whereHas('editor_permission', function ($query1) {
+                        $query1->where('username', '=', Auth::id());
+                    });
+                }
+            ];
+        }
 
         // 依照要求拿取資料
-        return SystemHistoryData::select($this->columnsCollection->get($dataType))
-            ->where('history_id', '=', $id)
-            ->with('creator.school_editor', 'reviewer.admin')
+        $data = SystemHistoryData::select($this->columnsCollection->get('info'))
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', $system_id)
+            ->with(
+                [
+                    'type',
+                    'creator.school_editor',
+                    'reviewer.admin'
+                ] + $departmentsWith
+            )
+            ->latest()
             ->first();
+
+        if ($data) {
+            // 系所資料彙整至同一欄位
+            $data->departments = $data->$departmentKey;
+            unset($data->$departmentKey);
+
+            return response()->json($data, $status_code);
+        } else {
+            $messages = array('System Data Not Found!');
+            return response()->json(compact('messages'), 404);
+        }
     }
 }
