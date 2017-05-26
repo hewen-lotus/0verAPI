@@ -517,7 +517,7 @@ class SystemHistoryController extends Controller
                         ->latest()
                         ->first();
 
-                    $departmentInsertData += [
+                    $departmentInsertData = [
                         'id' => $departmentHistoryData->id,
                         'school_code' => $departmentHistoryData->school_code,
                         'sort_order' => $departmentHistoryData->sort_order,
@@ -535,8 +535,8 @@ class SystemHistoryController extends Controller
                     // 校有自招才可自招
                     if ($schoolHistoryData->has_self_enrollment) {
                         $departmentInsertData += array(
-                            'has_self_enrollment' => $department->has_self_enrollment),
-                            'self_enrollment_quota' => $department->self_enrollment_quota)
+                            'has_self_enrollment' => $department->has_self_enrollment,
+                            'self_enrollment_quota' => $department->self_enrollment_quota
                         );
                     }
 
@@ -554,7 +554,7 @@ class SystemHistoryController extends Controller
                         ->latest()
                         ->first();
 
-                    $departmentInsertData += [
+                    $departmentInsertData = [
                         'id' => $departmentHistoryData->id,
                         'school_code' => $departmentHistoryData->school_code,
                         'sort_order' => $departmentHistoryData->sort_order,
@@ -594,7 +594,7 @@ class SystemHistoryController extends Controller
                         ->latest()
                         ->first();
 
-                    $departmentInsertData += [
+                    $departmentInsertData = [
                         'id' => $departmentHistoryData->id,
                         'school_code' => $departmentHistoryData->school_code,
                         'system_id' => $system_id,
