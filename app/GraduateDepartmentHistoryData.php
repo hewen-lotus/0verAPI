@@ -125,8 +125,17 @@ class GraduateDepartmentHistoryData extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $casts = [
+        'has_self_enrollment' => 'boolean',
+        'has_special_class' => 'boolean',
+        'has_foreign_special_class' => 'boolean',
+        'has_birth_limit' => 'boolean',
+        'has_eng_taught' => 'boolean',
+        'has_disabilities' => 'boolean',
+        'has_BuHweiHwaWen' => 'boolean'
+    ];
+
     protected $fillable = [
-        'history_id',
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
         'title', //系所名稱
