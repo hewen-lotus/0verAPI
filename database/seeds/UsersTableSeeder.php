@@ -83,6 +83,39 @@ class UsersTableSeeder extends Seeder
                     'phone' => '0912345678',
                     'created_at' => Carbon::now()->toIso8601String(),
                     'updated_at' => Carbon::now()->toIso8601String()
+                ],
+
+                [
+                    'username' => 'reviewer1',
+                    'password' => Hash::make(hash('sha256', 'admin123!@#')),
+                    'email' => 'z@a.a',
+                    'name' => '審核一號',
+                    'eng_name' => 'english_name',
+                    'phone' => '0912345678',
+                    'created_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toIso8601String()
+                ],
+
+                [
+                    'username' => 'reviewer2',
+                    'password' => Hash::make(hash('sha256', 'admin123!@#')),
+                    'email' => 'x@a.a',
+                    'name' => '審核二號',
+                    'eng_name' => 'english_name',
+                    'phone' => '0912345678',
+                    'created_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toIso8601String()
+                ],
+
+                [
+                    'username' => 'reviewer3',
+                    'password' => Hash::make(hash('sha256', 'admin123!@#')),
+                    'email' => 'c@b.a',
+                    'name' => '審核三號',
+                    'eng_name' => 'english_name',
+                    'phone' => '0912345678',
+                    'created_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toIso8601String()
                 ]
             ]);
         }

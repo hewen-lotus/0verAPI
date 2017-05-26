@@ -14,38 +14,35 @@ class SchoolReviewersTableSeeder extends Seeder
      */
     public function run()
     {
-        /*
-        DB::table('school_reviewers')->insert(
-            [
-                'username' => 'admin1',
-                'password' => Hash::make('admin123!@#'),
-                'email' => 'a@a.a',
-                'name' => '管理者一號',
-                'has_admin' => true,
-                'created_at' => Carbon::now()->toIso8601String(),
-                'updated_at' => Carbon::now()->toIso8601String()
-            ],
+        if (!App::environment('production')) {
+            DB::table('school_reviewers')->insert([
+                [
+                    'username' => 'reviewer1',
+                    'school_code' => '01',
+                    'organization' => '註冊組',
+                    'has_admin' => true,
+                    'created_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toIso8601String()
+                ],
 
-            [
-                'username' => 'admin2',
-                'password' => Hash::make('admin123!@#'),
-                'email' => 'b@a.a',
-                'name' => '管理者二號',
-                'has_admin' => false,
-                'created_at' => Carbon::now()->toIso8601String(),
-                'updated_at' => Carbon::now()->toIso8601String()
-            ],
+                [
+                    'username' => 'reviewer2',
+                    'school_code' => '02',
+                    'organization' => '註冊組',
+                    'has_admin' => false,
+                    'created_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toIso8601String()
+                ],
 
-            [
-                'username' => 'admin3',
-                'password' => Hash::make('admin123!@#'),
-                'email' => 'a@b.a',
-                'name' => '管理者三號',
-                'has_admin' => false,
-                'created_at' => Carbon::now()->toIso8601String(),
-                'updated_at' => Carbon::now()->toIso8601String()
-            ]
-        );
-        */
+                [
+                    'username' => 'reviewer3',
+                    'school_code' => '03',
+                    'organization' => '註冊組',
+                    'has_admin' => false,
+                    'created_at' => Carbon::now()->toIso8601String(),
+                    'updated_at' => Carbon::now()->toIso8601String()
+                ]
+            ]);
+        }
     }
 }
