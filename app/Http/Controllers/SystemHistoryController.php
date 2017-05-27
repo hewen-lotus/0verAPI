@@ -395,9 +395,9 @@ class SystemHistoryController extends Controller
 
                 foreach ($request->departments as $department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
-                        $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
+                        $allQuota += $department_item['admission_selection_quota'] + $department_item['admission_placement_quota'] + $department_item['self_enrollment_quota'];
                     } else {
-                        $allQuota += $department_item['admission_selection_quota'];
+                        $allQuota += $department_item['admission_selection_quota'] + $department_item['admission_placement_quota'];
                     }
                 }
 
@@ -425,7 +425,38 @@ class SystemHistoryController extends Controller
 
                 // 可招生總量為 學士班的 (last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota)
                 // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
-                $total_can_Admissions = $request->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
+                $deptsystemhistoryData = SystemHistoryData::select()
+                    ->where('school_code', '=', $school_id)
+                    ->where('type_id', '=', 1)
+                    ->latest()
+                    ->first();
+
+                $total_can_Admissions = $request->last_year_surplus_admission_quota + $deptsystemhistoryData->last_year_admission_amount + $deptsystemhistoryData->ratify_expanded_quota;
+
+                $allQuota = 0;
+
+                $depts = DepartmentHistoryData::where('school_code','=', $school_id)->get();
+
+                foreach ($depts as $dept) {
+                    if ($schoolHistoryData->has_self_enrollment && $dept->has_self_enrollment) {
+                        $allQuota += $dept->admission_selection_quota + $dept->admission_placement_quota + $dept->self_enrollment_quota;
+                    } else {
+                        $allQuota += $dept->admission_selection_quota + $dept->admission_placement_quota;
+                    }
+                }
+
+                foreach ($request->departments as $department_item) {
+                    if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
+                        $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
+                    } else {
+                        $allQuota += $department_item['admission_selection_quota'];
+                    }
+                }
+
+                if ($total_can_Admissions < $allQuota) {
+                    $messages = array('各系所招生人數加總必須小於或等於可招生總量');
+                    return response()->json(compact('messages'), 400);
+                }
             } else {// 碩博
                 // 設定資料驗證欄位
                 $validationRules = [
