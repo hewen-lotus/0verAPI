@@ -376,10 +376,15 @@ class SystemHistoryController extends Controller
                     'departments.*.decrease_reason_of_admission_placement' =>
                         'if_decrease_reason_required:id,admission_placement_quota|string',
                 ];
-            } else if ($system_id == 2) {
+
+                // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
+                // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
+
+            } else if ($system_id == 2) { // 二技
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
+                    'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
                     'departments' => 'required',
                     'departments.*.id' => [
                         'required',
@@ -392,10 +397,15 @@ class SystemHistoryController extends Controller
                     'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|integer',
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
-            } else {
+
+                // 可招生總量為 學士班的 (last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota)
+                // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
+
+            } else {// 碩博
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
+                    'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
                     'departments' => 'required',
                     'departments.*.id' => [
                         'required',
@@ -408,6 +418,22 @@ class SystemHistoryController extends Controller
                     'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|integer',
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
+
+                // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
+                // 必須讓該學制所有系所的 admission_selection_quota + self_enrollment_quota <= 可招生總量
+
+                $total_can_Admissions = $request->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
+
+                $allQuota = 0;
+
+                foreach ($request->departments as $department_item) {
+                    $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
+                }
+
+                if ($total_can_Admissions < $allQuota) {
+                    $messages = array('各系所招生總額必須小於或等於可招生總量');
+                    return response()->json(compact('messages'), 400);
+                }
             }
 
             // 驗證輸入資料
@@ -419,7 +445,7 @@ class SystemHistoryController extends Controller
                 return response()->json(compact('messages'), 400);
             }
 
-            $newSystemHistoryData = DB::transaction(function () use ($request, $system_id, $school_id, $user, $quotaStatus, $schoolHistoryData, $historyData){
+            DB::transaction(function () use ($request, $system_id, $school_id, $user, $quotaStatus, $schoolHistoryData, $historyData){
                 // 整理輸入資料
                 $InsertData = [
                     'school_code' => $school_id,
@@ -509,6 +535,10 @@ class SystemHistoryController extends Controller
                             'info_status' => $departmentHistoryData->info_status,
                             'quota_status' => $quotaStatus
                         ];
+
+                        // 有 has_RiJian => 可個人申請可自招
+                        // 沒 has_RiJian，但有 has_special_class => 可個人申請不可自招
+                        // 沒 has_RiJian，也沒 has_special_class => 都不行
 
                         // 校有自招才可自招
                         if ($schoolHistoryData->has_self_enrollment) {
