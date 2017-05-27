@@ -170,7 +170,7 @@ class SchoolHistoryController extends Controller
                     $extension = $request->rule_doc_of_five_year_student->extension();
 
                     $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
-                        ->storeAs('/', uniqid($historyData->title.'-'.'five_year_rule_doc_').'.'.$extension);
+                        ->storeAs('/public', uniqid($historyData->title.'-'.'five_year_rule_doc_').'.'.$extension);
                 } else if ($historyData->rule_doc_of_five_year_student != NULL) {
                     $five_year_rule_doc_path = $historyData->rule_doc_of_five_year_student;
                 } else {
@@ -191,7 +191,7 @@ class SchoolHistoryController extends Controller
                     $extension = $request->approval_doc_of_self_enrollment->extension();
 
                     $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
-                        ->storeAs('/', uniqid($historyData->title.'-self_enrollment_approval_doc_').'.'.$extension);
+                        ->storeAs('/public', uniqid($historyData->title.'-self_enrollment_approval_doc_').'.'.$extension);
                 } else if ($historyData->approval_doc_of_self_enrollment != NULL) {
                     $self_enrollment_approval_doc_path = $historyData->approval_doc_of_self_enrollment;
                 } else {
