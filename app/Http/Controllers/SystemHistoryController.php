@@ -370,7 +370,7 @@ class SystemHistoryController extends Controller
                         })
                     ],
                     'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|integer',
+                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
                     'departments.*.admission_selection_quota' => 'required|integer',
                     'departments.*.admission_placement_quota' => 'required|integer',
                     'departments.*.decrease_reason_of_admission_placement' =>
@@ -419,7 +419,7 @@ class SystemHistoryController extends Controller
                         })
                     ],
                     'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|integer',
+                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
 
@@ -471,7 +471,7 @@ class SystemHistoryController extends Controller
                         })
                     ],
                     'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,true|integer',
+                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
 

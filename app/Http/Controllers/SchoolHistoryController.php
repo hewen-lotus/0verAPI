@@ -96,16 +96,14 @@ class SchoolHistoryController extends Controller
                 'phone' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
                 'fax' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
                 'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
-                'scholarship_url' => 'required_if:has_scholarship,true|url', //僑生專屬獎學金說明網址
-                'eng_scholarship_url' => 'required_if:has_scholarship,true|url', //僑生專屬獎學金英文說明網址
-                'scholarship_dept' => 'required_if:has_scholarship,true|string', //獎學金負責單位名稱
-                'eng_scholarship_dept' => 'required_if:has_scholarship,true|string', //獎學金負責單位英文名稱
+                'scholarship_url' => 'required_if:has_scholarship,1|url', //僑生專屬獎學金說明網址
+                'eng_scholarship_url' => 'required_if:has_scholarship,1|url', //僑生專屬獎學金英文說明網址
+                'scholarship_dept' => 'required_if:has_scholarship,1|string', //獎學金負責單位名稱
+                'eng_scholarship_dept' => 'required_if:has_scholarship,1|string', //獎學金負責單位英文名稱
                 'has_five_year_student_allowed' => 'required|boolean', //[中五]我可以招呢
-                'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,true|string', //[中五]給海聯看的學則
-                'rule_doc_of_five_year_student' => 'required_if:has_five_year_student_allowed,true|file', //[中五]學則文件電子擋(file path)
+                'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|string', //[中五]給海聯看的學則
                 'has_self_enrollment' => 'required|boolean', //[自招]是否單獨招收僑生
-                'approval_no_of_self_enrollment' => 'required_if:has_self_enrollment,true|string', //[自招]核定文號
-                'approval_doc_of_self_enrollment' => 'required_if:has_self_enrollment,true|file', //[自招]核定公文電子檔(file path)
+                'approval_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|string', //[自招]核定文號
             ]);
 
             // 驗證輸入資料
@@ -168,11 +166,17 @@ class SchoolHistoryController extends Controller
 
             // 整理招收中五生學則資料
             if ((bool)$request->input('has_five_year_student_allowed')) {
-                if ($request->file('rule_doc_of_five_year_student')->isValid()) {
+                if ($request->hasFile('rule_doc_of_five_year_student') && $request->file('rule_doc_of_five_year_student')->isValid()) {
                     $extension = $request->rule_doc_of_five_year_student->extension();
 
                     $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
-                        ->storeAs('/', uniqid($request->input('id').'-'.'five_year_rule_doc_').'.'.$extension);
+                        ->storeAs('/', uniqid($historyData->title.'-'.'five_year_rule_doc_').'.'.$extension);
+                } else if ($historyData->rule_doc_of_five_year_student != NULL) {
+                    $five_year_rule_doc_path = $historyData->rule_doc_of_five_year_student;
+                } else {
+                    $messages = array('The rule doc of five year student field is required when has five year student allowed is 1.');
+
+                    return response()->json(compact('messages'), 400);
                 }
 
                 $insertData += array(
@@ -183,11 +187,17 @@ class SchoolHistoryController extends Controller
 
             // 整理自招資料
             if ((bool)$request->input('has_self_enrollment')) {
-                if ($request->file('approval_doc_of_self_enrollment')->isValid()) {
+                if ($request->hasFile('approval_doc_of_self_enrollment') && $request->file('approval_doc_of_self_enrollment')->isValid()) {
                     $extension = $request->approval_doc_of_self_enrollment->extension();
 
                     $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
-                        ->storeAs('/', uniqid($request->input('id').'-self_enrollment_approval_doc_').'.'.$extension);
+                        ->storeAs('/', uniqid($historyData->title.'-self_enrollment_approval_doc_').'.'.$extension);
+                } else if ($historyData->approval_doc_of_self_enrollment != NULL) {
+                    $self_enrollment_approval_doc_path = $historyData->approval_doc_of_self_enrollment;
+                } else {
+                    $messages = array('The approval doc of self enrollment field is required when has self enrollment is 1.');
+
+                    return response()->json(compact('messages'), 400);
                 }
 
                 $insertData += array(

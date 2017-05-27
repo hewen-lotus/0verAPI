@@ -110,14 +110,14 @@ class SchoolDataController extends Controller
             'has_self_enrollment' => $request->input('has_self_enrollment'),
         );
 
-        if ((bool)$request->input('has_dorm') == true) {
+        if ((bool)$request->input('has_dorm')) {
             $InsertData += array(
                 'dorm_info' => $request->input('dorm_info'),
                 'eng_dorm_info' => $request->input('eng_dorm_info'),
             );
         }
 
-        if ((bool)$request->input('has_scholarship') == true) {
+        if ((bool)$request->input('has_scholarship')) {
             $InsertData += array(
                 'scholarship_url' => $request->input('scholarship_url'),
                 'eng_scholarship_url' => $request->input('eng_scholarship_url'),
@@ -126,7 +126,7 @@ class SchoolDataController extends Controller
             );
         }
 
-        if ((bool)$request->input('has_five_year_student_allowed') == true) {
+        if ((bool)$request->input('has_five_year_student_allowed')) {
             if ($request->file('rule_doc_of_five_year_student')->isValid()) {
                 $extension = $request->rule_doc_of_five_year_student->extension();
 
@@ -140,7 +140,7 @@ class SchoolDataController extends Controller
             );
         }
 
-        if ((bool)$request->input('has_self_enrollment') == true) {
+        if ((bool)$request->input('has_self_enrollment')) {
             if ($request->file('approval_doc_of_self_enrollment')->isValid()) {
                 $extension = $request->approval_doc_of_self_enrollment->extension();
 
@@ -237,7 +237,7 @@ class SchoolDataController extends Controller
                 'ip_address' => $request->ip(),
             );
 
-            if ((bool)$request->input('has_dorm') == true) {
+            if ((bool)$request->input('has_dorm')) {
                 $InsertData += array(
                     'dorm_info' => $request->input('dorm_info'),
                     'eng_dorm_info' => $request->input('eng_dorm_info'),
@@ -249,7 +249,7 @@ class SchoolDataController extends Controller
                 );
             }
 
-            if ((bool)$request->input('has_scholarship') == true) {
+            if ((bool)$request->input('has_scholarship')) {
                 $InsertData += array(
                     'scholarship_url' => $request->input('scholarship_url'),
                     'eng_scholarship_url' => $request->input('eng_scholarship_url'),
@@ -265,7 +265,7 @@ class SchoolDataController extends Controller
                 );
             }
 
-            if ((bool)$request->input('has_five_year_student_allowed') == true) {
+            if ((bool)$request->input('has_five_year_student_allowed')) {
                 if ($request->file('rule_doc_of_five_year_student')->isValid()) {
                     $extension = $request->rule_doc_of_five_year_student->extension();
 
@@ -286,7 +286,7 @@ class SchoolDataController extends Controller
                 );
             }
 
-            if ((bool)$request->input('has_self_enrollment') == true) {
+            if ((bool)$request->input('has_self_enrollment')) {
                 if ($request->file('approval_doc_of_self_enrollment')->isValid()) {
                     $extension = $request->approval_doc_of_self_enrollment->extension();
 
