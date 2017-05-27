@@ -31,7 +31,7 @@ class CreatePaperApplicationDocumentAddressTable extends Migration
         });
 
         Schema::create('paper_application_document_history_address', function (Blueprint $table) {
-            $table->increment('id');
+            $table->increments('id');
             $table->string('dept_id')->comment('系所代碼'); // 三個學制混在一起記
             $table->foreign('dept_id', 'history_address_dept_id_foreign')->references('id')->on('department_data');
             $table->unsignedInteger('type_id')->comment('備審資料代碼（系統自動產生）');
