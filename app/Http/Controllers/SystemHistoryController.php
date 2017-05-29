@@ -356,7 +356,8 @@ class SystemHistoryController extends Controller
                 ->latest()
                 ->first();
 
-            if ($system_id == 1) { // 學士學制
+            // 依學制檢查名額量
+            if ($system_id == 1) { // 學士學制名額驗證
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
@@ -378,13 +379,15 @@ class SystemHistoryController extends Controller
                 ];
 
                 // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
-                // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
                 $total_can_Admissions = $request->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
 
+                // 初始化欲招收總量
                 $allQuota = 0;
 
+                // 取得二技班資料歷史版本
                 $two_years = TwoYearTechHistoryDepartmentData::where('school_code','=', $school_id)->get();
 
+                // 累計二技班所有系所個人申請與自招量（校可自招且系有開自招才可加入計算）
                 foreach ($two_years as $two_year) {
                     if ($schoolHistoryData->has_self_enrollment && $two_year->has_self_enrollment) {
                         $allQuota += $two_year->admission_selection_quota + $two_year->self_enrollment_quota;
@@ -393,6 +396,7 @@ class SystemHistoryController extends Controller
                     }
                 }
 
+                // 累計要求的學士班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->departments as $department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['admission_placement_quota'] + $department_item['self_enrollment_quota'];
@@ -401,11 +405,12 @@ class SystemHistoryController extends Controller
                     }
                 }
 
+                // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
                 if ($total_can_Admissions < $allQuota) {
                     $messages = array('各系所招生人數加總必須小於或等於可招生總量');
                     return response()->json(compact('messages'), 400);
                 }
-            } else if ($system_id == 2) { // 二技
+            } else if ($system_id == 2) { // 二技學制名額驗證
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
@@ -423,8 +428,7 @@ class SystemHistoryController extends Controller
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
 
-                // 可招生總量為 學士班的 (last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota)
-                // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
+                // 二技可招生總量參照學士班資料
                 $deptsystemhistoryData = SystemHistoryData::select()
                     ->where('school_code', '=', $school_id)
                     ->where('type_id', '=', 1)
@@ -433,10 +437,13 @@ class SystemHistoryController extends Controller
 
                 $total_can_Admissions = $request->last_year_surplus_admission_quota + $deptsystemhistoryData->last_year_admission_amount + $deptsystemhistoryData->ratify_expanded_quota;
 
+                // 初始化欲招收總量
                 $allQuota = 0;
 
+                // 取得學士班資料歷史版本
                 $depts = DepartmentHistoryData::where('school_code','=', $school_id)->get();
 
+                // 累計學士班所有系所個人申請與自招量（校可自招且系有開自招才可加入計算）
                 foreach ($depts as $dept) {
                     if ($schoolHistoryData->has_self_enrollment && $dept->has_self_enrollment) {
                         $allQuota += $dept->admission_selection_quota + $dept->admission_placement_quota + $dept->self_enrollment_quota;
@@ -445,6 +452,7 @@ class SystemHistoryController extends Controller
                     }
                 }
 
+                // 累計要求的二技班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->departments as $department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
@@ -453,11 +461,12 @@ class SystemHistoryController extends Controller
                     }
                 }
 
+                // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
                 if ($total_can_Admissions < $allQuota) {
                     $messages = array('各系所招生人數加總必須小於或等於可招生總量');
                     return response()->json(compact('messages'), 400);
                 }
-            } else {// 碩博
+            } else {// 碩博學制名額驗證
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
@@ -476,12 +485,12 @@ class SystemHistoryController extends Controller
                 ];
 
                 // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
-                // 必須讓該學制所有系所的 admission_selection_quota + self_enrollment_quota <= 可招生總量
-
                 $total_can_Admissions = $request->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
 
+                // 初始化欲招收總量
                 $allQuota = 0;
 
+                // 累計要求的碩博班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->departments as $department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
@@ -490,6 +499,7 @@ class SystemHistoryController extends Controller
                     }
                 }
 
+                // 必須讓該學制所有系所的 admission_selection_quota + self_enrollment_quota <= 可招生總量
                 if ($total_can_Admissions < $allQuota) {
                     $messages = array('各系所招生人數加總必須小於或等於可招生總量');
                     return response()->json(compact('messages'), 400);
@@ -530,18 +540,21 @@ class SystemHistoryController extends Controller
                     );
                 }
 
+                // 寫入學制資料
                 $newData = SystemHistoryData::create($InsertData);
 
                 // 整理系所輸入資料
                 foreach ($request->input('departments') as $department) {
-                    // TODO 依照學制不同，將每個系所插入
-                    if ($system_id == 1) {
+                    // 依照學制不同，將每個系所資料寫入
+                    if ($system_id == 1) { // 學士班
+                        // 取得最新版系所資料
                         $departmentHistoryData = DepartmentHistoryData::select()
                             ->where('school_code', '=', $school_id)
                             ->where('id', '=', $department->id)
                             ->latest()
                             ->first();
 
+                        // 整理系所寫入資料
                         $departmentInsertData = [
                             'id' => $departmentHistoryData->id,
                             'school_code' => $departmentHistoryData->school_code,
@@ -574,15 +587,17 @@ class SystemHistoryController extends Controller
                             );
                         }
 
+                        // 寫入名額資訊
                         DepartmentHistoryData::create($departmentInsertData);
-                    } else if ($system_id == 2) {
-                        // 取得系所資料歷史版本
+                    } else if ($system_id == 2) { // 二技班
+                        // 取得最新版系所資料
                         $departmentHistoryData = TwoYearTechHistoryDepartmentData::select()
                             ->where('school_code', '=', $school_id)
                             ->where('id', '=', $department->id)
                             ->latest()
                             ->first();
 
+                        // 整理系所寫入資料
                         $departmentInsertData = [
                             'id' => $departmentHistoryData->id,
                             'school_code' => $departmentHistoryData->school_code,
@@ -619,10 +634,10 @@ class SystemHistoryController extends Controller
                             }
                         }
 
+                        // 寫入名額資訊
                         TwoYearTechHistoryDepartmentData::create($departmentInsertData);
-                    } else {
-                        // 碩博一樣
-                        // 取得系所資料歷史版本
+                    } else { // 碩博學制
+                        // 取得最新版系所資料
                         $departmentHistoryData = GraduateDepartmentHistoryData::select()
                             ->where('school_code', '=', $school_id)
                             ->where('id', '=', $department->id)
@@ -630,6 +645,7 @@ class SystemHistoryController extends Controller
                             ->latest()
                             ->first();
 
+                        // 整理系所寫入資料
                         $departmentInsertData = [
                             'id' => $departmentHistoryData->id,
                             'school_code' => $departmentHistoryData->school_code,
@@ -653,6 +669,7 @@ class SystemHistoryController extends Controller
                             ];
                         }
 
+                        // 寫入名額資料
                         GraduateDepartmentHistoryData::create($departmentInsertData);
                     }
                 }
