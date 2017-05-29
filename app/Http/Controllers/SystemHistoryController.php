@@ -570,11 +570,16 @@ class SystemHistoryController extends Controller
                             'admission_placement_quota' => $department->admission_placement_quota
                         ];
 
-                        // 校有自招才可自招
-                        if ($schoolHistoryData->has_self_enrollment) {
+                        // 校有自招且系要自招才可自招，否則自招資訊重設
+                        if ($schoolHistoryData->has_self_enrollment && $department->has_self_entrollment) {
                             $departmentInsertData += array(
                                 'has_self_enrollment' => $department->has_self_enrollment,
                                 'self_enrollment_quota' => $department->self_enrollment_quota
+                            );
+                        } else {
+                            $departmentInsertData += array(
+                                'has_self_enrollment' => false,
+                                'self_enrollment_quota' => NULL
                             );
                         }
 
@@ -615,8 +620,8 @@ class SystemHistoryController extends Controller
                         // 沒 has_RiJian，但有 has_special_class => 可個人申請不可自招
                         // 沒 has_RiJian，也沒 has_special_class => 都不行
 
-                        // 校有自招才可自招
-                        if ($schoolHistoryData->has_self_enrollment) {
+                        // 校有自招且系要自招才可自招，否則自招資訊重設
+                        if ($schoolHistoryData->has_self_enrollment && $department->has_self_entrollment) {
                             // 有日間二技部，可自招可聯招
                             if ($departmentHistoryData->has_RiJian) {
                                 $departmentInsertData += [
@@ -632,6 +637,11 @@ class SystemHistoryController extends Controller
                                     ];
                                 }
                             }
+                        } else {
+                            $departmentInsertData += array(
+                                'has_self_enrollment' => false,
+                                'self_enrollment_quota' => NULL
+                            );
                         }
 
                         // 寫入名額資訊
@@ -661,12 +671,17 @@ class SystemHistoryController extends Controller
                             'admission_selection_quota' => $department->admission_selection_quota
                         ];
 
-                        // 校有自招才可自招
-                        if ($schoolHistoryData->has_self_enrollment) {
-                            $departmentInsertData += [
-                                'has_self_enrollment' => $request->input('has_self_enrollment'),
-                                'self_enrollment_quota' => $request->input('self_enrollment_quota')
-                            ];
+                        // 校有自招且系要自招才可自招，否則自招資訊重設
+                        if ($schoolHistoryData->has_self_enrollment && $department->has_self_entrollment) {
+                            $departmentInsertData += array(
+                                'has_self_enrollment' => $department->has_self_enrollment,
+                                'self_enrollment_quota' => $department->self_enrollment_quota
+                            );
+                        } else {
+                            $departmentInsertData += array(
+                                'has_self_enrollment' => false,
+                                'self_enrollment_quota' => NULL
+                            );
                         }
 
                         // 寫入名額資料
