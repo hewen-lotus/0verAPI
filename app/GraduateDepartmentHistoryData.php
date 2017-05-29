@@ -159,8 +159,11 @@ class GraduateDepartmentHistoryData extends Model
         //'admission_placement_ratify_quota', //教育部核定聯合分發名額
         //'admission_selection_ratify_quota', //教育部核定個人申請名額
         //'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
-        //'rank', //志願排名
+        'rank', //志願排名
         'sort_order', //輸出排序
+        'has_review_fee', //是否另外收取審查費用
+        'review_fee_detail', //審查費用說明
+        'eng_review_fee_detail', //審查費用英文說明
         'has_birth_limit', //是否限制出生日期
         'birth_limit_after', //限…之後出生
         'birth_limit_before', //限…之前出生
@@ -170,6 +173,8 @@ class GraduateDepartmentHistoryData extends Model
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
+        'ip_address', //ip_address
+        'created_by', //created_by
     ];
 
 

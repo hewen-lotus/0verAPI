@@ -144,7 +144,7 @@ class DepartmentHistoryData extends Model
     protected $fillable = [
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
-        //'card_code', //讀卡代碼
+        'card_code', //讀卡代碼
         'title', //系所名稱
         'eng_title', //系所英文名稱
         'description', //選系說明
@@ -164,12 +164,15 @@ class DepartmentHistoryData extends Model
         'self_enrollment_quota', //自招名額
         'has_special_class', //是否招收僑生專班
         'has_foreign_special_class', //是否招收外生專班
-        //'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
+        'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
         'gender_limit', //性別限制
         //'admission_placement_ratify_quota', //教育部核定聯合分發名額
         //'admission_selection_ratify_quota', //教育部核定個人申請名額
         'rank', //志願排名
         'sort_order', //輸出排序
+        'has_review_fee', //是否另外收取審查費用
+        'review_fee_detail', //審查費用說明
+        'eng_review_fee_detail', //審查費用英文說明
         'has_birth_limit', //是否限制出生日期
         'birth_limit_after', //限…之後出生
         'birth_limit_before', //限…之前出生
@@ -179,6 +182,8 @@ class DepartmentHistoryData extends Model
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
+        'ip_address', //ip_address
+        'created_by', //created_by
     ];
 
 
