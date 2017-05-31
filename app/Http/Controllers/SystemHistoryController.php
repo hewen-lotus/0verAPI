@@ -12,8 +12,11 @@ use Auth;
 use Validator;
 use Illuminate\Validation\Rule;
 
+use App\SchoolEditor;
 use App\SystemHistoryData;
 use App\DepartmentHistoryData;
+use App\DepartmentData;
+use App\GraduateDepartmentData;
 
 class SystemHistoryController extends Controller
 {
@@ -662,7 +665,6 @@ class SystemHistoryController extends Controller
                             'has_disabilities' => $departmentHistoryData->has_disabilities,
                             'has_BuHweiHwaWen' => $departmentHistoryData->has_BuHweiHwaWen,
                             'evaluation' => $departmentHistoryData->evaluation,
-                            'has_special_class' => $departmentHistoryData->has_special_class,
                             'has_RiJian' => $departmentHistoryData->has_RiJian,
                             'gender_limit' => $departmentHistoryData->gender_limit,
                             'rank' => $departmentHistoryData->rank,
@@ -753,7 +755,7 @@ class SystemHistoryController extends Controller
                         ];
 
                         // 校有自招且系要自招才可自招，否則自招資訊重設
-                        if ($schoolHistoryData->has_self_enrollment && $department['has_self_entrollment']) {
+                        if ($schoolHistoryData->has_self_enrollment && $department['has_self_enrollment']) {
                             $departmentInsertData += array(
                                 'has_self_enrollment' => $department['has_self_enrollment'],
                                 'self_enrollment_quota' => $department['self_enrollment_quota']
