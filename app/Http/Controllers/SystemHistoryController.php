@@ -822,9 +822,6 @@ class SystemHistoryController extends Controller
     {
         $user = Auth::user();
 
-        // 擷取資料，並依照學制取得其下所有 $user 擁有權限的系所的 info
-        $departmentKey = $this->departmentsKeyCollection->get($system_id);
-
         // 取得使用者有權限的系所
         $permissionsDepartments = SchoolEditor::select()
             ->where('username', '=', $user->username)
@@ -840,7 +837,7 @@ class SystemHistoryController extends Controller
             $DepartmentData = new DepartmentData();
         } else if ($system_id == 2) {
             $DepartmentHistoryData = new TwoYearTechHistoryDepartmentData();
-            $DepartmentData = new TwoYearTechHistoryDepartmentData();
+            $DepartmentData = new TwoYearTechDepartmentData();
         } else {
             $DepartmentHistoryData = new GraduateDepartmentHistoryData();
             $DepartmentData = new GraduateDepartmentData();
