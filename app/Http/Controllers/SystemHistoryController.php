@@ -823,40 +823,65 @@ class SystemHistoryController extends Controller
         // 擷取資料，並依照學制取得其下所有 $user 擁有權限的系所的 info
         $departmentKey = $this->departmentsKeyCollection->get($system_id);
 
-        if ($user->school_editor->has_admin) {
-            $departmentsWith = [
-                $departmentKey => function ($query) {
-                    $query->select($this->departmentInfoColumns)->with('creator.school_editor');
-                }
-            ];
+        // 取得使用者有權限的系所
+        $permissionsDepartments = SchoolEditor::select()
+            ->where('username', '=', $user->username)
+            ->with('department_permissions')
+            ->first()
+            ->department_permissions->map(function ($item) {
+                return $item->dept_id;
+            });
+
+        // 依學制設定資料模型
+        if ($system_id == 1) {
+            $DepartmentHistoryData = new DepartmentHistoryData();
+            $DepartmentData = new DepartmentData();
+        } else if ($system_id == 2) {
+            $DepartmentHistoryData = new TwoYearTechHistoryDepartmentData();
+            $DepartmentData = new TwoYearTechHistoryDepartmentData();
         } else {
-            $departmentsWith = [
-                $departmentKey => function ($query) {
-                    $query->select($this->departmentInfoColumns)->with('creator.school_editor')->whereHas('editor_permission', function ($query1) {
-                        $query1->where('username', '=', Auth::id());
-                    });
-                }
-            ];
+            $DepartmentHistoryData = new GraduateDepartmentHistoryData();
+            $DepartmentData = new GraduateDepartmentData();
         }
 
-        // 依照要求拿取資料
+        // 取得系所列表
+        if ($system_id == 3 || $system_id == 4) {
+            // 碩博同表，需多加規則
+            $departmentsList = $DepartmentData::select('id')
+                ->where('school_code', '=', $school_id)
+                ->where('system_id', '=', $system_id)
+                ->get();
+        } else {
+            // 學士二技各自有表
+            $departmentsList = $DepartmentData::select('id')
+                ->where('school_code', '=', $school_id)
+                ->get();
+        }
+        // 取得使用者有權限閱覽的系所資料
+        $departmentHistoryList = [];
+        foreach ($departmentsList as $dept) {
+            $deptHistoryData = $DepartmentHistoryData::select($this->departmentInfoColumns)
+                ->where('id', '=', $dept['id'])
+                ->with('creator.school_editor')
+                ->latest()
+                ->first();
+
+            if ($user->school_editor->has_admin || $permissionsDepartments->has($dept['id'])) {
+                array_push($departmentHistoryList, $deptHistoryData);
+            }
+        }
+
+        // 依照要求拿取學制資料
         $data = SystemHistoryData::select($this->columnsCollection->get('info'))
             ->where('school_code', '=', $school_id)
             ->where('type_id', '=', $system_id)
-            ->with(
-                [
-                    'type',
-                    'creator.school_editor',
-                    'reviewer.admin'
-                ] + $departmentsWith
-            )
+            ->with('type', 'creator.school_editor', 'reviewer.admin')
             ->latest()
             ->first();
 
         if ($data) {
-            // 系所資料彙整至同一欄位
-            $data->departments = $data->$departmentKey;
-            unset($data->$departmentKey);
+            // 將系所資料包含在學制資料內
+            $data->departments = $departmentHistoryList;
 
             return response()->json($data, $status_code);
         } else {
