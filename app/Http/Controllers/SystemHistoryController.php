@@ -823,6 +823,20 @@ class SystemHistoryController extends Controller
     {
         $user = Auth::user();
 
+        // 依照要求拿取學制資料
+        $data = SystemHistoryData::select($this->columnsCollection->get('info'))
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', $system_id)
+            ->with('type', 'creator.school_editor', 'reviewer.admin')
+            ->latest()
+            ->first();
+
+        // 沒有學制資訊？404 啦
+        if ($data == NULL) {
+            $messages = array('System Data Not Found!');
+            return response()->json(compact('messages'), 404);
+        }
+
         // 取得使用者有權限的系所
         $permissionsDepartments = SchoolEditor::select()
             ->where('username', '=', $user->username)
@@ -866,27 +880,14 @@ class SystemHistoryController extends Controller
                 ->latest()
                 ->first();
 
+            // 編輯管理員有權看所有系所
             if ($user->school_editor->has_admin || $permissionsDepartments->has($dept['id'])) {
                 array_push($departmentHistoryList, $deptHistoryData);
             }
         }
 
-        // 依照要求拿取學制資料
-        $data = SystemHistoryData::select($this->columnsCollection->get('info'))
-            ->where('school_code', '=', $school_id)
-            ->where('type_id', '=', $system_id)
-            ->with('type', 'creator.school_editor', 'reviewer.admin')
-            ->latest()
-            ->first();
+        $data->departments = $departmentHistoryList;
 
-        if ($data) {
-            // 將系所資料包含在學制資料內
-            $data->departments = $departmentHistoryList;
-
-            return response()->json($data, $status_code);
-        } else {
-            $messages = array('System Data Not Found!');
-            return response()->json(compact('messages'), 404);
-        }
+        return response()->json($data, $status_code);
     }
 }
