@@ -12,11 +12,12 @@ use Validator;
 use App\SchoolEditor;
 use App\SystemHistoryData;
 use App\SchoolHistoryData;
-use App\TwoYearTechHistoryDepartmentData;
-use App\GraduateDepartmentHistoryData;
-use App\DepartmentHistoryData;
 use App\DepartmentData;
+use App\DepartmentHistoryData;
+use App\TwoYearTechDepartmentData;
+use App\TwoYearTechHistoryDepartmentData;
 use App\GraduateDepartmentData;
+use App\GraduateDepartmentHistoryData;
 
 class SystemHistoryController extends Controller
 {
