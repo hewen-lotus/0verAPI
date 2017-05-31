@@ -12,6 +12,7 @@ use Validator;
 use App\SchoolEditor;
 use App\SystemHistoryData;
 use App\SchoolHistoryData;
+use App\TwoYearTechDepartmentData;
 use App\TwoYearTechHistoryDepartmentData;
 use App\GraduateDepartmentHistoryData;
 use App\DepartmentHistoryData;
