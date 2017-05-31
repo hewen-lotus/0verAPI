@@ -14,10 +14,10 @@ use App\SystemHistoryData;
 use App\SchoolHistoryData;
 use App\TwoYearTechDepartmentData;
 use App\TwoYearTechHistoryDepartmentData;
+use App\GraduateDepartmentData;
 use App\GraduateDepartmentHistoryData;
 use App\DepartmentHistoryData;
 use App\DepartmentData;
-use App\GraduateDepartmentData;
 
 class SystemHistoryController extends Controller
 {
@@ -868,6 +868,7 @@ class SystemHistoryController extends Controller
             $anotherDepartmentSelfEnrollmentQuota = 0;
             $anotherDepartmentAdmissionSelectionQuota = 0;
             $anotherDepartmentAdmissionPlacementQuota = 0;
+            
             foreach ($anotherDepartmentsList as $dept) {
                 $deptHistoryData = $AnotherDepartmentHistoryData::select()
                     ->where('id', '=', $dept['id'])
