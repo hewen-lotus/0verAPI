@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Session;
 use Auth;
 use Validator;
 use App\User;
@@ -79,9 +80,13 @@ class LoginController extends Controller
     | Manual Logout
     |--------------------------------------------------------------------------
     */
-    public function UserLogout()
+    public function UserLogout(Request $request)
     {
         Auth::logout();
+
+        Session::flush();
+
+        $request->session()->regenerate();
 
         return response()->json(['messages' => ['Logged Out!']]);
     }
