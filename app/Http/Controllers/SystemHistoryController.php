@@ -8,6 +8,7 @@ use DB;
 use Auth;
 use Validator;
 use Illuminate\Validation\Rule;
+use Illuminate\Http\Request;
 
 use App\SchoolEditor;
 use App\SystemHistoryData;
