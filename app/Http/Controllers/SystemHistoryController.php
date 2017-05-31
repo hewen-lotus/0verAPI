@@ -3,12 +3,11 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 
 use DB;
 use Auth;
 use Validator;
-use Illuminate\Validation\Rule;
-use Illuminate\Http\Request;
 
 use App\SchoolEditor;
 use App\SystemHistoryData;
@@ -785,38 +784,126 @@ class SystemHistoryController extends Controller
 
     public function return_quota($school_id, $system_id, $status_code = 200)
     {
-        // 擷取資料，並依照學制取得其下所有系所名額資訊
-        $departmentKey = $this->departmentsKeyCollection->get($system_id);
-        $departmentQuotaColumns = $this->departmentQuotaColumnsCollection->get($system_id);
-
+        // 擷取資料，並依照學制
         $data = SystemHistoryData::select($this->columnsCollection->get('quota'))
             ->where('school_code', '=', $school_id)
             ->where('type_id', '=', $system_id)
-            ->with([
-                'type',
-                'creator.school_editor',
-                'reviewer.admin',
-                $departmentKey => function($query) use ($departmentQuotaColumns) {
-                    $query->select($departmentQuotaColumns)->with('creator.school_editor');
-                }
-            ])
+            ->with('type', 'creator.school_editor', 'reviewer.admin')
             ->latest()
             ->first();
 
-        // TODO 要拿到該校的 has_enrollment
-        // TODO 若為學士或二技，要拿到另一個學制的自招額度總和跟個人申請總和
-        // TODO 若為二技，則 last_year_surplus_admission_quota、last_year_admission_amount、ratify_expanded_quota 要從學士的資料拿
-
-        if ($data) {
-            // 系所資料彙整至同一欄位
-            $data->departments = $data->$departmentKey;
-            unset($data->$departmentKey);
-
-            return response()->json($data, $status_code);
-        } else {
+        // 沒有學制資訊？404 啦
+        if ($data == NULL) {
             $messages = array('System Data Not Found!');
             return response()->json(compact('messages'), 404);
         }
+
+        // 若為二技學制，則 last_year_surplus_admission_quota、last_year_admission_amount、ratify_expanded_quota 要從學士的資料拿
+        if ($system_id == 2) {
+            $anotherSystemData = SystemHistoryData::select($this->columnsCollection->get('quota'))
+                ->where('school_code', '=', $school_id)
+                ->where('type_id', '=', 1)
+                ->latest()
+                ->first();
+
+            $data->last_year_surplus_admission_quota = $anotherSystemData->last_year_surplus_admission_quota;
+            $data->last_year_admission_amount = $anotherSystemData->last_year_admission_amount;
+            $data->ratify_expanded_quota = $anotherSystemData->ratify_expanded_quota;
+        }
+
+        // 依學制設定系所資料模型
+        if ($system_id == 1) {
+            $DepartmentHistoryData = new DepartmentHistoryData();
+            $DepartmentData = new DepartmentData();
+
+            $AnotherDepartmentHistoryData = new TwoYearTechHistoryDepartmentData();
+            $AnotherDepartmentData = new TwoYearTechDepartmentData();
+        } else if ($system_id == 2) {
+            $DepartmentHistoryData = new TwoYearTechHistoryDepartmentData();
+            $DepartmentData = new TwoYearTechDepartmentData();
+
+            $AnotherDepartmentHistoryData = new DepartmentHistoryData();
+            $AnotherDepartmentData = new DepartmentData();
+        } else {
+            $DepartmentHistoryData = new GraduateDepartmentHistoryData();
+            $DepartmentData = new GraduateDepartmentData();
+        }
+
+        // 從主表取得系所列表
+        if ($system_id == 3 || $system_id == 4) {
+            // 碩博同表，需多加規則
+            $departmentsList = $DepartmentData::select('id')
+                ->where('school_code', '=', $school_id)
+                ->where('system_id', '=', $system_id)
+                ->get();
+        } else {
+            // 學士二技各自有表
+            $departmentsList = $DepartmentData::select('id')
+                ->where('school_code', '=', $school_id)
+                ->get();
+            // 需取得另一個學制的系所列表
+            $anotherDepartmentsList = $AnotherDepartmentData::select('id')
+                ->where('school_code', '=', $school_id)
+                ->get();
+        }
+
+        // 取得使用者有權限閱覽的系所資料
+        $departmentQuotaColumns = $this->departmentQuotaColumnsCollection->get($system_id);
+        $departmentHistoryList = [];
+        foreach ($departmentsList as $dept) {
+            $deptHistoryData = $DepartmentHistoryData::select($departmentQuotaColumns)
+                ->where('id', '=', $dept['id'])
+                ->with('creator.school_editor')
+                ->latest()
+                ->first();
+
+            array_push($departmentHistoryList, $deptHistoryData);
+        }
+
+        $data->departments = $departmentHistoryList;
+
+        // 若為學士或二技，要拿到另一個學制的自招額度總和跟個人申請總和
+        if ($system_id == 1 || $system_id == 2) {
+            $anotherDepartmentSelfEnrollmentQuota = 0;
+            $anotherDepartmentAdmissionSelectionQuota = 0;
+            $anotherDepartmentAdmissionPlacementQuota = 0;
+            foreach ($anotherDepartmentsList as $dept) {
+                $deptHistoryData = $AnotherDepartmentHistoryData::select()
+                    ->where('id', '=', $dept['id'])
+                    ->with('creator.school_editor')
+                    ->latest()
+                    ->first();
+
+                // 累計自招名額
+                if ($deptHistoryData->has_enrollment) {
+                    $anotherDepartmentSelfEnrollmentQuota += $deptHistoryData->self_enrollment_quota;
+                }
+
+                // 若為學士班，累計聯合分發名額
+                if ($system_id == 1) {
+                    $anotherDepartmentAdmissionPlacementQuota += $deptHistoryData->admission_placement_quota;
+                }
+
+                // 累計個人申請名額
+                $anotherDepartmentAdmissionSelectionQuota += $deptHistoryData->admission_selection_quota;
+            }
+
+            $data->another_department_self_enrollment_quota = $anotherDepartmentSelfEnrollmentQuota;
+            $data->another_department_admission_selection_quota = $anotherDepartmentAdmissionSelectionQuota;
+            if ($system_id == 1) {
+                $data->another_department_admission_placement_quota = $anotherDepartmentAdmissionPlacementQuota;
+            }
+        }
+
+        // 要拿到該校的 has_enrollment
+        $schoolHistoryData = SchoolHistoryData::select('has_self_enrollment')
+            ->where('id', '=', $school_id)
+            ->latest()
+            ->first();
+
+        $data->school_has_self_enrollment = $schoolHistoryData->has_self_enrollment;
+
+        return response()->json($data, $status_code);
     }
 
     public function return_info($school_id, $system_id, $status_code = 200)
