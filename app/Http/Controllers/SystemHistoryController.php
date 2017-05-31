@@ -2,9 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\SchoolHistoryData;
-use App\TwoYearTechHistoryDepartmentData;
-use App\GraduateDepartmentHistoryData;
 use Illuminate\Http\Request;
 
 use DB;
@@ -14,6 +11,9 @@ use Illuminate\Validation\Rule;
 
 use App\SchoolEditor;
 use App\SystemHistoryData;
+use App\SchoolHistoryData;
+use App\TwoYearTechHistoryDepartmentData;
+use App\GraduateDepartmentHistoryData;
 use App\DepartmentHistoryData;
 use App\DepartmentData;
 use App\GraduateDepartmentData;
