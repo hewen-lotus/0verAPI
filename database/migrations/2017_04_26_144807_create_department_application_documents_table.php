@@ -21,6 +21,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->foreign('type_id')->references('id')->on('application_document_types');
             $table->text('description')->comment('詳細說明');
             $table->text('eng_description')->comment('英文的詳細說明');
+            $table->boolean('modifiable')->default(false)->comment('學校是否可修改此備審資料');
             $table->boolean('required')->default(false)->comment('備審資料是否為必繳');
             $table->string('created_at');
             $table->string('updated_at');
@@ -37,6 +38,7 @@ class CreateDepartmentApplicationDocumentsTable extends Migration
             $table->foreign('history_id')->references('history_id')->on('department_history_data');
             $table->string('description')->comment('詳細說明');
             $table->string('eng_description')->comment('英文的詳細說明');
+            $table->boolean('modifiable')->default(false)->comment('學校是否可修改此備審資料');
             $table->boolean('required')->default(false)->comment('備審資料是否為必繳');
             $table->string('created_at');
             $table->string('updated_at');
