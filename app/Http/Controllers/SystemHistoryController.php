@@ -366,7 +366,7 @@ class SystemHistoryController extends Controller
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
                     'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
-                    'departments' => 'required',
+                    'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
                         'string',
@@ -419,7 +419,7 @@ class SystemHistoryController extends Controller
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
                     'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
-                    'departments' => 'required',
+                    'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
                         'string',
@@ -439,7 +439,7 @@ class SystemHistoryController extends Controller
                     ->latest()
                     ->first();
 
-                $total_can_Admissions = $request->last_year_surplus_admission_quota + $deptsystemhistoryData->last_year_admission_amount + $deptsystemhistoryData->ratify_expanded_quota;
+                $total_can_Admissions = $request->input('last_year_surplus_admission_quota') + $deptsystemhistoryData->last_year_admission_amount + $deptsystemhistoryData->ratify_expanded_quota;
 
                 // 初始化欲招收總量
                 $allQuota = 0;
@@ -457,7 +457,7 @@ class SystemHistoryController extends Controller
                 }
 
                 // 累計要求的二技班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
-                foreach ($request->departments as $department_item) {
+                foreach ($request->input('departments') as &$department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
                     } else {
@@ -475,7 +475,7 @@ class SystemHistoryController extends Controller
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
                     'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
-                    'departments' => 'required',
+                    'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
                         'string',
@@ -495,7 +495,7 @@ class SystemHistoryController extends Controller
                 $allQuota = 0;
 
                 // 累計要求的碩博班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
-                foreach ($request->departments as $department_item) {
+                foreach ($request->input('departments') as &$department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
                     } else {
