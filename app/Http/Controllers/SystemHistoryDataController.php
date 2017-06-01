@@ -19,7 +19,7 @@ use App\GraduateDepartmentHistoryData;
 use App\DepartmentHistoryData;
 use App\DepartmentData;
 
-class SystemHistoryController extends Controller
+class SystemHistoryDataController extends Controller
 {
     public function __construct()
     {

@@ -23,9 +23,9 @@ Route::post('/users/logout', 'Auth\LoginController@UserLogout');
 
 Route::resource('/schools.editors', 'SchoolEditorController');
 
-Route::resource('/schools.histories', 'SchoolHistoryController');
+Route::resource('/schools.histories', 'SchoolHistoryDataController');
 
-Route::resource('/schools.systems.histories', 'SystemHistoryController');
+Route::resource('/schools.systems.histories', 'SystemHistoryDataController');
 
 Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryController');
 

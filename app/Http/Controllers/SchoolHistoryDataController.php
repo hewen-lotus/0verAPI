@@ -11,7 +11,7 @@ use DB;
 use App\SchoolData;
 use App\SchoolHistoryData;
 
-class SchoolHistoryController extends Controller
+class SchoolHistoryDataController extends Controller
 {
     public function __construct()
     {
