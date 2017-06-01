@@ -23,7 +23,7 @@ class SystemHistoryDataController extends Controller
 {
     public function __construct()
     {
-        $this->middleware('auth');
+        $this->middleware(['auth', 'switch']);
 
         $this->isLockedCollection = collect(['waiting', 'confirmed']);
 
