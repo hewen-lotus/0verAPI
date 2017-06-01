@@ -892,7 +892,8 @@ class SystemHistoryController extends Controller
 
             $data->another_department_self_enrollment_quota = $anotherDepartmentSelfEnrollmentQuota;
             $data->another_department_admission_selection_quota = $anotherDepartmentAdmissionSelectionQuota;
-            if ($system_id == 1) {
+            // 若是要求是二技學制，則應給學士學制分發總數
+            if ($system_id == 2) {
                 $data->another_department_admission_placement_quota = $anotherDepartmentAdmissionPlacementQuota;
             }
         }
