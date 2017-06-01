@@ -401,7 +401,7 @@ class SystemHistoryController extends Controller
                 }
 
                 // 累計要求的學士班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
-                foreach ($request->departments as $department_item) {
+                foreach ($request->input('departments') as &$department_item) {
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['admission_placement_quota'] + $department_item['self_enrollment_quota'];
                     } else {
