@@ -47,7 +47,7 @@ class SchoolHistoryDataPolicy
         }
 
         if ($user->school_editor != NULL) {
-            if (($user->school_editor->school_code == $school_id || $school_id == 'me') || (bool)$user->school_editor->has_admin) {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && (bool)$user->school_editor->has_admin) {
                 return true;
             }
         }
