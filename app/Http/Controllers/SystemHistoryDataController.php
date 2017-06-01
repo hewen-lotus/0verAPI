@@ -379,7 +379,7 @@ class SystemHistoryDataController extends Controller
                     'departments.*.admission_selection_quota' => 'required|integer',
                     'departments.*.admission_placement_quota' => 'required|integer',
                     'departments.*.decrease_reason_of_admission_placement' =>
-                        'if_decrease_reason_required:id,admission_placement_quota|string',
+                        'if_decrease_reason_required:id,admission_placement_quota|nullable|string',
                 ];
 
                 // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
@@ -558,6 +558,11 @@ class SystemHistoryDataController extends Controller
                             ->latest()
                             ->first();
 
+                        if (!$departmentHistoryData) {
+                            $messages = array('department history not found.');
+                            return response()->json(compact('messages'), 404);
+                        }
+
                         // 整理系所寫入資料
                         $departmentInsertData = [
                             'id' => $departmentHistoryData->id,
@@ -602,7 +607,7 @@ class SystemHistoryDataController extends Controller
                         ];
 
                         // 校有自招且系要自招才可自招，否則自招資訊重設
-                        if ($schoolHistoryData->has_self_enrollment && $department['has_self_entrollment']) {
+                        if ($schoolHistoryData->has_self_enrollment && $department['has_self_enrollment']) {
                             $departmentInsertData += array(
                                 'has_self_enrollment' => $department['has_self_enrollment'],
                                 'self_enrollment_quota' => $department['self_enrollment_quota']
@@ -632,6 +637,11 @@ class SystemHistoryDataController extends Controller
                             ->where('id', '=', $department['id'])
                             ->latest()
                             ->first();
+
+                        if (!$departmentHistoryData) {
+                            $messages = array('department history not found.');
+                            return response()->json(compact('messages'), 404);
+                        }
 
                         // 整理系所寫入資料
                         $departmentInsertData = [
@@ -680,7 +690,7 @@ class SystemHistoryDataController extends Controller
                         // 沒 has_RiJian，也沒 has_special_class => 都不行
 
                         // 校有自招且系要自招才可自招，否則自招資訊重設
-                        if ($schoolHistoryData->has_self_enrollment && $department['has_self_entrollment']) {
+                        if ($schoolHistoryData->has_self_enrollment && $department['has_self_enrollment']) {
                             // 有日間二技部，可自招可聯招
                             if ($departmentHistoryData->has_RiJian) {
                                 $departmentInsertData += [
@@ -712,6 +722,11 @@ class SystemHistoryDataController extends Controller
                             ->where('system_id', '=', $system_id)
                             ->latest()
                             ->first();
+
+                        if (!$departmentHistoryData) {
+                            $messages = array('department history not found.');
+                            return response()->json(compact('messages'), 404);
+                        }
 
                         // 整理系所寫入資料
                         $departmentInsertData = [

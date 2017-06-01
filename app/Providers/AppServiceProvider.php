@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Schema;
+use Log;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -19,9 +20,13 @@ class AppServiceProvider extends ServiceProvider
         Schema::defaultStringLength(191);
 
         Validator::extend('if_decrease_reason_required', function ($attribute, $value, $parameters, $validator) {
-            $dept_id = $parameters[0];
+            $input = $validator->getData();
 
-            $admission_placement_quota = $parameters[1];
+            $route = explode('.', $attribute);
+
+            $dept_id = $input[$route[0]][$route[1]][$parameters[0]];
+
+            $admission_placement_quota = $input[$route[0]][$route[1]][$parameters[1]];
 
             $departmentHistoryData = \App\DepartmentHistoryData::select()
                 ->where('id', '=', $dept_id)
