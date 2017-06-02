@@ -25,7 +25,8 @@ class CreateSystemDataTable extends Migration
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
             $table->unsignedInteger('last_year_surplus_admission_quota')->nullable()->comment('上學年本地生未招足名額（二技參照學士）');
             $table->unsignedInteger('ratify_expanded_quota')->nullable()->comment('本學年教育部核定擴增名額（二技參照學士）');
-            $table->unsignedInteger('ratify_quota_for_self_enrollment')->nullable()->comment('教育部核定單獨招收名額（只有學士班有）');
+            $table->unsignedInteger('ratify_quota_for_self_enrollment')->nullable()->comment('教育部核定單獨招收名額（二技參照學士）');
+            $table->unsignedInteger('ratify_quota_for_admission')->nullable()->comment('教育部核定聯招名額（二技參照學士）');
             $table->ipAddress('ip_address')->comment('按下送出的人的IP');
             $table->enum('info_status', ['editing', 'waiting', 'returned', 'confirmed'])->comment('資料狀態（editing|waiting|returned|confirmed');
             $table->enum('quota_status', ['editing', 'waiting', 'returned', 'confirmed'])->comment('名額狀態（editing|waiting|returned|confirmed');
@@ -50,7 +51,8 @@ class CreateSystemDataTable extends Migration
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
             $table->unsignedInteger('last_year_surplus_admission_quota')->nullable()->comment('上學年本地生未招足名額（二技參照學士）');
             $table->unsignedInteger('ratify_expanded_quota')->nullable()->comment('本學年教育部核定擴增名額（二技參照學士）');
-            $table->unsignedInteger('ratify_quota_for_self_enrollment')->nullable()->comment('教育部核定單獨招收名額（只有學士班有）');
+            $table->unsignedInteger('ratify_quota_for_self_enrollment')->nullable()->comment('教育部核定單獨招收名額（二技參照學士）');
+            $table->unsignedInteger('ratify_quota_for_admission')->nullable()->comment('教育部核定聯招名額（二技參照學士）');
             $table->string('confirmed_by')->nullable()->comment('資料由哪位海聯人員確認匯入的');
             $table->foreign('confirmed_by')->references('username')->on('users');
             $table->string('confirmed_at')->nullable()->comment('資料確認匯入的時間');
