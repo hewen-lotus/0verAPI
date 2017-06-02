@@ -144,7 +144,6 @@ class GraduateDepartmentHistoryData extends Model
         'description', //選系說明
         'eng_description', //選系英文說明
         'memo', //給海聯的備註
-        'eng_memo', //給海聯的英文備註
         'url', //系網站網址
         'eng_url', //英文系網站網址
         'last_year_personal_apply_offer', //去年個人申請錄取名額
@@ -159,7 +158,6 @@ class GraduateDepartmentHistoryData extends Model
         //'admission_placement_ratify_quota', //教育部核定聯合分發名額
         //'admission_selection_ratify_quota', //教育部核定個人申請名額
         //'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
-        'rank', //志願排名
         'sort_order', //輸出排序
         'has_review_fee', //是否另外收取審查費用
         'review_fee_detail', //審查費用說明

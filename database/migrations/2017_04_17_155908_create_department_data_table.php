@@ -42,6 +42,7 @@ class CreateDepartmentDataTable extends Migration
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
             $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
             $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
+            $table->unsignedInteger('self_enrollment_ratify_quota')->nullable()->comment('教育部核定單獨招收(自招)名額');
             $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
@@ -101,6 +102,7 @@ class CreateDepartmentDataTable extends Migration
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
             $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
             $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
+            $table->unsignedInteger('self_enrollment_ratify_quota')->nullable()->comment('教育部核定單獨招收(自招)名額');
             $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');

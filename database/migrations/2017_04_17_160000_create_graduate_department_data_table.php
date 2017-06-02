@@ -25,7 +25,6 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
-            $table->text('eng_memo')->nullable()->comment('給海聯的英文備註');
             $table->string('url')->comment('系網站網址');
             $table->string('eng_url')->comment('英文系網站網址');
             $table->unsignedInteger('last_year_personal_apply_offer')->comment('去年個人申請錄取名額');
@@ -37,10 +36,8 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
             $table->string('special_dept_type')->nullable()->comment('特殊系所（醫學系、牙醫學系、中醫學系、藝術相關學系）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
-            $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
             $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
             $table->unsignedInteger('self_enrollment_ratify_quota')->nullable()->comment('教育部核定單獨招收(自招)名額');
-            $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
             $table->string('birth_limit_after')->nullable()->comment('限…之後出生');
@@ -81,7 +78,6 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->text('description')->comment('選系說明');
             $table->text('eng_description')->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
-            $table->text('eng_memo')->nullable()->comment('給海聯的英文備註');
             $table->string('url')->comment('系網站網址');
             $table->string('eng_url')->comment('英文系網站網址');
             $table->unsignedInteger('last_year_personal_apply_offer')->comment('去年個人申請錄取名額');
@@ -93,10 +89,8 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->boolean('has_foreign_special_class')->comment('是否招收外生專班');
             $table->string('special_dept_type')->nullable()->comment('特殊系所（醫學系、牙醫學系、中醫學系、藝術相關學系）');
             $table->enum('gender_limit', ['M', 'F'])->nullable()->comment('性別限制');
-            $table->unsignedInteger('admission_placement_ratify_quota')->nullable()->comment('教育部核定聯合分發名額');
             $table->unsignedInteger('admission_selection_ratify_quota')->nullable()->comment('教育部核定個人申請名額');
             $table->unsignedInteger('self_enrollment_ratify_quota')->nullable()->comment('教育部核定單獨招收(自招)名額');
-            $table->unsignedInteger('rank')->default(99999)->comment('志願排名');
             $table->unsignedInteger('sort_order')->default(99999)->comment('輸出排序');
             $table->boolean('has_birth_limit')->comment('是否限制出生日期');
             $table->string('birth_limit_after')->nullable()->comment('限…之後出生');

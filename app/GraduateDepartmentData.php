@@ -133,7 +133,6 @@ class GraduateDepartmentData extends Model
         'description', //選系說明
         'eng_description', //選系英文說明
         'memo', //給海聯的備註
-        'eng_memo', //給海聯的英文備註
         'url', //系網站網址
         'eng_url', //英文系網站網址
         'last_year_personal_apply_offer', //去年個人申請錄取名額
