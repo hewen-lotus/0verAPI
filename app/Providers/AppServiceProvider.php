@@ -6,7 +6,6 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Schema;
-use Log;
 
 class AppServiceProvider extends ServiceProvider
 {

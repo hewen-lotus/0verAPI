@@ -114,6 +114,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereUrl($value)
  * @mixin \Eloquent
+ * @property bool $has_RiJian 是否有招收日間二技學制
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasRiJian($value)
  */
 class TwoYearTechHistoryDepartmentData extends Model
 {

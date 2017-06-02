@@ -19,7 +19,7 @@ class AppSwitch
      */
     public function handle($request, Closure $next)
     {
-        Log::info(Route::current()->uri());
+        Log::info(Route::currentRouteAction());
 
         return $next($request);
     }
