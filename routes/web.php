@@ -27,6 +27,8 @@ Route::resource('/schools.histories', 'SchoolHistoryDataController');
 
 Route::resource('/schools.systems.histories', 'SystemHistoryDataController');
 
+Route::resource('/schools.quotas', 'SystemQuotaController');
+
 //Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryController');
 
 Route::post('/personal-and-priority-data-importer', 'PersonalAndPriorityDataImportController@import');
