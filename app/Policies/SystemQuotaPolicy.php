@@ -44,7 +44,6 @@ class SystemQuotaPolicy
 
         return false;
     }
-    
 
     /**
      * Determine whether the user can update the systemQuota.

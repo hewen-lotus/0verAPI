@@ -13,15 +13,14 @@ use App\SystemQuota;
 
 class SystemQuotaController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware(['auth', 'switch']);
+    }
+
     public function index(Request $request, $school_id)
     {
         $user = Auth::user();
-
-        // 確認是否有登入
-        if (!$user) {
-            $messages = array('User need to login');
-            return response()->json(compact('messages'), 401);
-        }
 
         // 確認使用者權限
         if ($user->can('view', [SystemQuota::class, $school_id])) {
@@ -62,5 +61,11 @@ class SystemQuotaController extends Controller
             $messages = array('User don\'t have permission to access');
             return response()->json(compact('messages'), 403);
         }
+    }
+
+    public function store(Request $request, $school_id)
+    {
+        $user = Auth::user();
+        // TODO 新增（更新？）資料
     }
 }
