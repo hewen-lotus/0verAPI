@@ -75,7 +75,6 @@ class CreateSystemDataTable extends Migration
      */
     public function down()
     {
-
         Schema::table('system_history_data', function (Blueprint $table) {
             $table->dropForeign('system_history_data_school_code_foreign');
             $table->dropForeign('system_history_data_type_id_foreign');
@@ -93,6 +92,5 @@ class CreateSystemDataTable extends Migration
 
         Schema::dropIfExists('system_data');
         Schema::dropIfExists('system_history_data');
-
     }
 }

@@ -43,6 +43,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereUpdatedBy($value)
  * @mixin \Eloquent
+ * @property int $ratify_quota_for_admission 教育部核定聯招名額（二技參照學士）
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemData whereRatifyQuotaForAdmission($value)
  */
 class SystemData extends Model
 {

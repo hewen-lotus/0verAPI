@@ -41,7 +41,6 @@ class CreateSystemQuotaTable extends Migration
      */
     public function down()
     {
-
         Schema::table('system_quota', function (Blueprint $table) {
             $table->dropForeign('system_quota_school_code_foreign');
             $table->dropForeign('system_quota_type_id_foreign');
@@ -49,6 +48,5 @@ class CreateSystemQuotaTable extends Migration
         });
 
         Schema::dropIfExists('system_quota');
-
     }
 }

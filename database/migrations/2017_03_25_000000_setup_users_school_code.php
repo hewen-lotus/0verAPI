@@ -13,7 +13,6 @@ class SetupUsersSchoolCode extends Migration
      */
     public function up()
     {
-
         Schema::table('school_editors', function (Blueprint $table) {
             $table->string('school_code')->comment('該使用者所屬學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
@@ -23,7 +22,6 @@ class SetupUsersSchoolCode extends Migration
             $table->string('school_code')->comment('該使用者所屬學校代碼');
             $table->foreign('school_code')->references('id')->on('school_data');
         });
-
     }
 
     /**
@@ -33,7 +31,6 @@ class SetupUsersSchoolCode extends Migration
      */
     public function down()
     {
-
         Schema::table('school_editors', function (Blueprint $table) {
             $table->dropForeign('school_editors_school_code_foreign');
             $table->dropColumn('school_code');
@@ -43,6 +40,5 @@ class SetupUsersSchoolCode extends Migration
             $table->dropForeign('school_reviewers_school_code_foreign');
             $table->dropColumn('school_code');
         });
-
     }
 }

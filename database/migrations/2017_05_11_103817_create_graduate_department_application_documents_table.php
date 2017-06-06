@@ -13,7 +13,6 @@ class CreateGraduateDepartmentApplicationDocumentsTable extends Migration
      */
     public function up()
     {
-
         Schema::create('graduate_dept_application_docs', function (Blueprint $table) {
             $table->string('dept_id')->comment('系所代碼');
             $table->foreign('dept_id')->references('id')->on('department_data');
@@ -44,7 +43,6 @@ class CreateGraduateDepartmentApplicationDocumentsTable extends Migration
             $table->string('updated_at');
             $table->string('deleted_at')->nullable();
         });
-
     }
 
     /**
@@ -54,7 +52,6 @@ class CreateGraduateDepartmentApplicationDocumentsTable extends Migration
      */
     public function down()
     {
-
         Schema::table('graduate_dept_application_docs', function (Blueprint $table) {
             $table->dropForeign('graduate_dept_application_docs_dept_id_foreign');
             $table->dropForeign('graduate_dept_application_docs_type_id_foreign');
@@ -68,6 +65,5 @@ class CreateGraduateDepartmentApplicationDocumentsTable extends Migration
 
         Schema::dropIfExists('graduate_dept_history_application_docs');
         Schema::dropIfExists('graduate_dept_application_docs');
-
     }
 }

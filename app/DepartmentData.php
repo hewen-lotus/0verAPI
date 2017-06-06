@@ -110,6 +110,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUrl($value)
+ * @property int $self_enrollment_ratify_quota 教育部核定單獨招收(自招)名額
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereSelfEnrollmentRatifyQuota($value)
  */
 class DepartmentData extends Model
 {

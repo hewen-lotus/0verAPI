@@ -60,6 +60,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereTypeId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int $ratify_quota_for_admission 教育部核定聯招名額（二技參照學士）
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereRatifyQuotaForAdmission($value)
  */
 class SystemHistoryData extends Model
 {

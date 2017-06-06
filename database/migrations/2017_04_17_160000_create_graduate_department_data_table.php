@@ -13,7 +13,6 @@ class CreateGraduateDepartmentDataTable extends Migration
      */
     public function up()
     {
-
         Schema::create('graduate_department_data', function (Blueprint $table) {
             $table->string('id')->unique()->comment('系所代碼（系統按規則產生）');
             $table->string('school_code')->comment('學校代碼');
@@ -125,7 +124,6 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->unsignedInteger('history_id')->nullable()->comment('從哪一筆歷史紀錄匯入的');
             $table->foreign('history_id')->references('history_id')->on('graduate_department_history_data');
         });
-
     }
 
     /**
@@ -135,7 +133,6 @@ class CreateGraduateDepartmentDataTable extends Migration
      */
     public function down()
     {
-
         Schema::table('graduate_department_data', function (Blueprint $table) {
             $table->dropForeign('graduate_department_data_system_id_foreign');
             $table->dropForeign('graduate_department_data_school_code_foreign');
@@ -160,6 +157,5 @@ class CreateGraduateDepartmentDataTable extends Migration
 
         Schema::dropIfExists('graduate_department_history_data');
         Schema::dropIfExists('graduate_department_data');
-
     }
 }

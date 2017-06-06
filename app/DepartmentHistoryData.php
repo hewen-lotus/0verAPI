@@ -120,6 +120,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereUrl($value)
  * @mixin \Eloquent
+ * @property int $self_enrollment_ratify_quota 教育部核定單獨招收(自招)名額
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData whereSelfEnrollmentRatifyQuota($value)
  */
 class DepartmentHistoryData extends Model
 {

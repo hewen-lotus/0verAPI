@@ -27,6 +27,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereTypeId($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property bool $modifiable 學校是否可修改此備審資料
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereModifiable($value)
  */
 class DepartmentApplicationDocument extends Model
 {

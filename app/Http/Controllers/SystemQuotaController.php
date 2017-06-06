@@ -17,7 +17,7 @@ class SystemQuotaController extends Controller
 {
     public function __construct()
     {
-        $this->middleware([ 'switch']);
+        $this->middleware(['auth', 'switch']);
     }
 
     public function index(Request $request, $school_id)

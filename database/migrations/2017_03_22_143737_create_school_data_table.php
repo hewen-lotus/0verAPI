@@ -13,7 +13,6 @@ class CreateSchoolDataTable extends Migration
      */
     public function up()
     {
-
         Schema::create('school_data', function (Blueprint $table) {
             $table->string('id')->primary()->comment('學校代碼');
             $table->string('title')->comment('學校名稱');
@@ -100,7 +99,6 @@ class CreateSchoolDataTable extends Migration
             $table->unsignedInteger('history_id')->nullable()->comment('從哪一筆歷史紀錄匯入的');
             $table->foreign('history_id')->references('history_id')->on('school_history_data');
         });
-
     }
 
     /**
@@ -110,7 +108,6 @@ class CreateSchoolDataTable extends Migration
      */
     public function down()
     {
-
         Schema::table('school_history_data', function (Blueprint $table) {
             $table->dropForeign('school_history_data_id_foreign');
             $table->dropForeign('school_history_data_review_by_foreign');
@@ -125,6 +122,5 @@ class CreateSchoolDataTable extends Migration
 
         Schema::dropIfExists('school_data');
         Schema::dropIfExists('school_history_data');
-
     }
 }

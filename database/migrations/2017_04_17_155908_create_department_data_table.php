@@ -13,7 +13,6 @@ class CreateDepartmentDataTable extends Migration
      */
     public function up()
     {
-
         Schema::create('department_data', function (Blueprint $table) {
             $table->string('id')->unique()->comment('系所代碼（系統按規則產生）');
             $table->string('school_code')->comment('學校代碼');
@@ -148,7 +147,6 @@ class CreateDepartmentDataTable extends Migration
      */
     public function down()
     {
-
         Schema::table('department_data', function (Blueprint $table) {
             $table->dropForeign('department_data_school_code_foreign');
             $table->dropForeign('department_data_confirmed_by_foreign');
@@ -171,6 +169,5 @@ class CreateDepartmentDataTable extends Migration
 
         Schema::dropIfExists('department_history_data');
         Schema::dropIfExists('department_data');
-
     }
 }
