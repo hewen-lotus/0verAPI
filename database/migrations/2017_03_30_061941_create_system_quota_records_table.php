@@ -27,7 +27,6 @@ class CreateSystemQuotaRecordsTable extends Migration
             $table->string('deleted_at')->nullable();
             $table->primary(['school_code', 'type_id', 'academic_year']);
         });
-
     }
 
     /**

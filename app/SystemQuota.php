@@ -43,7 +43,7 @@ class SystemQuota extends Model
 
     protected $table = 'system_quota';
 
-    //protected $primaryKey = '';
+    public $incrementing = false;
 
     protected $dateFormat = Carbon::ISO8601;
 
@@ -73,5 +73,4 @@ class SystemQuota extends Model
     {
         return $this->belongsTo('App\User', 'created_by', 'username');
     }
-
 }
