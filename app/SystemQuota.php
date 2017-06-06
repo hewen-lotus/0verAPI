@@ -58,9 +58,6 @@ class SystemQuota extends Model
     ];
 
     protected $fillable = [
-        //'school_code', //學校代碼
-        //'type_id', //學制種類（學士, 碩士, 二技, 博士）
-        //'last_year_admission_amount', //上學年度核定日間學制招生名額外加 10% 名額
         'last_year_surplus_admission_quota', //上學年度本地生招生缺額數
         'expanded_quota', //欲申請擴增名額
         'admission_quota', //海外聯合招生管道名額

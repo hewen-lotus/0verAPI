@@ -20,6 +20,6 @@ class SystemQuotaRecord extends Model
     protected $dates = ['deleted_at'];
 
     protected $fillable = [
-        
+
     ];
 }

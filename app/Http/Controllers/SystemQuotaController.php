@@ -9,15 +9,23 @@ use DB;
 use Auth;
 use Validator;
 use Storage;
+use Carbon\Carbon;
 use Log;
 
 use App\SystemQuota;
+use App\SystemQuotaRecord;
 
 class SystemQuotaController extends Controller
 {
     public function __construct()
     {
         $this->middleware(['auth', 'switch']);
+
+        if (Carbon::now()->month <= 9) {
+            $this->academic_year = (Carbon::now()->year) - 1;
+        } else {
+            $this->academic_year = (Carbon::now()->year) - 0;
+        }
     }
 
     public function index(Request $request, $school_id)
@@ -29,17 +37,17 @@ class SystemQuotaController extends Controller
             // 設定 school id（可能是 me）
             $school_id = $user->school_editor->school_code;
 
-            // 取得此校所有學制第一階段名額資訊
-            $systems = SystemQuota::select()
-                ->where('school_code', '=', $school_id)
-                ->with('updater.school_editor')
-                ->get();
-
-            if ($systems == NULL) {
+            if (!SystemQuota::where('school_code', '=', $school_id)->exists()) {
                 // 沒有資料？404 啦
                 $messages = array('System Data Not Found!');
                 return response()->json(compact('messages'), 404);
             } else {
+                // 取得此校所有學制第一階段名額資訊
+                $systems = SystemQuota::select()
+                    ->where('school_code', '=', $school_id)
+                    ->with('updater.school_editor')
+                    ->get();
+
                 // 整理資料，依學制分物件
                 $result = [];
 
@@ -65,13 +73,64 @@ class SystemQuotaController extends Controller
         }
     }
 
-    public function store(Request $request, $school_id)
+    public function update(Request $request, $school_id)
     {
         $user = Auth::user();
 
+        $academic_year_we_need = [$this->academic_year - 1, $this->academic_year - 2, $this->academic_year - 3];
+
+        // 學士及二技 前三年海外聯合招生管道總分發名額數之平均
+        $BachelorLastThreeYearsAvg = DB::table('system_quota_records')
+            ->select(DB::raw('(admission_selection_amount + admission_placement_amount) as totalamount'))
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', 1)
+            ->whereIn('academic_year', $academic_year_we_need)
+            ->avg('totalamount');
+
+        // 碩士 前三年海外聯合招生管道總分發名額數之平均
+        $MasterLastThreeYearsAvg = DB::table('system_quota_records')
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', 3)
+            ->whereIn('academic_year', $academic_year_we_need)
+            ->avg('admission_selection_amount');
+
+        // 博士 前三年海外聯合招生管道總分發名額數之平均
+        $PhDLastThreeYearsAvg = DB::table('system_quota_records')
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', 4)
+            ->whereIn('academic_year', $academic_year_we_need)
+            ->avg('admission_selection_amount');
+
+        $Bachelor10pa = DB::table('system_quota')
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', 1)
+            ->pluck('last_year_admission_amount');
+
+        $Master10pa = DB::table('system_quota')
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', 3)
+            ->pluck('last_year_admission_amount');
+
+        $PhD10pa = DB::table('system_quota')
+            ->where('school_code', '=', $school_id)
+            ->where('type_id', '=', 4)
+            ->pluck('last_year_admission_amount');
+
         $validator = Validator::make($request->all(), [
-            'files' => 'required|array',
-            'files.*' => 'file'
+            'Bachelor_last_year_surplus_admission_quota' => 'required|integer', //本地生招生缺額數
+            'Bachelor_expanded_quota' => 'required|integer', //欲申請擴增名額
+            'Bachelor_self_enrollment_quota' => 'required|integer', //單獨招收名額
+            'Bachelor_admission_quota' => 'required|integer', //海外聯合招生管道名額
+            'Master_last_year_surplus_admission_quota' => 'required|integer', //本地生招生缺額數
+            'Master_expanded_quota' => 'required|integer', //欲申請擴增名額
+            'Master_self_enrollment_quota' => 'required|integer', //單獨招收名額
+            'Master_admission_quota' => 'required|integer', //海外聯合招生管道名額
+            'PhD_last_year_surplus_admission_quota' => 'required|integer', //本地生招生缺額數
+            'PhD_expanded_quota' => 'required|integer', //欲申請擴增名額
+            'PhD_self_enrollment_quota' => 'required|integer', //單獨招收名額
+            'PhD_admission_quota' => 'required|integer', //海外聯合招生管道名額
+            //'files' => 'required|array',
+            //'files.*' => 'file'
         ]);
 
         if($validator->fails()) {
@@ -79,10 +138,25 @@ class SystemQuotaController extends Controller
             return response()->json(compact('messages'), 400);
         }
 
-        $files = $request->files;
+        if ($Bachelor10pa + $request->Bachelor_last_year_surplus_admission_quota + $request->Bachelor_expanded_quota < $BachelorLastThreeYearsAvg + $request->Bachelor_admission_quota + $request->Bachelor_self_enrollment_quota) {
+            $messages = array('學士名額不符規則');
+            return response()->json(compact('messages'), 400);
+        }
 
-        Log::info(print_r($request->Text,true));
-        Log::info(print_r($files,true));
+        if ($Master10pa + $request->Master_last_year_surplus_admission_quota + $request->Master_expanded_quota < $MasterLastThreeYearsAvg + $request->Master_admission_quota + $request->Master_self_enrollment_quota) {
+            $messages = array('碩士名額不符規則');
+            return response()->json(compact('messages'), 400);
+        }
+
+        if ($PhD10pa + $request->PhD_last_year_surplus_admission_quota + $request->PhD_expanded_quota < $PhDLastThreeYearsAvg + $request->PhD_admission_quota + $request->PhD_self_enrollment_quota) {
+            $messages = array('博士名額不符規則');
+            return response()->json(compact('messages'), 400);
+        }
+
+        //$files = $request->files;
+
+        //Log::info(print_r($request->Text,true));
+        //Log::info(print_r($files,true));
 
         //foreach ($files as $file) {
         //    Log::info(gettype($file));

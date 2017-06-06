@@ -52,9 +52,15 @@ class SystemQuotaPolicy
      * @param  \App\SystemQuota  $systemQuota
      * @return mixed
      */
-    public function update(User $user, SystemQuota $systemQuota)
+    public function update(User $user, SystemQuota $systemQuota, $school_id)
     {
-        //
+        if ($user->school_editor != NULL && (bool)$user->school_editor->has_admin) {
+            if ($user->school_editor->school_code == $school_id || $school_id == 'me') {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

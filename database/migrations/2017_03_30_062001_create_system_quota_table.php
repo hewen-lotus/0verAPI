@@ -24,7 +24,7 @@ class CreateSystemQuotaTable extends Migration
             $table->unsignedInteger('expanded_quota')->nullable()->comment('欲申請擴增名額');
             $table->unsignedInteger('self_enrollment_quota')->nullable()->comment('單獨招收名額');
             $table->unsignedInteger('admission_quota')->nullable()->comment('海外聯合招生管道名額');
-            $table->ipAddress('ip_address')->comment('儲存人的IP');
+            $table->ipAddress('ip_address')->nullable()->comment('儲存人的IP');
             $table->string('updated_by')->nullable()->comment('儲存人');
             $table->foreign('updated_by')->references('username')->on('users');
             $table->string('created_at');
