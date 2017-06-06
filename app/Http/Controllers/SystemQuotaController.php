@@ -8,6 +8,8 @@ use Illuminate\Validation\Rule;
 use DB;
 use Auth;
 use Validator;
+use Storage;
+use Log;
 
 use App\SystemQuota;
 
@@ -15,7 +17,7 @@ class SystemQuotaController extends Controller
 {
     public function __construct()
     {
-        $this->middleware(['auth', 'switch']);
+        $this->middleware([ 'switch']);
     }
 
     public function index(Request $request, $school_id)
@@ -66,6 +68,30 @@ class SystemQuotaController extends Controller
     public function store(Request $request, $school_id)
     {
         $user = Auth::user();
+
+        $validator = Validator::make($request->all(), [
+            'files' => 'required|array',
+            'files.*' => 'file'
+        ]);
+
+        if($validator->fails()) {
+            $messages = $validator->errors()->all();
+            return response()->json(compact('messages'), 400);
+        }
+
+        $files = $request->files;
+
+        Log::info(print_r($request->Text,true));
+        Log::info(print_r($files,true));
+
+        //foreach ($files as $file) {
+        //    Log::info(gettype($file));
+        //    $filename = $file->getClientOriginalName();
+        //    $file->move(storage_path('app'), $filename);
+            //Storage::putFile('/', $file, 'local');
+        //}
         // TODO 新增（更新？）資料
+
+        return 'done';
     }
 }
