@@ -129,8 +129,10 @@ class SystemQuotaController extends Controller
             'PhD_expanded_quota' => 'required|integer', //欲申請擴增名額
             'PhD_self_enrollment_quota' => 'required|integer', //單獨招收名額
             'PhD_admission_quota' => 'required|integer', //海外聯合招生管道名額
-            //'files' => 'required|array',
-            //'files.*' => 'file'
+            'survey_file_with_seal' => 'required|file', //核章過後之申請僑生及港澳生專案擴增名額調查表
+            'survey_file' => 'required|file', //申請僑生及港澳生專案擴增名額調查表
+            'files' => 'required|array', //最近四學年度各僑生招生管道之提供名額、錄取人數及註冊人數等相關資料
+            'files.*' => 'file',
         ]);
 
         if($validator->fails()) {
