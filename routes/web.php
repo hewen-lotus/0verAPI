@@ -33,8 +33,6 @@ Route::resource('/schools.quotas', 'SystemQuotaController');
 
 Route::post('/personal-and-priority-data-importer', 'PersonalAndPriorityDataImportController@import');
 
-Route::get('/db-schema-to-md', 'DBSchemaToMDController@export');
-
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
 
 Route::post('/csv-to-seeder', 'CSVToSeederController@import');
