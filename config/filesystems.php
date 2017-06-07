@@ -63,6 +63,11 @@ return [
             'bucket' => env('AWS_BUCKET'),
         ],
 
+        'artisan' => [
+            'driver' => 'local',
+            'root' => storage_path('app/artisan'),
+        ],
+
     ],
 
 ];

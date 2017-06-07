@@ -13,7 +13,8 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\DBSchemaToMarkDown::class
+        Commands\DBSchemaToMarkDown::class,
+        Commands\CSVToSeeder::class,
     ];
 
     /**

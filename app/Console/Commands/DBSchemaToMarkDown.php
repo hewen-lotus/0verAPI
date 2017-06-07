@@ -67,8 +67,8 @@ class DBSchemaToMarkDown extends Command
             }
         }
 
-        Storage::disk('local')->put($now.' DBtoMarkdown', $md);
+        Storage::disk('artisan')->put('DBtoMarkdown/'.$now, $md);
 
-        $this->info('All Done! Your file is at '.storage_path('app/'.$now.' DBtoMarkdown'));
+        $this->info('All Done! Your file is at '.storage_path('app/artisan/DBtoMarkdown/'.$now));
     }
 }
