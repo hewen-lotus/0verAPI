@@ -15,6 +15,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\DBSchemaToMarkDown::class,
         Commands\CSVToSeeder::class,
+        Commands\PersonalAndPriorityDataImport::class,
     ];
 
     /**

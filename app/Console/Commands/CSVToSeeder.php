@@ -21,7 +21,7 @@ class CSVToSeeder extends Command
      *
      * @var string
      */
-    protected $description = '將 CSV 轉成 Database Seeder';
+    protected $description = '將 CSV 轉成 Database Seeder (*´∀`)~♥';
 
     /**
      * Create a new command instance.

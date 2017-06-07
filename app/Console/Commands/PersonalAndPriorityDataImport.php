@@ -1,33 +1,90 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Console\Commands;
 
-use Illuminate\Http\Request;
+use Illuminate\Console\Command;
+use Cerbero\CommandValidator\ValidatesInput;
 
-use Validator;
+use Carbon\Carbon;
 use Excel;
 use DB;
-use Log;
+use Storage;
 
-class PersonalAndPriorityDataImportController extends Controller
+class PersonalAndPriorityDataImport extends Command
 {
-    public function import(Request $request) {
-        $validator = Validator::make($request->all(), [
-            'personal_file' => 'required|file|mimes:csv,txt',
-            'priority_file' => 'required|file|mimes:csv,txt',
-            'applyyear' => 'required|integer',
-            'identification' => 'required|string'
-        ]);
+    use ValidatesInput;
 
-        if ($validator->fails()) {
-            $messages = $validator->errors()->all();
-            return response()->json(compact('messages'), 400);
+    public function rules()
+    {
+        return [
+            'apply_year' => 'integer',
+            'identification' => 'string',
+        ];
+    }
+
+    /**
+     * The name and signature of the console command.
+     *
+     * @var string
+     */
+    protected $signature = 'data-import:personal-and-priority
+                            {personal_file_path : 不知道是什麼的檔案}
+                            {priority_file_path : 第二個不知道是什麼的檔案}
+                            {apply_year : 應該是年度(int)} 
+                            {identification : (*´･д･)? (string)}';
+
+    /**
+     * The console command description.
+     *
+     * @var string
+     */
+    protected $description = '產生匯入學生資料及志願序的 SQL query 的工具 ヽ(=^･ω･^=)丿';
+
+    /**
+     * Create a new command instance.
+     *
+     * @return void
+     */
+    public function __construct()
+    {
+        parent::__construct();
+    }
+
+    /**
+     * Execute the console command.
+     *
+     * @return mixed
+     */
+    public function handle()
+    {
+        $accept_mime = collect(['text/csv', 'text/plain']); //可接受的檔案 mime
+
+        $personal_file_path = $this->argument('personal_file_path');
+
+        $personal_file_mime = mime_content_type($personal_file_path);
+
+        $priority_file_path = $this->argument('priority_file_path');
+
+        $priority_file_mime = mime_content_type($priority_file_path);
+
+        if (!$accept_mime->contains($personal_file_mime)) {
+            $this->error('personal_file 檔案格式不符');
+            return 0;
         }
 
-        // 處理個人資料
-        $personal_enctype = mb_detect_encoding(file_get_contents($request->personal_file), 'UTF-8, BIG-5', true);
+        if (!$accept_mime->contains($priority_file_mime)) {
+            $this->error('priority_file 檔案格式不符');
+            return 0;
+        }
 
-        $personal_obj = Excel::load($request->personal_file, function($reader) {
+        $apply_year = $this->argument('apply_year');
+
+        $identification = $this->argument('identification');
+
+        // 處理個人資料
+        $personal_enctype = mb_detect_encoding(file_get_contents($personal_file_path), 'UTF-8, BIG-5', true);
+
+        $personal_obj = Excel::load($personal_file_path, function($reader) {
             // Getting all results
         }, $personal_enctype)->get();
 
@@ -255,7 +312,7 @@ class PersonalAndPriorityDataImportController extends Controller
                         }
                     }
                 } else {
-                    Log::info($key);
+                    $this->info($key);
                 }
             }
 
@@ -280,7 +337,7 @@ class PersonalAndPriorityDataImportController extends Controller
             $values .= ',"'.date('Y-m-d H:i:s').'"';
 
             $keys .= ',applyyear';
-            $values .= ',"' . $request->applyyear . '"';
+            $values .= ',"' . $apply_year . '"';
 
             $keys .= ',updateCheck';
             $values .= ',"N"';
@@ -289,7 +346,7 @@ class PersonalAndPriorityDataImportController extends Controller
             $values .= ',"A"';
 
             $keys .= ',identification';
-            $values .= ',"' . $request->identification . '"';
+            $values .= ',"' . $identification . '"';
 
             // 緬甸同學電子檔案沒有最後畢業中學國別，
             // 不過緬甸同學僅能使用當地文憑，
@@ -308,9 +365,9 @@ class PersonalAndPriorityDataImportController extends Controller
         }
 
         // 處理讀卡志願
-        $enctype = mb_detect_encoding(file_get_contents($request->priority_file), 'UTF-8, BIG-5', true);
+        $enctype = mb_detect_encoding(file_get_contents($priority_file_path), 'UTF-8, BIG-5', true);
 
-        $priority_obj = Excel::load($request->priority_file, function($reader) {
+        $priority_obj = Excel::load($priority_file_path, function($reader) {
             // Getting all results
         }, $enctype)->get();
 
@@ -355,8 +412,14 @@ class PersonalAndPriorityDataImportController extends Controller
             }
         }
 
-        return $error_less_than_four.PHP_EOL.$error_dept_not_found
+        $result_data = $error_less_than_four.PHP_EOL.$error_dept_not_found
             .PHP_EOL.$error_id_not_found.PHP_EOL.$error_group_not_match
             .PHP_EOL.$query;
+
+        $time = Carbon::now();
+
+        Storage::disk('artisan')->put('personal-and-priority-data/'.$time, $result_data);
+
+        $this->info('All Done! Your file is at '.storage_path('app/artisan/personal-and-priority-data/'.$time));
     }
 }

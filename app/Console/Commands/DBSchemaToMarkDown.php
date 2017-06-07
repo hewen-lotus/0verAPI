@@ -22,7 +22,7 @@ class DBSchemaToMarkDown extends Command
      *
      * @var string
      */
-    protected $description = '將 DB 結構轉成 Markdown 格式';
+    protected $description = '將 DB 結構轉成 Markdown 格式 ヾ(*´∀ ˋ*)ﾉ';
 
     /**
      * Create a new command instance.
