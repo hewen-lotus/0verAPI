@@ -189,13 +189,13 @@ class SchoolEditorController extends Controller
                             'school_editor' => function ($query) {
                                 $query->withTrashed();
                             },
-                            'school_editor.department_permission' => function ($query) {
+                            'school_editor.department_permissions' => function ($query) {
                                 $query->withTrashed();
                             },
-                            'school_editor.graduate_department_permission' => function ($query) {
+                            'school_editor.graduate_department_permissions' => function ($query) {
                                 $query->withTrashed();
                             },
-                            'school_editor.two_year_tech_department_permission' => function ($query) {
+                            'school_editor.two_year_tech_department_permissions' => function ($query) {
                                 $query->withTrashed();
                             }
                         ])->first(), 201);
@@ -236,9 +236,9 @@ class SchoolEditorController extends Controller
                 return User::where('username', '=', $id)
                     ->with([
                         'school_editor',
-                        'school_editor.department_permission',
-                        'school_editor.graduate_department_permission',
-                        'school_editor.two_year_tech_department_permission'
+                        'school_editor.department_permissions',
+                        'school_editor.graduate_department_permissions',
+                        'school_editor.two_year_tech_department_permissions'
                     ])->first();
             }
 
@@ -402,13 +402,13 @@ class SchoolEditorController extends Controller
                                 'school_editor' => function ($query) {
                                     $query->withTrashed();
                                 },
-                                'school_editor.department_permission' => function ($query) {
+                                'school_editor.department_permissions' => function ($query) {
                                     $query->withTrashed();
                                 },
-                                'school_editor.graduate_department_permission' => function ($query) {
+                                'school_editor.graduate_department_permissions' => function ($query) {
                                     $query->withTrashed();
                                 },
-                                'school_editor.two_year_tech_department_permission' => function ($query) {
+                                'school_editor.two_year_tech_department_permissions' => function ($query) {
                                     $query->withTrashed();
                                 }
                             ])->first());
