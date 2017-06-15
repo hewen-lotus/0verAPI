@@ -124,6 +124,7 @@ class DepartmentData extends Model
     protected $dates = ['deleted_at'];
 
     protected $casts = [
+        'id' => 'string',
         'has_self_enrollment' => 'boolean',
         'has_special_class' => 'boolean',
         'has_foreign_special_class' => 'boolean',

@@ -128,6 +128,7 @@ class TwoYearTechHistoryDepartmentData extends Model
     protected $dateFormat = Carbon::ISO8601;
 
     protected $casts = [
+        'id' => 'string',
         'has_self_enrollment' => 'boolean',
         'has_special_class' => 'boolean',
         'has_foreign_special_class' => 'boolean',
