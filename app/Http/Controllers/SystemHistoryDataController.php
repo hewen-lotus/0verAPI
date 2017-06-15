@@ -330,13 +330,13 @@ class SystemHistoryDataController extends Controller
             // 沒 has_RiJian，也沒 has_special_class => 都不行
 
             // TODO 驗證名額：
-            // 若是碩博，則 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
+            // 若是碩博，則 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
             // 必須讓該學制所有系所的 admission_selection_quota + self_enrollment_quota <= 可招生總量
 
-            // 若是學士，則 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
+            // 若是學士，則 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
             // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
 
-            // 若是二技，則 可招生總量為 學士班的 (last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota)
+            // 若是二技，則 可招生總量為 學士班的 (last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota)
             // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
 
             $historyQuotaStatus = $historyData->quota_status;
@@ -365,7 +365,6 @@ class SystemHistoryDataController extends Controller
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
-                    'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
                     'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
@@ -382,8 +381,8 @@ class SystemHistoryDataController extends Controller
                         'if_decrease_reason_required:id,admission_placement_quota|nullable|string',
                 ];
 
-                // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
-                $total_can_Admissions = $request->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
+                // 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
+                $total_can_Admissions = $historyData->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
 
                 // 初始化欲招收總量
                 $allQuota = 0;
@@ -418,7 +417,6 @@ class SystemHistoryDataController extends Controller
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
-                    'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
                     'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
@@ -439,7 +437,7 @@ class SystemHistoryDataController extends Controller
                     ->latest()
                     ->first();
 
-                $total_can_Admissions = $request->input('last_year_surplus_admission_quota') + $deptsystemhistoryData->last_year_admission_amount + $deptsystemhistoryData->ratify_expanded_quota;
+                $total_can_Admissions = $deptsystemhistoryData->last_year_surplus_admission_quota + $deptsystemhistoryData->last_year_admission_amount + $deptsystemhistoryData->ratify_expanded_quota;
 
                 // 初始化欲招收總量
                 $allQuota = 0;
@@ -474,7 +472,6 @@ class SystemHistoryDataController extends Controller
                 // 設定資料驗證欄位
                 $validationRules = [
                     'action' => 'required|in:save,commit|string', //動作
-                    'last_year_surplus_admission_quota' => 'required|integer', // 未招足名額
                     'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
@@ -488,8 +485,8 @@ class SystemHistoryDataController extends Controller
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
 
-                // 可招生總量為 last_year_surplus_admission_quota(Request 會帶) + last_year_admission_amount + ratify_expanded_quota
-                $total_can_Admissions = $request->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
+                // 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
+                $total_can_Admissions = $historyData->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
 
                 // 初始化欲招收總量
                 $allQuota = 0;
@@ -540,7 +537,7 @@ class SystemHistoryDataController extends Controller
                 // 二技班無 `last_year_surplus_admission_quota`（參照學士班）
                 if ($system_id != 2) {
                     $InsertData += array(
-                        'last_year_surplus_admission_quota' => $request->input('last_year_surplus_admission_quota')
+                        'last_year_surplus_admission_quota' => $historyData->last_year_surplus_admission_quota
                     );
                 }
 
