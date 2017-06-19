@@ -16,8 +16,8 @@ class CreateSchoolLastYearSelfEnrollmentAndFiveYearStatusTable extends Migration
         Schema::create('school_last_year_self_enrollment_and_five_year_status', function (Blueprint $table) {
             $table->string('school_code')->comment('學校代碼');
             $table->foreign('school_code', 'school_code_foreign')->references('id')->on('school_data');
-            $table->string('has_five_year_student_allowed')->comment('去年中五招生狀態');
-            $table->string('has_self_enrollment')->comment('去年自招招生狀態');
+            $table->boolean('has_five_year_student_allowed')->comment('去年中五招生狀態');
+            $table->boolean('has_self_enrollment')->comment('去年自招招生狀態');
             $table->primary('school_code', 'pkey');
         });
     }
