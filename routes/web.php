@@ -29,6 +29,6 @@ Route::resource('/schools.systems.histories', 'SystemHistoryDataController');
 
 Route::resource('/schools.quotas', 'SystemQuotaController');
 
-//Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryController');
+Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryDataController');
 
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
