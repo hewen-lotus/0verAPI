@@ -10,6 +10,7 @@ use DB;
 
 use App\SchoolData;
 use App\SchoolHistoryData;
+use App\SchoolLastYearSelfEnrollmentAndFiveYearStatus;
 
 class SchoolHistoryDataController extends Controller
 {
@@ -164,6 +165,8 @@ class SchoolHistoryDataController extends Controller
                 );
             }
 
+            $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::where('school_code', '=', $school_id);
+
             // 整理招收中五生學則資料
             if ((bool)$request->input('has_five_year_student_allowed')) {
                 if ($request->hasFile('rule_doc_of_five_year_student') && $request->file('rule_doc_of_five_year_student')->isValid()) {
@@ -171,7 +174,7 @@ class SchoolHistoryDataController extends Controller
 
                     $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
                         ->storeAs('/', uniqid($historyData->title.'-'.'five_year_rule_doc_').'.'.$extension, 'public');
-                } else if ($historyData->rule_doc_of_five_year_student != NULL) {
+                } else if ($historyData->rule_doc_of_five_year_student != NULL || (bool)$request->input('has_five_year_student_allowed') == $school_last_year_self_enrollment_and_five_year_status->has_five_year_student_allowed) {
                     $five_year_rule_doc_path = $historyData->rule_doc_of_five_year_student;
                 } else {
                     $messages = array('The rule doc of five year student field is required when has five year student allowed is 1.');
@@ -192,7 +195,7 @@ class SchoolHistoryDataController extends Controller
 
                     $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
                         ->storeAs('/', uniqid($historyData->title.'-self_enrollment_approval_doc_').'.'.$extension, 'public');
-                } else if ($historyData->approval_doc_of_self_enrollment != NULL) {
+                } else if ($historyData->approval_doc_of_self_enrollment != NULL || (bool)$request->input('has_self_enrollment') == $school_last_year_self_enrollment_and_five_year_status->has_self_enrollment) {
                     $self_enrollment_approval_doc_path = $historyData->approval_doc_of_self_enrollment;
                 } else {
                     $messages = array('The approval doc of self enrollment field is required when has self enrollment is 1.');
