@@ -17,9 +17,16 @@ class DepartmentHistoryDataPolicy
      * @param  \App\DepartmentHistoryData  $departmentHistoryData
      * @return mixed
      */
-    public function view(User $user, DepartmentHistoryData $departmentHistoryData)
+    public function view(User $user, $school_id, $system_id, $department_id, $histories_id)
     {
-        //
+        if ($user->school_editor != NULL) {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
+                // TODO 驗證使用者是否有權限讀取此系所
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

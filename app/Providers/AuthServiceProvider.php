@@ -13,6 +13,8 @@ use App\SystemHistoryData;
 use App\Policies\SystemHistoryDataPolicy;
 //use App\SystemQuota;
 //use App\Policies\SystemQuotaPolicy;
+use App\DepartmentHistoryData;
+use App\Policies\DepartmentHistoryDataPolicy;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -27,6 +29,7 @@ class AuthServiceProvider extends ServiceProvider
         SchoolHistoryData::class => SchoolHistoryDataPolicy::class,
         SystemHistoryData::class => SystemHistoryDataPolicy::class,
 //        SystemQuota::class => SystemQuotaPolicy::class,
+        DepartmentHistoryData::class => DepartmentHistoryDataPolicy::class,
     ];
 
     /**

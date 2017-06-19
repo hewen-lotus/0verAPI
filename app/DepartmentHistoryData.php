@@ -147,12 +147,11 @@ class DepartmentHistoryData extends Model
     protected $fillable = [
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
-        'card_code', //讀卡代碼
+          'card_code', //讀卡代碼
         'title', //系所名稱
         'eng_title', //系所英文名稱
         'description', //選系說明
         'eng_description', //選系英文說明
-        'memo', //給海聯的備註
         'url', //系網站網址
         'eng_url', //英文系網站網址
         'last_year_admission_placement_amount', //去年聯合分發錄取名額
