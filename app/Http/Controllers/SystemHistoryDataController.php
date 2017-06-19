@@ -484,7 +484,7 @@ class SystemHistoryDataController extends Controller
                         })
                     ],
                     'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
+                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|nullable|integer',
                     'departments.*.admission_selection_quota' => 'required|integer'
                 ];
 

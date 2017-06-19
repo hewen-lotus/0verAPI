@@ -121,7 +121,6 @@ class UsersTableSeeder extends Seeder
         }
 
         $schools = [ // z%z -> @
-            ['name' => '國立臺灣大學等5校聯合海外高中推薦入學單獨招生','eng_name' => 'Joint Admissions Program for Students to Undergraduate Programs through Recommendation by Overseas Senior High Schools','phone' => '886-2-33662388轉203','username' => 'ntu00','email' => 'ntuz%zntu.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['name' => '國立臺灣大學','eng_name' => 'National  Taiwan University','phone' => '886-2-33662388轉203','username' => 'ntu','email' => 'ntuz%zntu.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['name' => '國立成功大學','eng_name' => 'National Cheng Kung University','phone' => '886-6-2757575','username' => 'ncku','email' => 'nckuz%zncku.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['name' => '國立嘉義大學','eng_name' => 'National Chiayi University','phone' => '886-5-2717296','username' => 'ncyu','email' => 'ncyuz%zncyu.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
@@ -277,9 +276,9 @@ class UsersTableSeeder extends Seeder
             ['name' => '基督教臺灣浸會神學院','eng_name' => 'Taiwan Baptist Christian Seminary','phone' => '886-2-27203140 #143','username' => 'tbts','email' => 'tbtsz%ztbts.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['name' => '臺北基督學院','eng_name' => 'Christ\'s College Taipei','phone' => '02-2809-7661 ext. 2220','username' => 'cct','email' => 'cctz%zcct.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['name' => '一貫道天皇基金會一貫道天皇學院','eng_name' => 'I-Kuan Tao College','phone' => '07-6872139','username' => 'iktc','email' => 'iktcz%ziktc.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['name' => '一貫道崇德學院','eng_name' => 'Chong-De School','phone' => '886-49-2988675','username' => 'iktcds','email' => 'iktcdsz%ziktcds.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['name' => '台灣神學研究學院','eng_name' => 'Taiwan Graduate School of Theology','phone' => '886-2-28814472','username' => 'tgst','email' => 'tgstz%ztgst.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['name' => '國立臺灣師範大學僑生先修部','eng_name' => 'National Taiwan Normal University Division of Preparatory Programs for Overseas Chinese Students','phone' => '886-2-77148888','username' => 'nups','email' => 'nupsz%znups.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
-            ['name' => '國立測試大學','eng_name' => 'National Testl University ','phone' => '800092000','username' => 'overseas','email' => 'overseasz%zoverseas.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
-            ['name' => '海外聯招','eng_name' => 'Overseas\'s','phone' => '886-49-2910960','username' => 'overseas.ncnu','email' => 'overseas.ncnuz%zoverseas.ncnu.edu.tw','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()]
         ];
 
         foreach ($schools as $school) {

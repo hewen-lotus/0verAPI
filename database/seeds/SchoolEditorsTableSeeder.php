@@ -43,7 +43,6 @@ class SchoolEditorsTableSeeder extends Seeder
         }
 
         DB::table('school_editors')->insert([
-            ['school_code' => '00','username' => 'ntu00','organization' => '註冊組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => '01','username' => 'ntu','organization' => '註冊組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => '02','username' => 'ncku','organization' => '國際事務處僑生與陸生事務組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => '03','username' => 'ncyu','organization' => '國際事務處','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
@@ -199,9 +198,9 @@ class SchoolEditorsTableSeeder extends Seeder
             ['school_code' => 'F3','username' => 'tbts','organization' => '祕書暨公關室','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => 'F4','username' => 'cct','organization' => '教務處註冊組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => 'F5','username' => 'iktc','organization' => '教務處','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => 'F6','username' => 'iktcds','organization' => '請輸入學校負責僑生事務的承辦單位名稱','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => 'F7','username' => 'tgst','organization' => '請輸入學校負責僑生事務的承辦單位名稱','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => 'FF','username' => 'nups','organization' => '僑先部招生組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
-            ['school_code' => 'HW','username' => 'overseas','organization' => '招生組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
-            ['school_code' => 'HW','username' => 'overseas.ncnu','organization' => '招生組','has_admin' => true,'created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
         ]);
     }
 }
