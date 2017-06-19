@@ -35,6 +35,7 @@ class DatabaseSeeder extends Seeder
             $this->call(GraduateDepartmentHistoryDataTableSeeder::class);
             $this->call(TechDepartmentDataTableSeeder::class);
             $this->call(TechDepartmentHistoryDataTableSeeder::class);
+            $this->call(SchoolLastYearSelfEnrollmentAndFiveYearStatusTableSeeder::class);
         }
     }
 }
