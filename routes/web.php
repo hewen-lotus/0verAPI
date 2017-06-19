@@ -27,8 +27,9 @@ Route::resource('/schools.histories', 'SchoolHistoryDataController');
 
 Route::resource('/schools.systems.histories', 'SystemHistoryDataController');
 
-Route::resource('/schools.quotas', 'SystemQuotaController');
 
 //Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryController');
+// 突然跑出來的第一階段，又沒了
+//Route::resource('/schools.quotas', 'SystemQuotaController');
 
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
