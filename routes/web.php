@@ -31,6 +31,8 @@ Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryData
 
 Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController');
 
+Route::get('/pdf', 'PDFGeneratorController@gen');
+
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
 
