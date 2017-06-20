@@ -42,22 +42,19 @@ class DepartmentHistoryApplicationDocument extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
+    protected $casts = [
+        'modifiable' => 'boolean',
+        'required' => 'boolean',
+    ];
+
     protected $fillable = [
-        'saved_id',
+        'history_id',
         'dept_id',
-        'document_type_id',
-        'detail',
-        'eng_detail',
-        'committed_by', //送出資料的人是誰
-        'quantity_committed_by', //送出名額的人是誰
-        'ip_address', //按下送出的人的IP
-        'quantity_status', //waiting|confirmed(by 教育部)|editing
-        'review_status', //waiting|confirmed(by 海聯)|editing
-        'reason', //讓學校再次修改的原因
-        'replied_by', //海聯回覆的人員
-        'replied_at', //海聯回覆的時間點
-        'confirmed_by', //海聯審查的人員
-        'confirmed_at', //海聯審查的時間點
+        'type_id',
+        'description',
+        'eng_description',
+        'modifiable',
+        'required',
     ];
 
     protected $dates = ['deleted_at'];
