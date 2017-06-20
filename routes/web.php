@@ -29,6 +29,8 @@ Route::resource('/schools.systems.histories', 'SystemHistoryDataController');
 
 Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryDataController');
 
+Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController');
+
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
 

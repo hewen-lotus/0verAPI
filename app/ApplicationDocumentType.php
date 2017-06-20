@@ -33,7 +33,7 @@ class ApplicationDocumentType extends Model
 
     protected $dateFormat = Carbon::ISO8601;
 
-    protected $fillable = ['name', 'eng_name'];
+    protected $fillable = ['name', 'eng_name', 'system_id'];
 
     protected $dates = ['deleted_at'];
 }
