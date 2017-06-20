@@ -17,9 +17,20 @@ class TwoYearTechHistoryDepartmentDataPolicy
      * @param  \App\TwoYearTechHistoryDepartmentData  $twoYearTechHistoryDepartmentData
      * @return mixed
      */
-    public function view(User $user, TwoYearTechHistoryDepartmentData $twoYearTechHistoryDepartmentData)
+    public function view(User $user, $school_id, $system_id, $department_id, $histories_id)
     {
-        //
+        if ($user->school_editor != NULL && $user->school_editor->school_code == $school_id) {
+            if ($user->school_editor->has_admin) {
+                return true;
+            } else if (
+                DepartmentEditorPermission::where('username', '=', $user->username)
+                    ->where('dept_id', '=', $department_id)->exists()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**

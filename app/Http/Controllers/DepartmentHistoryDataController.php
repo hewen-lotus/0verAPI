@@ -60,24 +60,56 @@ class DepartmentHistoryDataController extends Controller
             return response()->json(compact('messages'), 404);
         }
 
-        if ($user->can('view', [DepartmentHistoryData::class, $school_id, $system_id, $department_id, $histories_id])) {
+        // 依學制設定 Model
+        if ($system_id == 1) {
+            $Model = DepartmentHistoryData::class;
+        } else if ($system_id == 2) {
+            $Model = TwoYearTechHistoryDepartmentData::class;
+        } else {
+            $Model = GraduateDepartmentHistoryData::class;
+        }
 
+        // 依學制驗證權限
+        if ($user->can('view', [$Model, $school_id, $system_id, $department_id, $histories_id])) {
             // 依照要求拿取系所資料
-            return $this->getDataById($department_id);
+            return $this->getDataById($system_id, $department_id);
         }
     }
 
-    public function getDataById($id, $status_code = 200)
+    public function getDataById($system_id, $id, $status_code = 200)
     {
-        $data = DepartmentHistoryData::where('id', '=', $id)
-            ->with('creator.school_editor', 'reviewer.admin')
-            ->latest()
-            ->first();
+        // 依學制設定系所資料模型
+        if ($system_id == 1) {
+            $DepartmentHistoryDataModel = new DepartmentHistoryData();
+        } else if ($system_id == 2) {
+            $DepartmentHistoryDataModel = new TwoYearTechHistoryDepartmentData();
+        } else {
+            $DepartmentHistoryDataModel = new GraduateDepartmentHistoryData();
+        }
+
+        // 依學制取得系所資料
+        if ($system_id == 3 || $system_id == 4) {
+            // 碩博同表，需多加規則
+            $data = $DepartmentHistoryDataModel::select()
+                ->where('id', '=', $id)
+                ->where('system_id', '=', $system_id)
+                ->with('creator.school_editor', 'reviewer.admin')
+                ->latest()
+                ->first();
+        } else {
+            // 學士二技各自有表
+            $data = $DepartmentHistoryDataModel::select()
+                ->where('id', '=', $id)
+                ->with('creator.school_editor', 'reviewer.admin')
+                ->latest()
+                ->first();
+        }
 
         // TODO 缺 `application_docs` 欄位（需是一個 ApplicationDocument array）
 
+        // 取得最新 review data
         if ($data->info_status == 'editing' || $data->info_status == 'returned') {
-            $lastReturnedData = DepartmentHistoryData::where('id', '=', $id)
+            $lastReturnedData = $DepartmentHistoryDataModel::where('id', '=', $id)
                 ->where('info_status', '=', 'returned')
                 ->with('creator.school_editor', 'reviewer.admin')
                 ->latest()
