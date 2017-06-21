@@ -55,6 +55,10 @@ class PDF extends Command
 
         $mpdf->showWatermarkImage = true;
 
+        $mpdf->useSubstitutions = false;
+
+        $mpdf->simpleTables = true;
+
         $datas = SchoolData::whereHas('departments')
             ->with(['systems' => function ($query) {
                 $query->where('type_id', '=', '1');
