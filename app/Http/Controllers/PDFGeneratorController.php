@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Artisan;
+use Storage;
 
 use App\SchoolData;
 
@@ -13,6 +15,10 @@ use Dompdf\Options;
 class PDFGeneratorController extends Controller
 {
     public function gen() {
+        $exec_time = Artisan::call('pdf:generate');
+
+        return response()->json(['total_exec_time' => $exec_time, 'file_url' => Storage::disk('public')->url('document.pdf')]);
+        /*
         define("_MPDF_TEMP_PATH", __DIR__ . '/../../../storage/');
 
         set_time_limit(600);
@@ -103,6 +109,7 @@ class PDFGeneratorController extends Controller
         $mpdf->WriteHTML($result);
 
         $mpdf->Output();
+        */
     }
 
     public function dompdf() {
