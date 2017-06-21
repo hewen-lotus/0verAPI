@@ -33,6 +33,8 @@ Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeC
 
 Route::get('/pdf', 'PDFGeneratorController@gen');
 
+Route::get('/dompdf', 'PDFGeneratorController@dompdf');
+
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
 
