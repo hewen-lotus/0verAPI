@@ -15,7 +15,7 @@ use Dompdf\Options;
 class PDFGeneratorController extends Controller
 {
     public function gen() {
-        $exec_time = Artisan::call('pdf:generate');
+        $exec_time = Artisan::queue('pdf:generate');
 
         return response()->json(['total_exec_time' => $exec_time, 'file_url' => Storage::disk('public')->url('document.pdf')]);
         /*
