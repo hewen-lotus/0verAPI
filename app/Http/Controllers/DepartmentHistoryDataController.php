@@ -160,8 +160,8 @@ class DepartmentHistoryDataController extends Controller
         // 設定資料驗證欄位
         $validationRules = [
             'action' => 'required|in:save,commit|string', //動作
-            'sort_order' => 'required|integer', //學制敘述
-            'description' => 'required|string', //學制敘述
+            'sort_order' => 'required|integer', //系所顯示排序
+            'description' => 'required|string', //系所敘述
             'eng_description' => 'required|string', //學制英文敘述
             'memo' => 'string', //給海聯備註
             'url' => 'required|url', //學校網站網址
