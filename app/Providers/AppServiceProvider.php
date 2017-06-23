@@ -18,6 +18,7 @@ class AppServiceProvider extends ServiceProvider
     {
         Schema::defaultStringLength(191);
 
+        // 是否需要減招原因
         Validator::extend('if_decrease_reason_required', function ($attribute, $value, $parameters, $validator) {
             $input = $validator->getData();
 
@@ -40,6 +41,24 @@ class AppServiceProvider extends ServiceProvider
             } else {
                 return !empty($value);
             }
+        });
+
+        // 驗證出生時間限制格式（YYYY/MM/DD）
+        Validator::extend('birth_limit_date_format', function($attribute, $value, $formats) {
+            // iterate through all formats
+            foreach($formats as $format) {
+
+                // parse date with current format
+                $parsed = date_parse_from_format($format, $value);
+
+                // if value matches given format return true=validation succeeded
+                if ($parsed['error_count'] === 0 && $parsed['warning_count'] === 0) {
+                    return true;
+                }
+            }
+
+            // value did not match any of the provided formats, so return false=validation failed
+            return false;
         });
     }
 

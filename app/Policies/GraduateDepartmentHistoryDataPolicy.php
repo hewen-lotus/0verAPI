@@ -7,18 +7,22 @@ use App\GraduateDepartmentHistoryData;
 use App\DepartmentEditorPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Class GraduateDepartmentHistoryDataPolicy
+ * @package App\Policies
+ */
+
 class GraduateDepartmentHistoryDataPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the graduateDepartmentHistoryData.
-     *
-     * @param  \App\User  $user
-     * @param  \App\GraduateDepartmentHistoryData  $graduateDepartmentHistoryData
-     * @return mixed
+     * @param User $user
+     * @param $school_id
+     * @param $department_id
+     * @return bool
      */
-    public function view(User $user, $school_id, $system_id, $department_id, $histories_id)
+    public function view(User $user, $school_id, $department_id)
     {
         if ($user->school_editor != NULL && $user->school_editor->school_code == $school_id) {
             if ($user->school_editor->has_admin) {
@@ -35,14 +39,25 @@ class GraduateDepartmentHistoryDataPolicy
     }
 
     /**
-     * Determine whether the user can create graduateDepartmentHistoryDatas.
-     *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param User $user
+     * @param $school_id
+     * @param $department_id
+     * @return bool
      */
-    public function create(User $user)
+    public function create(User $user, $school_id, $department_id)
     {
-        //
+        if ($user->school_editor != NULL && $user->school_editor->school_code == $school_id) {
+            if ($user->school_editor->has_admin) {
+                return true;
+            } else if (
+            DepartmentEditorPermission::where('username', '=', $user->username)
+                ->where('dept_id', '=', $department_id)->exists()
+            ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     /**
