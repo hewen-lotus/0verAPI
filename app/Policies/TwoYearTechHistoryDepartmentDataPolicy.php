@@ -6,16 +6,20 @@ use App\User;
 use App\TwoYearTechHistoryDepartmentData;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Class TwoYearTechHistoryDepartmentDataPolicy
+ * @package App\Policies
+ */
+
 class TwoYearTechHistoryDepartmentDataPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the twoYearTechHistoryDepartmentData.
-     *
-     * @param  \App\User  $user
-     * @param  \App\TwoYearTechHistoryDepartmentData  $twoYearTechHistoryDepartmentData
-     * @return mixed
+     * @param User $user
+     * @param $school_id
+     * @param $department_id
+     * @return bool
      */
     public function view(User $user, $school_id, $department_id)
     {
@@ -34,10 +38,10 @@ class TwoYearTechHistoryDepartmentDataPolicy
     }
 
     /**
-     * Determine whether the user can create twoYearTechHistoryDepartmentDatas.
-     *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param User $user
+     * @param $school_id
+     * @param $department_id
+     * @return bool
      */
     public function create(User $user, $school_id, $department_id)
     {

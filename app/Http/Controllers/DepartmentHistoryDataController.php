@@ -3,26 +3,30 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Validation\Rule;
 
-use DB;
 use Auth;
 use Validator;
 
 //use App\SchoolEditor;
 use App\SchoolHistoryData;
 use App\SystemHistoryData;
-use App\DepartmentData;
+//use App\DepartmentData;
 use App\DepartmentHistoryData;
-use App\TwoYearTechDepartmentData;
+//use App\TwoYearTechDepartmentData;
 use App\TwoYearTechHistoryDepartmentData;
-use App\GraduateDepartmentData;
+//use App\GraduateDepartmentData;
 use App\GraduateDepartmentHistoryData;
 
-
+/**
+ * Class DepartmentHistoryDataController
+ * @package App\Http\Controllers
+ */
 
 class DepartmentHistoryDataController extends Controller
 {
+    /**
+     * DepartmentHistoryDataController constructor.
+     */
     public function __construct()
     {
         $this->middleware(['auth', 'switch']);
@@ -42,6 +46,13 @@ class DepartmentHistoryDataController extends Controller
         ]);
     }
 
+    /**
+     * @param $school_id
+     * @param $system_id
+     * @param $department_id
+     * @param $histories_id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function show($school_id, $system_id, $department_id, $histories_id)
     {
         $user = Auth::user();
@@ -81,6 +92,13 @@ class DepartmentHistoryDataController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $school_id
+     * @param $system_id
+     * @param $department_id
+     * @return \Illuminate\Http\JsonResponse
+     */
     public function store(Request $request, $school_id, $system_id, $department_id)
     {
 
@@ -356,6 +374,11 @@ class DepartmentHistoryDataController extends Controller
         return response()->json($this->getData($system_id, $department_id), 201);
     }
 
+    /**
+     * @param $system_id
+     * @param $id
+     * @return mixed
+     */
     public function getData($system_id, $id)
     {
         // 依學制設定系所資料模型

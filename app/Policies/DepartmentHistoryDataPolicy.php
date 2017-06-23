@@ -7,16 +7,20 @@ use App\DepartmentHistoryData;
 use App\DepartmentEditorPermission;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
+/**
+ * Class DepartmentHistoryDataPolicy
+ * @package App\Policies
+ */
+
 class DepartmentHistoryDataPolicy
 {
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view the departmentHistoryData.
-     *
-     * @param  \App\User  $user
-     * @param  \App\DepartmentHistoryData  $departmentHistoryData
-     * @return mixed
+     * @param User $user
+     * @param $school_id
+     * @param $department_id
+     * @return bool
      */
     public function view(User $user, $school_id, $department_id)
     {
@@ -35,10 +39,10 @@ class DepartmentHistoryDataPolicy
     }
 
     /**
-     * Determine whether the user can create departmentHistoryDatas.
-     *
-     * @param  \App\User  $user
-     * @return mixed
+     * @param User $user
+     * @param $school_id
+     * @param $department_id
+     * @return bool
      */
     public function create(User $user, $school_id, $department_id)
     {
