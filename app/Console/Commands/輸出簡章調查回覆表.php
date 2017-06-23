@@ -8,21 +8,23 @@ use App\SchoolData;
 
 use mPDF;
 
-class PDF extends Command
+class 輸出簡章調查回覆表 extends Command
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = '產生pdf:中文';
+    protected $signature = '產生pdf:簡章調查回覆表
+                            {school_code : The ID of the school}
+                            {system_id : The ID of the system type}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'PDF 產生機(測試) QAQ';
+    protected $description = '系統輸出簡章調查回覆表';
 
     /**
      * Create a new command instance.
@@ -41,15 +43,13 @@ class PDF extends Command
      */
     public function handle()
     {
-        $time_start = microtime(true);
-
         $mpdf = new mPDF('','A4',9,'DejaVuSans');
 
         $mpdf->autoScriptToLang = true;
 
         $mpdf->autoLangToFont = true;
 
-        $mpdf->SetWatermarkImage(__DIR__ . '/../../../public/img/sunnyworm.png', '0.4', 'F');
+        $mpdf->SetWatermarkImage(__DIR__ . '/../../../public/img/sunnyworm.png', '0.4');
 
         $mpdf->showWatermarkImage = true;
 
@@ -127,13 +127,5 @@ class PDF extends Command
         $mpdf->WriteHTML($result);
 
         $mpdf->Output(storage_path('app/public/document.pdf'), 'F');
-
-        $time_end = microtime(true);
-
-        $exec_time = $time_end - $time_start;
-
-        $this->info($exec_time);
-
-        return $exec_time;
     }
 }

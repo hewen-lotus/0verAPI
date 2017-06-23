@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\CSVToSeeder::class,
         Commands\PersonalAndPriorityDataImport::class,
         Commands\PDF::class,
+        Commands\輸出簡章調查回覆表::class
     ];
 
     /**
