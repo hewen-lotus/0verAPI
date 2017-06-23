@@ -78,7 +78,7 @@ class SchoolEditorController extends Controller
                     'password' => 'required|string|min:6',
                     'email' => 'present|email',
                     'name' => 'required|string',
-                    'eng_name' => 'required|string',
+                    'eng_name' => 'string',
                     'phone' => 'required|string',
                     'organization' => 'required|string',
                     'has_admin' => 'present|boolean',

@@ -21,7 +21,7 @@ class CreateSystemDataTable extends Migration
             $table->foreign('type_id')->references('id')->on('system_types');
             $table->enum('action', ['save', 'commit']);
             $table->text('description')->comment('學制描述');
-            $table->text('eng_description')->comment('學制描述');
+            $table->text('eng_description')->nullable()->comment('學制描述');
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
             $table->unsignedInteger('last_year_surplus_admission_quota')->nullable()->comment('上學年本地生未招足名額（二技參照學士）');
             $table->unsignedInteger('ratify_expanded_quota')->nullable()->comment('本學年教育部核定擴增名額（二技參照學士）');
@@ -47,7 +47,7 @@ class CreateSystemDataTable extends Migration
             $table->unsignedInteger('type_id')->comment('學制種類（學士, 碩士, 二技, 博士）');
             $table->foreign('type_id')->references('id')->on('system_types');
             $table->text('description')->comment('學制描述');
-            $table->text('eng_description')->comment('學制描述');
+            $table->text('eng_description')->nullable()->comment('學制描述');
             $table->unsignedInteger('last_year_admission_amount')->nullable()->comment('僑生可招收數量（上學年新生總額 10%）（二技參照學士）');
             $table->unsignedInteger('last_year_surplus_admission_quota')->nullable()->comment('上學年本地生未招足名額（二技參照學士）');
             $table->unsignedInteger('ratify_expanded_quota')->nullable()->comment('本學年教育部核定擴增名額（二技參照學士）');

@@ -22,10 +22,10 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->unsignedInteger('system_id')->comment('這是碩士班還是博士班 QQ');
             $table->foreign('system_id')->references('id')->on('system_types');
             $table->text('description')->comment('選系說明');
-            $table->text('eng_description')->comment('選系英文說明');
+            $table->text('eng_description')->nullable()->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
             $table->string('url')->comment('系網站網址');
-            $table->string('eng_url')->comment('英文系網站網址');
+            $table->string('eng_url')->nullable()->comment('英文系網站網址');
             $table->unsignedInteger('last_year_personal_apply_offer')->comment('去年個人申請錄取名額');
             $table->unsignedInteger('last_year_personal_apply_amount')->comment('去年個人申請名額');
             $table->unsignedInteger('admission_selection_quota')->comment('個人申請名額');
@@ -75,10 +75,10 @@ class CreateGraduateDepartmentDataTable extends Migration
             $table->unsignedInteger('system_id')->comment('這是碩士班還是博士班 QQ');
             $table->foreign('system_id')->references('id')->on('system_types');
             $table->text('description')->comment('選系說明');
-            $table->text('eng_description')->comment('選系英文說明');
+            $table->text('eng_description')->nullable()->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
             $table->string('url')->comment('系網站網址');
-            $table->string('eng_url')->comment('英文系網站網址');
+            $table->string('eng_url')->nullable()->comment('英文系網站網址');
             $table->unsignedInteger('last_year_personal_apply_offer')->comment('去年個人申請錄取名額');
             $table->unsignedInteger('last_year_personal_apply_amount')->comment('去年個人申請名額');
             $table->unsignedInteger('admission_selection_quota')->comment('個人申請名額');

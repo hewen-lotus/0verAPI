@@ -21,11 +21,10 @@ class CreateDepartmentDataTable extends Migration
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
             $table->text('description')->comment('選系說明');
-            $table->text('eng_description')->comment('選系英文說明');
+            $table->text('eng_description')->nullable()->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
-            $table->text('eng_memo')->nullable()->comment('給海聯的英文備註');
             $table->string('url')->comment('系網站網址');
-            $table->string('eng_url')->comment('英文系網站網址');
+            $table->string('eng_url')->nullable()->comment('英文系網站網址');
             $table->unsignedInteger('last_year_admission_placement_amount')->comment('去年聯合分發錄取名額');
             $table->unsignedInteger('last_year_admission_placement_quota')->comment('去年聯合分發名額（只有學士班有聯合分發）');
             $table->unsignedInteger('admission_placement_quota')->comment('聯合分發名額（只有學士班有聯合分發）');
@@ -81,11 +80,10 @@ class CreateDepartmentDataTable extends Migration
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
             $table->text('description')->comment('選系說明');
-            $table->text('eng_description')->comment('選系英文說明');
+            $table->text('eng_description')->nullable()->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
-            $table->text('eng_memo')->nullable()->comment('給海聯的英文備註');
             $table->string('url')->comment('系網站網址');
-            $table->string('eng_url')->comment('英文系網站網址');
+            $table->string('eng_url')->nullable()->comment('英文系網站網址');
             $table->unsignedInteger('last_year_admission_placement_amount')->comment('去年聯合分發錄取名額');
             $table->unsignedInteger('last_year_admission_placement_quota')->comment('去年聯合分發名額（只有學士班有聯合分發）');
             $table->unsignedInteger('admission_placement_quota')->comment('聯合分發名額（只有學士班有聯合分發）');

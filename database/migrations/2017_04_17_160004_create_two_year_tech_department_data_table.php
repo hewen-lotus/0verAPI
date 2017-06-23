@@ -20,11 +20,10 @@ class CreateTwoYearTechDepartmentDataTable extends Migration
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
             $table->text('description')->comment('選系說明');
-            $table->text('eng_description')->comment('選系英文說明');
+            $table->text('eng_description')->nullable()->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
-            $table->text('eng_memo')->nullable()->comment('給海聯的英文備註');
             $table->string('url')->comment('系網站網址');
-            $table->string('eng_url')->comment('英文系網站網址');
+            $table->string('eng_url')->nullable()->comment('英文系網站網址');
             $table->unsignedInteger('last_year_personal_apply_offer')->comment('去年個人申請錄取名額');
             $table->unsignedInteger('last_year_personal_apply_amount')->comment('去年個人申請名額');
             $table->unsignedInteger('admission_selection_quota')->comment('個人申請名額');
@@ -75,11 +74,10 @@ class CreateTwoYearTechDepartmentDataTable extends Migration
             $table->string('title')->comment('系所名稱');
             $table->string('eng_title')->comment('系所英文名稱');
             $table->text('description')->comment('選系說明');
-            $table->text('eng_description')->comment('選系英文說明');
+            $table->text('eng_description')->nullable()->comment('選系英文說明');
             $table->text('memo')->nullable()->comment('給海聯的備註');
-            $table->text('eng_memo')->nullable()->comment('給海聯的英文備註');
             $table->string('url')->comment('系網站網址');
-            $table->string('eng_url')->comment('英文系網站網址');
+            $table->string('eng_url')->nullable()->comment('英文系網站網址');
             $table->unsignedInteger('last_year_personal_apply_offer')->comment('去年個人申請錄取名額');
             $table->unsignedInteger('last_year_personal_apply_amount')->comment('去年個人申請名額');
             $table->unsignedInteger('admission_selection_quota')->comment('個人申請名額');

@@ -162,10 +162,10 @@ class DepartmentHistoryDataController extends Controller
             'action' => 'required|in:save,commit|string', //動作
             'sort_order' => 'required|integer', //系所顯示排序
             'description' => 'required|string', //系所敘述
-            'eng_description' => 'required|string', //學制英文敘述
+            'eng_description' => 'string', //學制英文敘述
             'memo' => 'string', //給海聯備註
             'url' => 'required|url', //學校網站網址
-            'eng_url' => 'required|url', //學校英文網站網址
+            'eng_url' => 'url', //學校英文網站網址
             'gender_limit' => 'required|in:NULL,M,F', //性別限制
             'has_foreign_special_class' => 'required|boolean', //是否招收外生專班
             'has_eng_taught' => 'required|boolean', //是否為全英文授課

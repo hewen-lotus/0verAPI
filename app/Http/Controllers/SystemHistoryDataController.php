@@ -267,7 +267,7 @@ class SystemHistoryDataController extends Controller
             $validationRules = array(
                 'action' => 'required|in:save,commit|string', //動作
                 'description' => 'required|string', //學制敘述
-                'eng_description' => 'required|string' //學制英文敘述
+                'eng_description' => 'string' //學制英文敘述
             );
 
             // 驗證輸入資料
