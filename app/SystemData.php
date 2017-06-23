@@ -64,7 +64,7 @@ class SystemData extends Model
         'last_year_admission_amount', //僑生可招收數量（上學年新生總額 10%）（二技參照學士）
         'last_year_surplus_admission_quota', //上學年本地生未招足名額（二技參照學士）
         'ratify_expanded_quota', //本學年教育部核定擴增名額（二技參照學士）
-        'ratify_quota_for_self_enrollment', //教育部核定單獨招收名額（只有學士班有）
+        'ratify_quota_for_self_enrollment', //單獨招收名額（只有學士班有）
         'confirmed_by',
         'confirmed_at',
         'history_id',

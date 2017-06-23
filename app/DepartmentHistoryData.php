@@ -163,7 +163,7 @@ class DepartmentHistoryData extends Model
         'last_year_personal_apply_amount', //'去年個人申請名額
         'admission_selection_quota', //個人申請名額
         'has_self_enrollment', //是否有自招
-        'self_enrollment_quota', //自招名額
+//        'self_enrollment_quota', //自招名額(不調查）
         'has_special_class', //是否招收僑生專班
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
