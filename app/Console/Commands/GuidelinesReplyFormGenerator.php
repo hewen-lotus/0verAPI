@@ -50,10 +50,7 @@ class GuidelinesReplyFormGenerator extends Command
      */
     public function handle()
     {
-        $data = SchoolData::where('id', '=', $this->argument('school_code'))->whereHas('departments')
-            ->with(['systems' => function ($query) {
-                $query->where('type_id', '=', $this->argument('system_id'));
-            }])->orderby('sort_order', 'ASC')->get();
+        $data = SchoolData::where('id', '=', $this->argument('school_code'))->first();
 
         $mpdf = new mPDF('','A4',9,'DejaVuSans');
 
@@ -113,11 +110,11 @@ class GuidelinesReplyFormGenerator extends Command
 
         $table .= '<tr><th>系所分則</th><th>個人申請繳交資料說明</th></tr>';
 
-        foreach ($data->departments as $dept) {
-            $table .= '<tr><td colspan="2" bgcolor="#dcdcdc">' . $dept->card_code . ' ' . $dept->title . ' ' . $dept->eng_title . '</td></tr>';
+        //foreach ($data->departments as $dept) {
+        //    $table .= '<tr><td colspan="2" bgcolor="#dcdcdc">' . $dept->card_code . ' ' . $dept->title . ' ' . $dept->eng_title . '</td></tr>';
 
-            $table .= '<tr><td style="width: 50%;">' . $dept->description . '</td><td style="width: 50%;"></td></tr>';
-        }
+        //    $table .= '<tr><td style="width: 50%;">' . $dept->description . '</td><td style="width: 50%;"></td></tr>';
+        //}
 
         $table .= '</table>';
 

@@ -29,18 +29,18 @@ class GuidelinesReplyFormGeneratorController extends Controller
 
     public function gen(Request $request, $school_code, $system_id)
     {
-        /*
         $system_id = $this->systemIdCollection->get($system_id, 0);
 
-        if (SchoolData::whereHas('systems', function ($query) use ($system_id) {
-            $query->where('type_id', '=', $system_id);
-        })->exists()
+        if (SchoolData::where('id', '=', $school_code)
+            ->whereHas('systems', function ($query) use ($system_id) {
+                $query->where('type_id', '=', $system_id);
+            })
+            ->exists()
         ) {
             Artisan::queue('產生pdf:簡章調查回覆表', ['school_code' => $school_code, 'system_id' => $system_id]);
 
             return response()->json(['status' => 'success']);
         }
-        */
 
         return response()->json(['status' => 'failed']);
     }
