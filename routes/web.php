@@ -32,7 +32,7 @@ Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryData
 Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController');
 
 // 系統輸出簡章調查回覆表
-Route::get('/schools.systems.guidelines-reply-form', 'GuidelinesReplyFormGeneratorController@gen');
+Route::get('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 'GuidelinesReplyFormGeneratorController@gen');
 
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
