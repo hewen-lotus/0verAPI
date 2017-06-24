@@ -54,6 +54,7 @@ class SystemHistoryDataController extends Controller
                 'review_memo', //讓學校再次修改的原因
                 'review_by', //海聯回覆的人員
                 'review_at', //海聯回覆的時間點
+                'created_at', //此版本建立時間
             ],
             'info' => [
                 'school_code', //學校代碼
@@ -67,6 +68,7 @@ class SystemHistoryDataController extends Controller
                 'review_memo', //讓學校再次修改的原因
                 'review_by', //海聯回覆的人員
                 'review_at', //海聯回覆的時間點
+                'created_at', //此版本建立時間
             ]
         ]);
 
