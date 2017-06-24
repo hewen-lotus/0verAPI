@@ -174,6 +174,7 @@ class TwoYearTechHistoryDepartmentData extends Model
         'has_eng_taught', //全英文授課
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
+        'has_RiJian', //是否有招收日間二技學制
         'evaluation', //系所評鑑等級
         'ip_address', //ip_address
         'created_by', //created_by
