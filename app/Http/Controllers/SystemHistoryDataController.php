@@ -456,8 +456,7 @@ class SystemHistoryDataController extends Controller
                                 $query->where('school_code', $school_id);
                             })
                         ],
-                        'departments.*.has_self_enrollment' => 'required|boolean',
-                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
+                        'departments.*.self_enrollment_quota' => 'required|integer',
                         'departments.*.admission_selection_quota' => 'required|integer'
                     ];
                 } else {
@@ -472,8 +471,7 @@ class SystemHistoryDataController extends Controller
                                 $query->where('school_code', $school_id);
                             })
                         ],
-                        'departments.*.has_self_enrollment' => 'required|boolean',
-                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|nullable|integer',
+                        'departments.*.self_enrollment_quota' => 'required|nullable|integer',
                         'departments.*.admission_selection_quota' => 'required|nullable|integer'
                     ];
                 }
@@ -490,12 +488,18 @@ class SystemHistoryDataController extends Controller
                 // 初始化欲招收總量
                 $allQuota = 0;
 
-                // 取得學士班資料歷史版本
-                $depts = DepartmentHistoryData::where('school_code','=', $school_id)->get();
+                // 取得學士班正式資料（為了拿 id）
+                $depts = DepartmentData::where('school_code','=', $school_id)->get();
 
                 // 累計要求的學士班個人申請、聯合分發人數
                 foreach ($depts as $dept) {
-                    $allQuota += $allQuota += $dept->admission_selection_quota + $dept->admission_placement_quota;
+                    // 取得每個系所的最新版資料
+                    $deptHistoryData = DepartmentHistoryData::select()
+                        ->where('id','=', $dept->id)
+                        ->latest()
+                        ->first();
+
+                    $allQuota += $deptHistoryData->admission_selection_quota + $deptHistoryData->admission_placement_quota;
                 }
 
                 // 累計學士班自招總量
@@ -505,12 +509,18 @@ class SystemHistoryDataController extends Controller
 
                 // 累計要求的二技班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->input('departments') as &$department_item) {
+                    // 取得每個系所的最新版資料
+                    $yearYearDeptHistoryData = TwoYearTechHistoryDepartmentData::select()
+                        ->where('id','=', $department_item['id'])
+                        ->latest()
+                        ->first();
+
                     // 若數字為 NULL，則預設為 0
                     if ($department_item['admission_selection_quota'] == null) {
                         $department_item['admission_selection_quota'] = 0;
                     }
 
-                    if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
+                    if ($schoolHistoryData->has_self_enrollment && $yearYearDeptHistoryData->has_self_enrollment) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
                     } else {
                         $allQuota += $department_item['admission_selection_quota'];
