@@ -358,24 +358,48 @@ class SystemHistoryDataController extends Controller
             // 依學制檢查名額量
             if ($system_id == 1) { // 學士學制名額驗證
                 // 設定資料驗證欄位
-                $validationRules = [
-                    'action' => 'required|in:save,commit|string', //動作
-                    'ratify_quota_for_self_enrollment' => 'required|integer', //學士班調查自招總量
-                    'departments' => 'required|array',
-                    'departments.*.id' => [
-                        'required',
-                        'string',
-                        Rule::exists('department_data', 'id')->where(function ($query) use ($school_id) {
-                            $query->where('school_code', $school_id);
-                        })
-                    ],
-                    'departments.*.has_self_enrollment' => 'required|boolean',
-//                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer', // 學士班不調查各系自招人數
-                    'departments.*.admission_selection_quota' => 'required|integer',
-                    'departments.*.admission_placement_quota' => 'required|integer',
-                    'departments.*.decrease_reason_of_admission_placement' =>
-                        'if_decrease_reason_required:id,admission_placement_quota|nullable|string',
-                ];
+                if ($request->input('action') == 'commit') {
+                    // 送出需要驗證所有欄位
+                    $validationRules = [
+                        'action' => 'required|in:save,commit|string', //動作
+                        'ratify_quota_for_self_enrollment' => 'required|integer', //學士班調查自招總量
+                        'departments' => 'required|array',
+                        'departments.*.id' => [
+                            'required',
+                            'string',
+                            Rule::exists('department_data', 'id')->where(function ($query) use ($school_id) {
+                                $query->where('school_code', $school_id);
+                            })
+                        ],
+                        'departments.*.has_self_enrollment' => 'required|boolean',
+                        // 'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer', // 學士班不調查各系自招人數
+                        'departments.*.admission_selection_quota' => 'required|integer',
+                        'departments.*.admission_placement_quota' => 'required|integer',
+                        'departments.*.decrease_reason_of_admission_placement' =>
+                            'if_decrease_reason_required:id,admission_placement_quota|string',
+                    ];
+                } else {
+                    // 儲存不驗證欄位是否為空值
+                    $validationRules = [
+                        'action' => 'required|in:save,commit|string', //動作
+                        'ratify_quota_for_self_enrollment' => 'required|nullable|integer', //學士班調查自招總量
+                        'departments' => 'required|array',
+                        'departments.*.id' => [
+                            'required',
+                            'string',
+                            Rule::exists('department_data', 'id')->where(function ($query) use ($school_id) {
+                                $query->where('school_code', $school_id);
+                            })
+                        ],
+                        'departments.*.has_self_enrollment' => 'required|boolean',
+                        // 'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer', // 學士班不調查各系自招人數
+                        'departments.*.admission_selection_quota' => 'required|nullable|integer',
+                        'departments.*.admission_placement_quota' => 'required|nullable|integer',
+                        'departments.*.decrease_reason_of_admission_placement' =>
+                            'if_decrease_reason_required:id,admission_placement_quota|nullable|string',
+                    ];
+                }
+
 
                 // 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
                 $total_can_Admissions = $historyData->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
@@ -397,6 +421,14 @@ class SystemHistoryDataController extends Controller
 
                 // 累計要求的學士班個人申請、聯合分發人數
                 foreach ($request->input('departments') as &$department_item) {
+                    // 若數字為 NULL，則預設為 0
+                    if ($department_item['admission_selection_quota'] == null) {
+                        $department_item['admission_selection_quota'] = 0;
+                    }
+                    if ($department_item['admission_placement_quota'] == null) {
+                        $department_item['admission_placement_quota'] = 0;
+                    }
+
                     $allQuota += $department_item['admission_selection_quota'] + $department_item['admission_placement_quota'];
                 }
 
@@ -412,20 +444,39 @@ class SystemHistoryDataController extends Controller
                 }
             } else if ($system_id == 2) { // 二技學制名額驗證
                 // 設定資料驗證欄位
-                $validationRules = [
-                    'action' => 'required|in:save,commit|string', //動作
-                    'departments' => 'required|array',
-                    'departments.*.id' => [
-                        'required',
-                        'string',
-                        Rule::exists('two_year_tech_department_data', 'id')->where(function ($query) use ($school_id) {
-                            $query->where('school_code', $school_id);
-                        })
-                    ],
-                    'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
-                    'departments.*.admission_selection_quota' => 'required|integer'
-                ];
+                if ($request->input('action') == 'commit') {
+                    // 送出需要驗證所有欄位
+                    $validationRules = [
+                        'action' => 'required|in:save,commit|string', //動作
+                        'departments' => 'required|array',
+                        'departments.*.id' => [
+                            'required',
+                            'string',
+                            Rule::exists('two_year_tech_department_data', 'id')->where(function ($query) use ($school_id) {
+                                $query->where('school_code', $school_id);
+                            })
+                        ],
+                        'departments.*.has_self_enrollment' => 'required|boolean',
+                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
+                        'departments.*.admission_selection_quota' => 'required|integer'
+                    ];
+                } else {
+                    // 儲存不驗證欄位是否為空值
+                    $validationRules = [
+                        'action' => 'required|in:save,commit|string', //動作
+                        'departments' => 'required|array',
+                        'departments.*.id' => [
+                            'required',
+                            'string',
+                            Rule::exists('two_year_tech_department_data', 'id')->where(function ($query) use ($school_id) {
+                                $query->where('school_code', $school_id);
+                            })
+                        ],
+                        'departments.*.has_self_enrollment' => 'required|boolean',
+                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|nullable|integer',
+                        'departments.*.admission_selection_quota' => 'required|nullable|integer'
+                    ];
+                }
 
                 // 二技可招生總量參照學士班資料
                 $deptsystemhistoryData = SystemHistoryData::select()
@@ -454,6 +505,11 @@ class SystemHistoryDataController extends Controller
 
                 // 累計要求的二技班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->input('departments') as &$department_item) {
+                    // 若數字為 NULL，則預設為 0
+                    if ($department_item['admission_selection_quota'] == null) {
+                        $department_item['admission_selection_quota'] = 0;
+                    }
+
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
                     } else {
@@ -468,20 +524,39 @@ class SystemHistoryDataController extends Controller
                 }
             } else {// 碩博學制名額驗證
                 // 設定資料驗證欄位
-                $validationRules = [
-                    'action' => 'required|in:save,commit|string', //動作
-                    'departments' => 'required|array',
-                    'departments.*.id' => [
-                        'required',
-                        'string',
-                        Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_id) {
-                            $query->where('school_code', $school_id);
-                        })
-                    ],
-                    'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|nullable|integer',
-                    'departments.*.admission_selection_quota' => 'required|integer'
-                ];
+                if ($request->input('action') == 'commit') {
+                    // 送出需要驗證所有欄位
+                    $validationRules = [
+                        'action' => 'required|in:save,commit|string', //動作
+                        'departments' => 'required|array',
+                        'departments.*.id' => [
+                            'required',
+                            'string',
+                            Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_id) {
+                                $query->where('school_code', $school_id);
+                            })
+                        ],
+                        'departments.*.has_self_enrollment' => 'required|boolean',
+                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
+                        'departments.*.admission_selection_quota' => 'required|integer'
+                    ];
+                } else {
+                    // 儲存不驗證欄位是否為空值
+                    $validationRules = [
+                        'action' => 'required|in:save,commit|string', //動作
+                        'departments' => 'required|array',
+                        'departments.*.id' => [
+                            'required',
+                            'string',
+                            Rule::exists('graduate_department_data', 'id')->where(function ($query) use ($school_id) {
+                                $query->where('school_code', $school_id);
+                            })
+                        ],
+                        'departments.*.has_self_enrollment' => 'required|boolean',
+                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|nullable|integer',
+                        'departments.*.admission_selection_quota' => 'required|nullable|integer'
+                    ];
+                }
 
                 // 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
                 $total_can_Admissions = $historyData->last_year_surplus_admission_quota + $historyData->last_year_admission_amount + $historyData->ratify_expanded_quota;
@@ -491,6 +566,14 @@ class SystemHistoryDataController extends Controller
 
                 // 累計要求的碩博班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->input('departments') as &$department_item) {
+                    // 若是數字為 NULL，則預設為 0
+                    if ($department_item['admission_selection_quota'] == NULL) {
+                        $department_item['admission_selection_quota'] = 0;
+                    }
+                    if ($department_item['has_self_enrollment'] == NULL) {
+                        $department_item['has_self_enrollment'] = 0;
+                    }
+
                     if ($schoolHistoryData->has_self_enrollment && $department_item['has_self_enrollment']) {
                         $allQuota += $department_item['admission_selection_quota'] + $department_item['self_enrollment_quota'];
                     } else {
