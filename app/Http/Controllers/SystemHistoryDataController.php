@@ -970,6 +970,13 @@ class SystemHistoryDataController extends Controller
             $anotherDepartmentAdmissionPlacementQuota = 0;
 
             if ($system_id == 2) {
+                // 二技可招生總量參照學士班資料
+                $deptsystemhistoryData = SystemHistoryData::select()
+                    ->where('school_code', '=', $school_id)
+                    ->where('type_id', '=', 1)
+                    ->latest()
+                    ->first();
+                
                 // 學士班自招人數總量要從學制資訊拿
                 $anotherDepartmentSelfEnrollmentQuota = $deptsystemhistoryData->ratify_quota_for_self_enrollment;
             }
