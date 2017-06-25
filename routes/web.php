@@ -31,6 +31,8 @@ Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryData
 
 Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController');
 
+Route::resource('/department-groups', 'DepartmentGroupController');
+
 // 系統輸出簡章調查回覆表
 Route::get('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 'GuidelinesReplyFormGeneratorController@gen');
 
