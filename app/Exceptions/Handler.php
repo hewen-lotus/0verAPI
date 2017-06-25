@@ -62,6 +62,10 @@ class Handler extends ExceptionHandler
         // Default response of 400
         $status = 400;
 
+        if ($exception instanceof AuthenticationException) {
+            $status = 401;
+        }
+
         // If this exception is an instance of HttpException
         if ($this->isHttpException($exception))
         {
