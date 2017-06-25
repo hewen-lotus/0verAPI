@@ -138,7 +138,7 @@ class UserPolicy
                 return true;
             }
 
-            return $user->school_editor->username == $id;
+            return $user->school_editor->username == $id || $id == 'me';
         }
 
         return false;
@@ -183,7 +183,7 @@ class UserPolicy
                 return true;
             }
 
-            return $user->school_editor->username == $id;
+            return $user->school_editor->username == $id || $id == 'me';;
         }
 
         return false;

@@ -229,6 +229,10 @@ class SchoolEditorController extends Controller
                 $school_code = $user->school_editor->school_code;
             }
 
+            if ($id == 'me') {
+                $id = $user->school_editor->username;
+            }
+
             if (User::where('username', '=', $id)
                 ->whereHas('school_editor', function ($query) use ($school_code) {
                     $query->where('school_code', '=', $school_code);
@@ -267,6 +271,10 @@ class SchoolEditorController extends Controller
         if ($user->can('update_schooleditor', [User::class, $school_code, $id])) {
             if ($school_code == 'me') {
                 $school_code = $user->school_editor->school_code;
+            }
+
+            if ($id == 'me') {
+                $id = $user->school_editor->username;
             }
 
             if (User::where('username', '=', $id)
