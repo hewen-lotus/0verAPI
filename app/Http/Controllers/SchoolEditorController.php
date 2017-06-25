@@ -399,7 +399,7 @@ class SchoolEditorController extends Controller
                     return response()->json(
                         User::where('username', '=', $id)
                             ->with([
-                                'school_editor' => function ($query) {
+                                'school_editor.school' => function ($query) {
                                     $query->withTrashed();
                                 },
                                 'school_editor.department_permissions' => function ($query) {
