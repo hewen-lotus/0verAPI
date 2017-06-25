@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Validator;
+use Session;
 use Hash;
 use Auth;
 use DB;
@@ -15,6 +16,8 @@ use App\SchoolData;
 use App\DepartmentEditorPermission;
 use App\GraduateDepartmentEditorPermission;
 use App\TwoYearTechDepartmentEditorPermission;
+
+use Log;
 
 class SchoolEditorController extends Controller
 {
@@ -239,7 +242,7 @@ class SchoolEditorController extends Controller
                 })->exists()) {
                 return User::where('username', '=', $id)
                     ->with([
-                        'school_editor',
+                        'school_editor.school',
                         'school_editor.department_permissions',
                         'school_editor.graduate_department_permissions',
                         'school_editor.two_year_tech_department_permissions'
@@ -283,7 +286,7 @@ class SchoolEditorController extends Controller
                 })->exists()
             ) {
                 $validator = Validator::make($request->all(), [
-                    'password' => 'present|string|min:6',
+                    'password' => 'present|nullable|string|min:6',
                     'email' => 'present|email',
                     'name' => 'required|string',
                     'eng_name' => 'required|string',
@@ -327,7 +330,7 @@ class SchoolEditorController extends Controller
                     return response()->json(compact('messages'), 400);
                 }
 
-                return DB::transaction(function () use ($request, $user, $school_code, $id) {
+                $result = DB::transaction(function () use ($request, $user, $school_code, $id) {
                     DepartmentEditorPermission::where('username', '=', $id)->forceDelete();
 
                     GraduateDepartmentEditorPermission::where('username', '=', $id)->forceDelete();
@@ -349,9 +352,13 @@ class SchoolEditorController extends Controller
                     );
 
                     if ($request->has('password')) {
-                        $UserUpdateData += array(
-                            'password' => Hash::make($request->password)
-                        );
+                        if (!Hash::check($request->password, $user->password)) {
+                            $new_password = Hash::make($request->password);
+
+                            $UserUpdateData += array(
+                                'password' => $new_password
+                            );
+                        }
                     }
 
                     User::where('username', '=', $id)->update($UserUpdateData);
@@ -421,6 +428,12 @@ class SchoolEditorController extends Controller
                                 }
                             ])->first());
                 });
+
+                if ($user->username == $id && !Hash::check($request->password, $user->password) && !(bool)$request->input('has_banned')) {
+                    Auth::attempt(['username' => $user->username, 'password' => $request->password, 'deleted_at' => NULL]);
+                }
+
+                return $result;
             }
 
             $messages = array('User Data Not Found!');
