@@ -704,7 +704,7 @@ class SystemHistoryDataController extends Controller
                             'admission_placement_quota' => $department['admission_placement_quota']
                         ];
 
-                        // 校有自招且系要自招才可自招，否則自招資訊照舊
+                        // 校有自招且系要自招才可自招，否則自招資訊重設
                         if ($schoolHistoryData->has_self_enrollment && $department['has_self_enrollment']) {
                             $departmentInsertData += [
                                 'has_self_enrollment' => $department['has_self_enrollment'],
@@ -712,7 +712,7 @@ class SystemHistoryDataController extends Controller
                             ];
                         } else {
                             $departmentInsertData += [
-                                'has_self_enrollment' => $departmentHistoryData->has_self_enrollment,
+                                'has_self_enrollment' => false,
 //                                'self_enrollment_quota' => NULL // 學士班不調查各系自招人數
                             ];
                         }
@@ -879,7 +879,7 @@ class SystemHistoryDataController extends Controller
                             'admission_selection_quota' => $department['admission_selection_quota']
                         ];
 
-                        // 校有自招且系要自招才可自招，否則自招資訊照舊
+                        // 校有自招且系要自招才可自招，否則自招資訊重設（自招人數照舊）
                         if ($schoolHistoryData->has_self_enrollment && $department['has_self_enrollment']) {
                             $departmentInsertData += [
                                 'has_self_enrollment' => $department['has_self_enrollment'],
@@ -887,7 +887,7 @@ class SystemHistoryDataController extends Controller
                             ];
                         } else {
                             $departmentInsertData += [
-                                'has_self_enrollment' => $departmentHistoryData->has_self_enrollment,
+                                'has_self_enrollment' => $department['has_self_enrollment'],
                                 'self_enrollment_quota' => $departmentHistoryData->self_enrollment_quota,
                             ];
                         }
