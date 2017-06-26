@@ -207,7 +207,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 //Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
 
-                Mail::send('emails.guidelines-reply-form', '', function ($m) {
+                Mail::send('emails.guidelines-reply-form', [], function ($m) {
                     $m->to($this->argument('email'))->subject('Your Reminder!');
                 });
             }
