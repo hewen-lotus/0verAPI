@@ -57,9 +57,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $mpdf->autoLangToFont = true;
 
-            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.1', 'D');
+            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.3', 'D');
 
             $mpdf->showWatermarkImage = true;
+
+            $mpdf->shrink_tables_to_fit = 0;
 
             $css = '
                 table, th, td {
@@ -102,13 +104,14 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             foreach ($depts as $dept) {
                 $total_admission_placement_quota += $dept->admission_placement_quota;
 
-                $total_admission_selection_quota += $dept->admission_placement_quota;
+                $total_admission_selection_quota += $dept->admission_selection_quota;
 
                 $total_self_enrollment_quota += $dept->self_enrollment_quota;
             }
 
-            // TODO 總計少一些值
-            $table .= '<tr><th>總計</th><td colspan="4">' . $data->departments()->count() . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)</td></tr>';
+            $system = $data->systems()->where('type_id', '=', 1)->get();
+
+            $table .= '<tr><th>總計</th><td colspan="4">' . $data->departments()->count() . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system['0']['last_year_admission_amount'] . ' 人,本國學生學士班未招足名額：' . (int)$system['0']['last_year_surplus_admission_quota'] . ' 人, 教育部核定擴增名額：' . (int)$system['0']['ratify_expanded_quota'] . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
@@ -125,8 +128,6 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             }
 
             $table .= '<tr><th>宿舍</th><td colspan="4">' . $dorm . ' </td></tr>';
-
-            $system = $data->systems()->where('type_id', '=', 1)->get();
 
             $table .= '<tr><th>備註</th><td colspan="4">' . $system['0']['description'] . '</td></tr>';
 
