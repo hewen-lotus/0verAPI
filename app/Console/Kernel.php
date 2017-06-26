@@ -16,8 +16,10 @@ class Kernel extends ConsoleKernel
         Commands\DBSchemaToMarkDown::class,
         Commands\CSVToSeeder::class,
         Commands\PersonalAndPriorityDataImport::class,
-        Commands\PDF::class,
-        Commands\GuidelinesReplyFormGenerator::class
+        Commands\BachelorGuidelinesReplyFormGenerator::class,
+        Commands\TwoYearGuidelinesReplyFormGenerator::class,
+        Commands\MasterGuidelinesReplyFormGenerator::class,
+        Commands\PhDGuidelinesReplyFormGenerator::class,
     ];
 
     /**

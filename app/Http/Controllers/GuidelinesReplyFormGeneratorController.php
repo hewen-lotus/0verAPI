@@ -37,7 +37,7 @@ class GuidelinesReplyFormGeneratorController extends Controller
             })
             ->exists()
         ) {
-            Artisan::queue('產生pdf:簡章調查回覆表', ['school_code' => $school_code, 'system_id' => $system_id]);
+            //Artisan::queue('產生pdf:簡章調查回覆表', ['school_code' => $school_code, 'system_id' => $system_id]);
 
             return response()->json(['status' => 'success']);
         }
