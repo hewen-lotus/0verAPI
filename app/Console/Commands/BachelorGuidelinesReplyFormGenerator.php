@@ -16,7 +16,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      * @var string
      */
     protected $signature = 'pdf-generator:bachelor-guidelines-reply-form
-                            {school_code : The ID of the school}';
+                            {school_code : The ID of the school} {system_id}';
 
     /**
      * The console command description.
@@ -79,7 +79,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $mpdf->autoLangToFont = true;
 
-            $mpdf->SetWatermarkImage(public_path('img/sunnyworm.png'), '0.4', 'F');
+            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.1', 'D');
 
             $mpdf->showWatermarkImage = true;
 
