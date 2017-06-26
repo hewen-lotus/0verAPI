@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Mail;
+use App\Mail\GuidelinesReplyFormGenerated;
 
 use App\SchoolData;
 use App\EvaluationLevel;
@@ -17,7 +19,8 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      * @var string
      */
     protected $signature = 'pdf-generator:bachelor-guidelines-reply-form
-                            {school_code : The ID of the school}';
+                            {school_code : The ID of the school}
+                            {--email : mail result to someone}';
 
     /**
      * The console command description.
@@ -57,7 +60,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $mpdf->autoLangToFont = true;
 
-            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.3', 'D');
+            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
 
             $mpdf->showWatermarkImage = true;
 
@@ -186,6 +189,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             $mpdf->Output(storage_path('app/public/document.pdf'), 'F');
 
             $this->info('PDF 產生完成！');
+
+            if ($this->option('email')) {
+                Mail::to($this->option('email'))->send(new GuidelinesReplyFormGenerated());
+            }
 
             return response()->json(['status' => 'success']);
         }

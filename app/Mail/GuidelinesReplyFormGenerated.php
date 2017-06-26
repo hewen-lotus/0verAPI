@@ -7,7 +7,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class GuidelinesReplyFormGenerated extends Mailable
+class GuidelinesReplyFormGenerated extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
@@ -28,6 +28,7 @@ class GuidelinesReplyFormGenerated extends Mailable
      */
     public function build()
     {
-        return $this->view('view.name');
+        return $this->view('emails.guidelines-reply-form')
+            ->attach(storage_path('app/public/document.pdf'));
     }
 }
