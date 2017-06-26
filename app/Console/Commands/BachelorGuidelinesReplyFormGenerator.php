@@ -202,10 +202,14 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                     ->setStreamOptions(['ssl' => \Config::get('mail.ssloptions')]);
 
                 $mailer = Swift_Mailer::newInstance($transport);
-                
+
                 Mail::setSwiftMailer($mailer);
 
-                Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
+                //Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
+
+                Mail::send('emails.guidelines-reply-form', '', function ($m) {
+                    $m->to($this->argument('email'))->subject('Your Reminder!');
+                });
             }
 
             return response()->json(['status' => 'success']);
