@@ -177,8 +177,14 @@ class TwoYearTechHistoryDepartmentData extends Model
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
         'has_RiJian', //是否有招收日間二技學制
         'evaluation', //系所評鑑等級
-        'ip_address', //ip_address
-        'created_by', //created_by
+        'created_by', //按下送出的人是誰
+        'ip_address', //按下送出的人的IP
+        'info_status', //waiting|confirmed|editing|returned
+        'quota_status', //waiting|confirmed|editing|returned
+        'review_memo', //讓學校再次修改的原因
+        'review_by', //海聯回覆的人員
+        'review_at', //海聯回覆的時間點
+        'created_at', //此版本建立時間
     ];
 
     protected $dates = ['deleted_at'];
