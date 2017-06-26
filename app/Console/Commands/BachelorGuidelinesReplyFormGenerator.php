@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Command;
 
 use App\SchoolData;
+use App\EvaluationLevel;
 
 use mPDF;
 
@@ -16,7 +17,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      * @var string
      */
     protected $signature = 'pdf-generator:bachelor-guidelines-reply-form
-                            {school_code : The ID of the school} {system_id}';
+                            {school_code : The ID of the school}';
 
     /**
      * The console command description.
@@ -33,25 +34,6 @@ class BachelorGuidelinesReplyFormGenerator extends Command
     public function __construct()
     {
         parent::__construct();
-
-        $this->systemIdCollection = collect([
-            'bachelor' => 1,
-            1 => 1,
-            'two-year' => 2,
-            'twoYear' => 2,
-            2 => 2,
-            'master' => 3,
-            3 => 3,
-            'phd' => 4,
-            4 => 4,
-        ]);
-
-        $this->systemIdtoNameCollection = collect([
-            1 => '學士班',
-            2 => '港二技',
-            3 => '碩士班',
-            4 => '博士班',
-        ]);
     }
 
     /**
@@ -61,13 +43,9 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      */
     public function handle()
     {
-        $system_id = $this->systemIdCollection->get($this->argument('system_id'), 0);
-
-        $type_name = $this->systemIdtoNameCollection->get($system_id);
-
         if (SchoolData::where('id', '=', $this->argument('school_code'))
-            ->whereHas('systems', function ($query) use ($system_id) {
-                $query->where('type_id', '=', $system_id);
+            ->whereHas('systems', function ($query) {
+                $query->where('type_id', '=', 1);
             })
             ->exists()
         ) {
@@ -93,7 +71,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $mpdf->Bookmark($data->title . ' ' . $data->eng_title);
 
-            $table = '<h3 style="text-align: center">' . $data->title . ' ' . $data->eng_title . ' (' . $type_name . ')</h3>';
+            $table = '<h3 style="text-align: center">' . $data->title . ' ' . $data->eng_title . ' (學士班)</h3>';
 
             $table .= '<table style="width: 100%;">';
 
@@ -113,6 +91,25 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td>自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
+            $depts = $data->departments()->get();
+
+            $total_admission_placement_quota = 0; // 聯合分發總人數
+
+            $total_admission_selection_quota = 0; // 個人申請總人數
+
+            $total_self_enrollment_quota = 0; // 自招總人數
+
+            foreach ($depts as $dept) {
+                $total_admission_placement_quota += $dept->admission_placement_quota;
+
+                $total_admission_selection_quota += $dept->admission_placement_quota;
+
+                $total_self_enrollment_quota += $dept->self_enrollment_quota;
+            }
+
+            // TODO 總計少一些值
+            $table .= '<tr><th>總計</th><td colspan="4">' . $data->departments()->count() . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)</td></tr>';
+
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
             } else {
@@ -129,7 +126,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<tr><th>宿舍</th><td colspan="4">' . $dorm . ' </td></tr>';
 
-            $system = $data->systems()->where('type_id', '=', $system_id)->get();
+            $system = $data->systems()->where('type_id', '=', 1)->get();
 
             $table .= '<tr><th>備註</th><td colspan="4">' . $system['0']['description'] . '</td></tr>';
 
@@ -143,19 +140,39 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<tr><th style="width: 4%;">聯</th><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
-            if ($system_id == 1) {
-                $depts = $data->departments()->get();
-            } else if ($system_id == 2) {
-                $depts = $data->two_year_tech_departments()->get();
-            } else {
-                $depts = $data->graduate_departments()->where('system_id', '=', $system_id)->get();
+            foreach ($depts as $dept) {
+                $table .= '<tr>';
+
+                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept->id . '<br />(' . $dept->card_code . ')</td>';
+
+                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept->admission_placement_quota . '</td>';
+
+                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept->admission_selection_quota . '</td>';
+
+                if ($dept->has_self_enrollment) {
+                    $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                } else {
+                    $dept_self_enrollment_quota = '-';
+                }
+
+                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept_self_enrollment_quota . '</td>';
+
+                if ($dept->has_special_class) {
+                    $dept_has_special_class = '是';
+                } else {
+                    $dept_has_special_class = '否';
+                }
+
+                $evaluation_level = EvaluationLevel::find($dept->evaluation);
+
+                // TODO 好像還要加類組？
+                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+
+                $table .= '</tr>';
+
+                // TODO 好像還有一格
+                $table .= '<tr><td>' . $dept->description . '</td><td>這格是什麼？Orz</td></tr>';
             }
-
-            //foreach ($depts as $dept) {
-            //    $table .= '<tr><td colspan="2" bgcolor="#dcdcdc">' . $dept->card_code . ' ' . $dept->title . ' ' . $dept->eng_title . '</td></tr>';
-
-            //    $table .= '<tr><td style="width: 50%;">' . $dept->description . '</td><td style="width: 50%;"></td></tr>';
-            //}
 
             $table .= '</table>';
 

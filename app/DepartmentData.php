@@ -203,4 +203,9 @@ class DepartmentData extends Model
     {
         return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
     }
+
+    public function evaluation_level()
+    {
+        return $this->belongsTo('App\EvaluationLevel', 'evaluation', 'id');
+    }
 }
