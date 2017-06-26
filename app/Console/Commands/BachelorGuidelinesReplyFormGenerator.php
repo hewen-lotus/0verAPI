@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use Swift_SmtpTransport;
+use Swift_Mailer;
 use Mail;
 use App\Mail\GuidelinesReplyFormGenerated;
 
@@ -190,8 +192,20 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $this->info('PDF 產生完成！');
 
-            if ($this->option('email')) {
-                Mail::to($this->option('email'))->send(new GuidelinesReplyFormGenerated());
+            if ($this->argument('email')) {
+                $transport = Swift_SmtpTransport::newInstance(
+                    \Config::get('mail.host'),
+                    \Config::get('mail.port'),
+                    \Config::get('mail.encryption'))
+                    ->setUsername(\Config::get('mail.username'))
+                    ->setPassword(\Config::get('mail.password'))
+                    ->setStreamOptions(['ssl' => \Config::get('mail.ssloptions')]);
+
+                $mailer = Swift_Mailer::newInstance($transport);
+                
+                Mail::setSwiftMailer($mailer);
+
+                Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
             }
 
             return response()->json(['status' => 'success']);
