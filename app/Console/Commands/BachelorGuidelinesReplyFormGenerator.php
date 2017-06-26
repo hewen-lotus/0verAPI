@@ -188,11 +188,9 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $mpdf->WriteHTML($table, 2);
 
-            $mpdf->Output(storage_path('app/public/document.pdf'), 'F');
-
-            $this->info('PDF 產生完成！');
-
             if ($this->argument('email')) {
+                $mpdf->Output(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf', 'F');
+
                 $transport = Swift_SmtpTransport::newInstance(
                     \Config::get('mail.host'),
                     \Config::get('mail.port'),
@@ -207,9 +205,17 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 //Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
 
-                Mail::send('emails.guidelines-reply-form', [], function ($m) {
-                    $m->to($this->argument('email'))->subject('Your Reminder!');
+                Mail::send('emails.guidelines-reply-form', [], function ($m) use ($data) {
+                    $m->to($this->argument('email'))->subject($data->title . '-學士班簡章調查回覆表');
+
+                    $m->attach(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf');
                 });
+
+                $this->info('信件已寄出！');
+            } else {
+                $mpdf->Output(storage_path('app/public/' . $data->title . '-學士班簡章調查回覆表.pdf'), 'F');
+
+                $this->info('PDF 產生完成！');
             }
 
             return response()->json(['status' => 'success']);
