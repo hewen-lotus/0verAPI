@@ -20,7 +20,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      */
     protected $signature = 'pdf-generator:bachelor-guidelines-reply-form
                             {school_code : The ID of the school}
-                            {--email : mail result to someone}';
+                            {email? : mail result to someone}';
 
     /**
      * The console command description.
