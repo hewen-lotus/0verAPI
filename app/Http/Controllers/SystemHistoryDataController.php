@@ -787,27 +787,38 @@ class SystemHistoryDataController extends Controller
                         // 沒 has_RiJian，但有 has_special_class => 可個人申請不可自招
                         // 沒 has_RiJian，也沒 has_special_class => 都不行
 
-                        // 校有自招且系要自招才可自招，否則自招資訊照舊
-                        if ($schoolHistoryData->has_self_enrollment && $departmentHistoryData->has_self_enrollment) {
-                            // 有日間二技部，可自招可聯招
-                            if ($departmentHistoryData->has_RiJian) {
+                        if ($departmentHistoryData->has_RiJian) {
+                            // 有日間二技部，可聯招
+                            $departmentInsertData += [
+                                'admission_selection_quota' => $department['admission_selection_quota']
+                            ];
+
+                            // 有日間二技部，校有自招且系要自招才可自招，否則自招資訊照舊
+                            if ($schoolHistoryData->has_self_enrollment && $departmentHistoryData->has_self_enrollment) {
                                 $departmentInsertData += [
-                                    'admission_selection_quota' => $department['admission_selection_quota'],
                                     'self_enrollment_quota' => $department['self_enrollment_quota']
                                 ];
                             } else {
-                                // 沒日間二技部，有開專班，可聯招
-                                if ($departmentHistoryData->has_special_class) {
-                                    $departmentInsertData += [
-                                        'admission_selection_quota' => $department['admission_selection_quota']
-                                    ];
-                                }
+                                $departmentInsertData += [
+                                    'self_enrollment_quota' => $departmentHistoryData->self_enrollment_quota
+                                ];
                             }
                         } else {
+                            // 沒日間二技部，不可自招，自招資訊照舊
                             $departmentInsertData += [
-                                'admission_selection_quota' => $departmentHistoryData->admission_selection_quota,
                                 'self_enrollment_quota' => $departmentHistoryData->self_enrollment_quota
                             ];
+
+                            // 沒日間二技部，有開專班，可聯招
+                            if ($departmentHistoryData->has_special_class) {
+                                $departmentInsertData += [
+                                    'admission_selection_quota' => $department['admission_selection_quota'],
+                                ];
+                            } else {
+                                $departmentInsertData += [
+                                    'admission_selection_quota' => $departmentHistoryData->admission_selection_quota,
+                                ];
+                            }
                         }
 
                         // 寫入名額資訊
