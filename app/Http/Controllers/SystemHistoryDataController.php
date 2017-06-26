@@ -547,7 +547,7 @@ class SystemHistoryDataController extends Controller
                             })
                         ],
                         'departments.*.has_self_enrollment' => 'required|boolean',
-                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer',
+                        'departments.*.self_enrollment_quota' => 'required_if:departments.*.has_self_enrollment,1|integer',
                         'departments.*.admission_selection_quota' => 'required|integer'
                     ];
                 } else {
@@ -563,9 +563,18 @@ class SystemHistoryDataController extends Controller
                             })
                         ],
                         'departments.*.has_self_enrollment' => 'required|boolean',
-                        'departments.*.self_enrollment_quota' => 'required_if:has_self_enrollment,1|nullable|integer',
+                        'departments.*.self_enrollment_quota' => 'required_if:departments.*.has_self_enrollment,1|nullable|integer',
                         'departments.*.admission_selection_quota' => 'required|nullable|integer'
                     ];
+                }
+
+                // 驗證輸入資料
+                $validator = Validator::make($request->all(), $validationRules);
+
+                // 輸入資料驗證沒過
+                if ($validator->fails()) {
+                    $messages = $validator->errors()->all();
+                    return response()->json(compact('messages'), 400);
                 }
 
                 // 可招生總量為 last_year_surplus_admission_quota + last_year_admission_amount + ratify_expanded_quota
@@ -596,15 +605,6 @@ class SystemHistoryDataController extends Controller
                     $messages = array('各系所招生人數加總必須小於或等於可招生總量');
                     return response()->json(compact('messages'), 400);
                 }
-            }
-
-            // 驗證輸入資料
-            $validator = Validator::make($request->all(), $validationRules);
-
-            // 輸入資料驗證沒過
-            if ($validator->fails()) {
-                $messages = $validator->errors()->all();
-                return response()->json(compact('messages'), 400);
             }
 
             DB::transaction(function () use ($request, $system_id, $school_id, $user, $quotaStatus, $schoolHistoryData, $historyData){
