@@ -854,7 +854,6 @@ class SystemHistoryDataController extends Controller
                             'eng_url' => $departmentHistoryData->eng_url,
                             'last_year_personal_apply_offer' => $departmentHistoryData->last_year_personal_apply_offer,
                             'last_year_personal_apply_amount' => $departmentHistoryData->last_year_personal_apply_amount,
-                            'has_self_enrollment' => $departmentHistoryData->has_self_enrollment,
                             'has_special_class' => $departmentHistoryData->has_special_class,
                             'has_foreign_special_class' => $departmentHistoryData->has_foreign_special_class,
                             'gender_limit' => $departmentHistoryData->gender_limit,

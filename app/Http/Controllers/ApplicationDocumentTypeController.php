@@ -14,7 +14,7 @@ class ApplicationDocumentTypeController extends Controller
 {
     public function __construct()
     {
-        //$this->middleware('auth');
+        $this->middleware(['auth', 'switch']);
     }
 
     public function index($system_id)
