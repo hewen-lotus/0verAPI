@@ -164,10 +164,10 @@ class DepartmentHistoryDataController extends Controller
                 'action' => 'required|in:save,commit|string', //動作
                 'sort_order' => 'required|integer', //系所顯示排序
                 'description' => 'required|string', //系所敘述
-                'eng_description' => 'required|nullable|string', //學制英文敘述
-                'memo' => 'required|nullable|string', //給海聯備註
+                'eng_description' => 'present|string', //學制英文敘述
+                'memo' => 'present|nullable|string', //給海聯備註
                 'url' => 'required|url', //學校網站網址
-                'eng_url' => 'required|nullable|url', //學校英文網站網址
+                'eng_url' => 'present|url', //學校英文網站網址
                 'gender_limit' => 'required|in:NULL,M,F', //性別限制
                 'has_foreign_special_class' => 'required|boolean', //是否招收外生專班
                 'has_eng_taught' => 'required|boolean', //是否為全英文授課
@@ -180,7 +180,7 @@ class DepartmentHistoryDataController extends Controller
                 'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|birth_limit_date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
                 'birth_limit_before' => 'required_if:has_birth_limit,1|nullable|birth_limit_date_format:"Y-m-d', //限...之前出生 年月日 `1991-02-23`
                 'main_group' => 'required|exists:department_groups,id', //主要隸屬學群 id
-                'sub_group' => 'required|exists:department_groups,id', //次要隸屬學群 id
+                'sub_group' => 'required|nullable|exists:department_groups,id', //次要隸屬學群 id
                 'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
                 'admission_selection_quota' => 'required|integer', //個人申請名額
             ];
@@ -189,11 +189,11 @@ class DepartmentHistoryDataController extends Controller
             $validationRules = [
                 'action' => 'required|in:save,commit|string', //動作
                 'sort_order' => 'required|integer', //系所顯示排序
-                'description' => 'required|nullable|string', //系所敘述
-                'eng_description' => 'required|nullable|string', //學制英文敘述
-                'memo' => 'required|nullable|string', //給海聯備註
-                'url' => 'required|nullable|url', //學校網站網址
-                'eng_url' => 'required|nullable|url', //學校英文網站網址
+                'description' => 'present|string', //系所敘述
+                'eng_description' => 'present|string', //學制英文敘述
+                'memo' => 'present|nullable|string', //給海聯備註
+                'url' => 'present|url', //學校網站網址
+                'eng_url' => 'present|url', //學校英文網站網址
                 'gender_limit' => 'required|in:NULL,M,F', //性別限制
                 'has_foreign_special_class' => 'required|boolean', //是否招收外生專班
                 'has_eng_taught' => 'required|boolean', //是否為全英文授課
@@ -205,10 +205,10 @@ class DepartmentHistoryDataController extends Controller
                 'eng_review_fee_detail' => 'required_if:has_review_fee,1|nullable|string', //審查費用英文說明
                 'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|birth_limit_date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
                 'birth_limit_before' => 'required_if:has_birth_limit,1|nullable|birth_limit_date_format:"Y-m-d', //限...之前出生 年月日 `1991-02-23`
-                'main_group' => 'required|nullable|exists:department_groups,id', //主要隸屬學群 id
-                'sub_group' => 'required|nullable|exists:department_groups,id', //次要隸屬學群 id
-                'evaluation' => 'required|nullable|exists:evaluation_levels,id', //系所評鑑等級 id
-                'admission_selection_quota' => 'required|nullable|integer', //個人申請名額
+                'main_group' => 'present|exists:department_groups,id', //主要隸屬學群 id
+                'sub_group' => 'present|nullable|exists:department_groups,id', //次要隸屬學群 id
+                'evaluation' => 'present|exists:evaluation_levels,id', //系所評鑑等級 id
+                'admission_selection_quota' => 'present|integer', //個人申請名額
             ];
         }
 
