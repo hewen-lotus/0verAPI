@@ -194,7 +194,7 @@ class SchoolHistoryDataController extends Controller
                 );
             }
 
-            $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::where('school_code', '=', $school_id);
+            $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::find($school_id);
 
             // 整理招收中五生學則資料
             if ((bool)$request->input('has_five_year_student_allowed')) {
