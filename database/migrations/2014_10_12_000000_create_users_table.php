@@ -18,7 +18,7 @@ class CreateUsersTable extends Migration
             $table->string('password');
             $table->string('email')->nullable();
             $table->string('name');
-            $table->string('eng_name')->nullable();
+            $table->string('eng_name');
             $table->string('phone')->comment('聯絡電話');
             $table->string('last_login_at')->nullable()->comment('上次登入時間');
             $table->string('created_at');

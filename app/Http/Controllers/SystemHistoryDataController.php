@@ -47,6 +47,7 @@ class SystemHistoryDataController extends Controller
                 'last_year_admission_amount', //僑生可招收數量（上學年新生總額 10%）（二技參照學士）
                 'last_year_surplus_admission_quota', //上學年本地生未招足名額（二技參照學士）
                 'ratify_expanded_quota', //本學年教育部核定擴增名額（二技參照學士）
+                'ratify_quota_for_self_enrollment', //自招總量（學士才有）
                 'created_by', //按下送出的人是誰
                 'ip_address', //按下送出的人的IP
                 'info_status', //waiting|confirmed|editing|returned

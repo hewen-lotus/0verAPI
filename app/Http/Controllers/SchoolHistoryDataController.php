@@ -88,14 +88,14 @@ class SchoolHistoryDataController extends Controller
                 $validator = Validator::make($request->all(), [
                     'action' => 'required|in:save,commit|string', //動作
                     'address' => 'required|string|max:191', //學校地址
-                    'eng_address' => 'required|nullable|string|max:191', //學校英文地址
+                    'eng_address' => 'present|string|max:191', //學校英文地址
                     'organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位名稱
-                    'eng_organization' => 'required|nullable|string|max:191', //學校負責僑生事務的承辦單位英文名稱
+                    'eng_organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位英文名稱
                     'has_dorm' => 'required|boolean', //是否提供宿舍
                     'dorm_info' => 'required_if:has_dorm,1|string', //宿舍說明
                     'eng_dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍英文說明
                     'url' => 'required|url', //學校網站網址
-                    'eng_url' => 'required|nullable|url', //學校英文網站網址
+                    'eng_url' => 'present|url', //學校英文網站網址
                     'phone' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
                     'fax' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
                     'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
@@ -112,17 +112,17 @@ class SchoolHistoryDataController extends Controller
                 // 儲存不驗證欄位是否為空值
                 $validator = Validator::make($request->all(), [
                     'action' => 'required|in:save,commit|string', //動作
-                    'address' => 'required|nullable|string|max:191', //學校地址
-                    'eng_address' => 'required|nullable|string|max:191', //學校英文地址
-                    'organization' => 'required|nullable|string|max:191', //學校負責僑生事務的承辦單位名稱
-                    'eng_organization' => 'required|nullable|string|max:191', //學校負責僑生事務的承辦單位英文名稱
+                    'address' => 'present|string|max:191', //學校地址
+                    'eng_address' => 'present|string|max:191', //學校英文地址
+                    'organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位名稱
+                    'eng_organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位英文名稱
                     'has_dorm' => 'required|boolean', //是否提供宿舍
                     'dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍說明
                     'eng_dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍英文說明
-                    'url' => 'required|nullable|url', //學校網站網址
-                    'eng_url' => 'required|nullable|url', //學校英文網站網址
-                    'phone' => 'required|nullable|string', //學校聯絡電話（+886-49-2910960#1234）
-                    'fax' => 'required|nullable|string', //學校聯絡電話（+886-49-2910960#1234）
+                    'url' => 'present|url', //學校網站網址
+                    'eng_url' => 'present|url', //學校英文網站網址
+                    'phone' => 'present|string', //學校聯絡電話（+886-49-2910960#1234）
+                    'fax' => 'present|string', //學校聯絡電話（+886-49-2910960#1234）
                     'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
                     'scholarship_url' => 'required_if:has_scholarship,1|url', //僑生專屬獎學金說明網址
                     'eng_scholarship_url' => 'required_if:has_scholarship,1|nullable|url', //僑生專屬獎學金英文說明網址
@@ -194,7 +194,7 @@ class SchoolHistoryDataController extends Controller
                 );
             }
 
-            $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::where('school_code', '=', $school_id);
+            $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::find($school_id);
 
             // 整理招收中五生學則資料
             if ((bool)$request->input('has_five_year_student_allowed')) {

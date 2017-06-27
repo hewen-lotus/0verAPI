@@ -10,8 +10,10 @@ use App\Mail\GuidelinesReplyFormGenerated;
 
 use App\SchoolData;
 use App\EvaluationLevel;
+use App\DepartmentGroup;
 
 use mPDF;
+use Carbon\Carbon;
 
 class BachelorGuidelinesReplyFormGenerator extends Command
 {
@@ -54,7 +56,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             })
             ->exists()
         ) {
-            $data = SchoolData::where('id', '=', $this->argument('school_code'))->first();
+            $data = SchoolData::find($this->argument('school_code'));
 
             $mpdf = new mPDF('UTF-8', 'A4', 9, 'sun-exta');
 
@@ -140,9 +142,9 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<br>';
 
-            $table .= '<table style="width: 100%;">';
+            $table .= '<table style="width: 100%; font-size: 10pt;">';
 
-            $table .= '<tr><th style="width: 10%;" rowspan="2">系所代碼<br />(志願代碼)</th><th colspan="3">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 12%;" rowspan="2">系所代碼<br />(志願代碼)</th><th colspan="3">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
 
             $table .= '<tr><th style="width: 4%;">聯</th><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
@@ -171,18 +173,43 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
 
-                // TODO 好像還要加類組？
-                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                $main_group = DepartmentGroup::find($dept->main_group);
+
+                $sub_group = DepartmentGroup::find($dept->sub_group);
+
+                if ($sub_group) {
+                    $group = $main_group->title . '、' . $sub_group->title;
+                } else {
+                    $group = $main_group->title;
+                }
+
+                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
 
                 $table .= '</tr>';
 
-                // TODO 好像還有一格
-                $table .= '<tr><td>' . $dept->description . '</td><td>這格是什麼？Orz</td></tr>';
+                // TODO 好像還有一格，要等和融匯入備審資料
+                $table .= '<tr><td>' . $dept->description . '</td><td>備審資料（？</td></tr>';
             }
 
             $table .= '</table>';
 
-            $table .= '<br><br>';
+            $now = Carbon::now('Asia/Taipei');
+
+            $time_for_md5 = $data->history->created_at;
+
+            $mpdf->SetHTMLFooter('
+
+            <table  style="width: 100%; vertical-align: top; border: none; font-size: 6pt;"><tr style="border: none;">
+            
+            <td style="width: 33%; border: none;">※承辦人簽章<br />' . $now . '</td>
+            
+            <td style="width: 33%; border: none;">※單位主管簽章</td>
+
+            <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：'. hash('md5', $time_for_md5 . $table . $time_for_md5) .'</span></td>
+
+            </tr></table>
+
+            ');
 
             $mpdf->WriteHTML($css, 1);
 

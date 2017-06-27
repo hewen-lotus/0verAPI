@@ -112,6 +112,9 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereUrl($value)
  * @property int $self_enrollment_ratify_quota 教育部核定單獨招收(自招)名額
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData whereSelfEnrollmentRatifyQuota($value)
+ * @property-read \App\EvaluationLevel $evaluation_level
+ * @property-read \App\DepartmentGroup $main_group_data
+ * @property-read \App\DepartmentGroup $sub_group_data
  */
 class DepartmentData extends Model
 {
@@ -207,5 +210,15 @@ class DepartmentData extends Model
     public function evaluation_level()
     {
         return $this->belongsTo('App\EvaluationLevel', 'evaluation', 'id');
+    }
+
+    public function main_group_data()
+    {
+        return $this->belongsTo('App\DepartmentGroup', 'main_group', 'id');
+    }
+
+    public function sub_group_data()
+    {
+        return $this->belongsTo('App\DepartmentGroup', 'sub_group', 'id');
     }
 }
