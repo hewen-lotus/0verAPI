@@ -39,6 +39,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor whereUsername($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolEditor withoutTrashed()
  */
 class SchoolEditor extends Model
 {

@@ -116,6 +116,11 @@ use Carbon\Carbon;
  * @mixin \Eloquent
  * @property bool $has_RiJian 是否有招收日間二技學制
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData whereHasRiJian($value)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData withoutTrashed()
  */
 class TwoYearTechHistoryDepartmentData extends Model
 {

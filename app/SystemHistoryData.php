@@ -62,6 +62,11 @@ use Carbon\Carbon;
  * @mixin \Eloquent
  * @property int $ratify_quota_for_admission 教育部核定聯招名額（二技參照學士）
  * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData whereRatifyQuotaForAdmission($value)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemHistoryData withoutTrashed()
  */
 class SystemHistoryData extends Model
 {

@@ -90,6 +90,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData whereUrl($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData withoutTrashed()
  */
 class SchoolHistoryData extends Model
 {

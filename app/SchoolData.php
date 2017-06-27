@@ -84,6 +84,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolData whereUrl($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolData withoutTrashed()
  */
 class SchoolData extends Model
 {

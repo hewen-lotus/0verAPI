@@ -25,6 +25,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\EvaluationLevel whereTitle($value)
  * @method static \Illuminate\Database\Query\Builder|\App\EvaluationLevel whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\EvaluationLevel onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\EvaluationLevel withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\EvaluationLevel withoutTrashed()
  */
 class EvaluationLevel extends Model
 {

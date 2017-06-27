@@ -23,6 +23,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentEditorPermission whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentEditorPermission whereUsername($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentEditorPermission onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentEditorPermission withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentEditorPermission withoutTrashed()
  */
 class GraduateDepartmentEditorPermission extends Model
 {

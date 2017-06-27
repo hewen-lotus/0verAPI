@@ -31,6 +31,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\Admin whereUsername($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\Admin withoutTrashed()
  */
 class Admin extends Model
 {

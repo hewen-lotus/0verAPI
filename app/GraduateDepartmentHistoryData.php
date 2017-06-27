@@ -112,6 +112,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData whereUrl($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData withoutTrashed()
  */
 class GraduateDepartmentHistoryData extends Model
 {

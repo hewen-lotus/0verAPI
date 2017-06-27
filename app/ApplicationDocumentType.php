@@ -24,6 +24,13 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\ApplicationDocumentType whereName($value)
  * @method static \Illuminate\Database\Query\Builder|\App\ApplicationDocumentType whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property int|null $system_id
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\ApplicationDocumentType onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\ApplicationDocumentType whereSystemId($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\ApplicationDocumentType withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\ApplicationDocumentType withoutTrashed()
  */
 class ApplicationDocumentType extends Model
 {

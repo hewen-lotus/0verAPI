@@ -29,6 +29,11 @@ use Carbon\Carbon;
  * @mixin \Eloquent
  * @property bool $modifiable 學校是否可修改此備審資料
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument whereModifiable($value)
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withoutTrashed()
  */
 class DepartmentApplicationDocument extends Model
 {

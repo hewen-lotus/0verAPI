@@ -23,6 +23,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission whereUsername($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentEditorPermission withoutTrashed()
  */
 class TwoYearTechDepartmentEditorPermission extends Model
 {

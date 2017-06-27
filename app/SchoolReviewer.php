@@ -35,6 +35,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer whereUsername($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SchoolReviewer withoutTrashed()
  */
 class SchoolReviewer extends Model
 {

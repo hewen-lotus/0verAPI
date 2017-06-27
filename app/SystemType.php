@@ -24,6 +24,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereTitle($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemType whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemType onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemType withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemType withoutTrashed()
  */
 class SystemType extends Model
 {

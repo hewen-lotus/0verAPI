@@ -115,6 +115,12 @@ use Carbon\Carbon;
  * @property-read \App\EvaluationLevel $evaluation_level
  * @property-read \App\DepartmentGroup $main_group_data
  * @property-read \App\DepartmentGroup $sub_group_data
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentApplicationDocument[] $application_doc
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData withoutTrashed()
  */
 class DepartmentData extends Model
 {
@@ -220,5 +226,10 @@ class DepartmentData extends Model
     public function sub_group_data()
     {
         return $this->belongsTo('App\DepartmentGroup', 'sub_group', 'id');
+    }
+
+    public function application_doc()
+    {
+        return $this->hasMany('App\DepartmentApplicationDocument', 'dept_id', 'id');
     }
 }

@@ -25,6 +25,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentGroup whereTitle($value)
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentGroup whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentGroup onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentGroup withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\DepartmentGroup withoutTrashed()
  */
 class DepartmentGroup extends Model
 {

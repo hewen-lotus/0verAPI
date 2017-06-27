@@ -36,6 +36,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\SystemQuota whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\SystemQuota whereUpdatedBy($value)
  * @mixin \Eloquent
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemQuota onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemQuota withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\SystemQuota withoutTrashed()
  */
 class SystemQuota extends Model
 {

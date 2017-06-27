@@ -104,6 +104,12 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUpdatedBy($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData whereUrl($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentApplicationDocument[] $application_doc
+ * @method static bool|null forceDelete()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData onlyTrashed()
+ * @method static bool|null restore()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData withTrashed()
+ * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData withoutTrashed()
  */
 class GraduateDepartmentData extends Model
 {
@@ -185,5 +191,10 @@ class GraduateDepartmentData extends Model
     public function confirmed()
     {
         return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
+    }
+
+    public function application_doc()
+    {
+        return $this->hasMany('App\GraduateDepartmentApplicationDocument', 'dept_id', 'id');
     }
 }
