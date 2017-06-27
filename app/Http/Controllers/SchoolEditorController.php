@@ -81,7 +81,7 @@ class SchoolEditorController extends Controller
                     'password' => 'required|string|min:6',
                     'email' => 'present|email',
                     'name' => 'required|string',
-                    'eng_name' => 'string',
+                    'eng_name' => 'present|string',
                     'phone' => 'required|string',
                     'organization' => 'required|string',
                     'has_admin' => 'present|boolean',
@@ -289,7 +289,7 @@ class SchoolEditorController extends Controller
                     'password' => 'present|nullable|string|min:6',
                     'email' => 'present|email',
                     'name' => 'required|string',
-                    'eng_name' => 'required|string',
+                    'eng_name' => 'present|string',
                     'phone' => 'required|string',
                     'organization' => 'required|string',
                     'has_admin' => 'present|boolean',
@@ -408,6 +408,18 @@ class SchoolEditorController extends Controller
                             GraduateDepartmentEditorPermission::where('username', '=', $id)->delete();
 
                             TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->delete();
+                        } else {
+                            SchoolEditor::where('username', '=', $id)->update([
+                                'deleted_by' => NULL,
+                            ]);
+
+                            SchoolEditor::where('username', '=', $id)->restore();
+
+                            DepartmentEditorPermission::where('username', '=', $id)->restore();
+
+                            GraduateDepartmentEditorPermission::where('username', '=', $id)->restore();
+
+                            TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->restore();
                         }
                     }
 
