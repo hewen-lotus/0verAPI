@@ -34,11 +34,25 @@ class DepartmentApplicationDocument extends Model
 {
     use SoftDeletes;
 
+    public $incrementing = false;
+
+    protected $casts = [
+        'modifiable' => 'boolean',
+        'required' => 'boolean',
+    ];
+
     protected $table = 'dept_application_docs';
 
     protected $dateFormat = Carbon::ISO8601;
 
-    protected $fillable = ['dept_id', 'type_id', 'description', 'eng_description', 'required'];
+    protected $fillable = [
+        'dept_id',
+        'type_id',
+        'description',
+        'eng_description',
+        'modifiable',
+        'required'
+    ];
 
     protected $dates = ['deleted_at'];
 }

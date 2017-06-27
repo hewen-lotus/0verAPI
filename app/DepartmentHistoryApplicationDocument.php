@@ -38,7 +38,7 @@ class DepartmentHistoryApplicationDocument extends Model
 
     protected $table = 'dept_history_application_docs';
 
-    protected $primaryKey = 'history_id';
+    public $incrementing = false;
 
     protected $dateFormat = Carbon::ISO8601;
 
