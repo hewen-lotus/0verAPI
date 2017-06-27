@@ -15,7 +15,7 @@ class CreateTwoYearTechDepartmentApplicationDocumentsTable extends Migration
     {
         Schema::create('two_year_tech_dept_application_docs', function (Blueprint $table) {
             $table->string('dept_id')->comment('系所代碼');
-            $table->foreign('dept_id')->references('id')->on('department_data');
+            $table->foreign('dept_id')->references('id')->on('two_year_tech_department_data');
             $table->unsignedInteger('type_id')->comment('備審資料代碼（系統自動產生）');
             $table->foreign('type_id')->references('id')->on('application_document_types');
             $table->text('description')->comment('詳細說明');
@@ -30,11 +30,11 @@ class CreateTwoYearTechDepartmentApplicationDocumentsTable extends Migration
 
         Schema::create('two_year_tech_dept_history_application_docs', function (Blueprint $table) {
             $table->string('dept_id')->comment('系所代碼');
-            $table->foreign('dept_id')->references('id')->on('department_data');
+            $table->foreign('dept_id')->references('id')->on('two_year_tech_department_data');
             $table->unsignedInteger('type_id')->comment('備審資料代碼（系統自動產生）');
             $table->foreign('type_id')->references('id')->on('application_document_types');
             $table->unsignedInteger('history_id')->comment('所隸屬的系所歷史資料代碼');
-            $table->foreign('history_id')->references('history_id')->on('department_history_data');
+            $table->foreign('history_id')->references('history_id')->on('two_year_tech_department_history_data');
             $table->string('description')->comment('詳細說明');
             $table->string('eng_description')->comment('英文的詳細說明');
             $table->boolean('modifiable')->default(false)->comment('學校是否可修改此備審資料');
