@@ -7,6 +7,7 @@ use Illuminate\Auth\AuthenticationException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use App;
 use Symfony\Component\HttpKernel\Exception\HttpException;
+use Symfony\Component\Routing\Exception\MethodNotAllowedException;
 
 class Handler extends ExceptionHandler
 {
@@ -59,11 +60,15 @@ class Handler extends ExceptionHandler
             $response['trace'] = $exception->getTrace();
         }
 
-        // Default response of 400
-        $status = 400;
+        // Default response of 404
+        $status = 404;
 
         if ($exception instanceof AuthenticationException) {
             $status = 401;
+        }
+
+        if ($exception instanceof MethodNotAllowedException) {
+            $status = 405;
         }
 
         // If this exception is an instance of HttpException
