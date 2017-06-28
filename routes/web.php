@@ -36,7 +36,7 @@ Route::resource('/department-groups', 'DepartmentGroupController');
 Route::resource('/evaluation-levels', 'EvaluationLevelController');
 
 // 系統輸出簡章調查回覆表
-Route::get('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 'GuidelinesReplyFormGeneratorController@gen');
+//Route::post('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 'GuidelinesReplyFormGeneratorController@gen');
 
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
