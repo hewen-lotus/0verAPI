@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Traits\OverseasMailerTrait;
 use Illuminate\Console\Command;
 use Swift_SmtpTransport;
 use Swift_Mailer;
@@ -11,12 +12,14 @@ use App\Mail\GuidelinesReplyFormGenerated;
 use App\SchoolData;
 use App\EvaluationLevel;
 use App\DepartmentGroup;
+use App\DepartmentApplicationDocument;
 
 use mPDF;
 use Carbon\Carbon;
 
 class BachelorGuidelinesReplyFormGenerator extends Command
 {
+    use OverseasMailerTrait;
     /**
      * The name and signature of the console command.
      *
@@ -188,6 +191,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '</tr>';
 
                 // TODO 好像還有一格，要等和融匯入備審資料
+                // DepartmentApplicationDocument::where()
                 $table .= '<tr><td>' . $dept->description . '</td><td>備審資料（？</td></tr>';
             }
 
@@ -218,17 +222,8 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             if ($this->argument('email')) {
                 $mpdf->Output(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf', 'F');
 
-                $transport = Swift_SmtpTransport::newInstance(
-                    \Config::get('mail.host'),
-                    \Config::get('mail.port'),
-                    \Config::get('mail.encryption'))
-                    ->setUsername(\Config::get('mail.username'))
-                    ->setPassword(\Config::get('mail.password'))
-                    ->setStreamOptions(['ssl' => \Config::get('mail.ssloptions')]);
-
-                $mailer = Swift_Mailer::newInstance($transport);
-
-                Mail::setSwiftMailer($mailer);
+                // use function in OverseasMailerTrait
+                $this->mailer();
 
                 //Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
 
