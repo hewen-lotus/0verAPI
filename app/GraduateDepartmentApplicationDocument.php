@@ -34,6 +34,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\GraduateDepartmentApplicationDocument whereUpdatedAt($value)
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentApplicationDocument withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentApplicationDocument withoutTrashed()
+ * @property-read \App\ApplicationDocumentType $type
  */
 class GraduateDepartmentApplicationDocument extends Model
 {
@@ -60,4 +61,9 @@ class GraduateDepartmentApplicationDocument extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function type()
+    {
+        return $this->belongsTo('App\ApplicationDocumentType', 'type_id', 'id');
+    }
 }

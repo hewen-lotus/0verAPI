@@ -34,6 +34,7 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withoutTrashed()
+ * @property-read \App\ApplicationDocumentType $type
  */
 class DepartmentApplicationDocument extends Model
 {
@@ -60,4 +61,9 @@ class DepartmentApplicationDocument extends Model
     ];
 
     protected $dates = ['deleted_at'];
+
+    public function type()
+    {
+        return $this->belongsTo('App\ApplicationDocumentType', 'type_id', 'id');
+    }
 }

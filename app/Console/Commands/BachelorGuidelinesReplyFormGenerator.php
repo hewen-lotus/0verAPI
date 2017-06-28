@@ -4,8 +4,6 @@ namespace App\Console\Commands;
 
 use App\Traits\OverseasMailerTrait;
 use Illuminate\Console\Command;
-use Swift_SmtpTransport;
-use Swift_Mailer;
 use Mail;
 use App\Mail\GuidelinesReplyFormGenerated;
 
@@ -15,6 +13,7 @@ use App\DepartmentGroup;
 use App\DepartmentApplicationDocument;
 
 use mPDF;
+use Auth;
 use Carbon\Carbon;
 
 class BachelorGuidelinesReplyFormGenerator extends Command
@@ -61,7 +60,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
         ) {
             $data = SchoolData::find($this->argument('school_code'));
 
-            $mpdf = new mPDF('UTF-8', 'A4', 9, 'sun-exta');
+            $mpdf = new mPDF('UTF-8', 'A4', '10', 'sun-exta');
 
             $mpdf->autoScriptToLang = true;
 
@@ -85,7 +84,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table = '<h3 style="text-align: center">' . $data->title . ' ' . $data->eng_title . ' (學士班)</h3>';
 
-            $table .= '<table style="width: 100%;">';
+            $table .= '<table style="width: 100%; font-size: 10pt;">';
 
             if ($data->has_self_enrollment) {
                 $basic_data_rowspan = 4;
@@ -93,14 +92,14 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $basic_data_rowspan = 3;
             }
 
-            $table .= '<tr><th rowspan="'. $basic_data_rowspan .'">學校基本資料</th><td>學校代碼</td><td>' . $data->id . '</td><td>承辦單位</td><td>' . $data->organization . '</td></tr>';
+            $table .= '<tr><th rowspan="'. $basic_data_rowspan .'">學校基本資料</th><td style="width: 10%; text-align: right; vertical-align: middle;">學校代碼</td><td>' . $data->id . '</td><td style="width: 10%; text-align: right; vertical-align: middle;">承辦單位</td><td>' . $data->organization . '</td></tr>';
 
-            $table .= '<tr><td>聯絡電話</td><td>' . $data->phone . '</td><td>地址</td><td>' . $data->address . '</td></tr>';
+            $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td><td style="width: 10%; text-align: right; vertical-align: middle;">地址</td><td>' . $data->address . '</td></tr>';
 
-            $table .= '<tr><td>傳真</td><td>' . $data->fax . '</td><td>網址</td><td>' . $data->url . '</td></tr>';
+            $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td><td style="width: 10%; text-align: right; vertical-align: middle;">網址</td><td>' . $data->url . '</td></tr>';
 
             if ($data->has_self_enrollment) {
-                $table .= '<tr><td>自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
+                $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
             $depts = $data->departments()->get();
@@ -145,20 +144,20 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<br>';
 
-            $table .= '<table style="width: 100%; font-size: 10pt;">';
+            $table .= '<table style="width: 100%; font-size: 12pt;">';
 
-            $table .= '<tr><th style="width: 12%;" rowspan="2">系所代碼<br />(志願代碼)</th><th colspan="3">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 15%;" rowspan="2">系所代碼<br />(志願代碼)</th><th colspan="3">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
 
             $table .= '<tr><th style="width: 4%;">聯</th><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
             foreach ($depts as $dept) {
                 $table .= '<tr>';
 
-                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept->id . '<br />(' . $dept->card_code . ')</td>';
+                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->id . '<br />(' . $dept->card_code . ')</td>';
 
-                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept->admission_placement_quota . '</td>';
+                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_placement_quota . '</td>';
 
-                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept->admission_selection_quota . '</td>';
+                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
                 if ($dept->has_self_enrollment) {
                     $dept_self_enrollment_quota = $dept->self_enrollment_quota;
@@ -166,7 +165,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                     $dept_self_enrollment_quota = '-';
                 }
 
-                $table .= '<td rowspan="2" align="center" vertical-align="middle">' . $dept_self_enrollment_quota . '</td>';
+                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
                 if ($dept->has_special_class) {
                     $dept_has_special_class = '是';
@@ -190,9 +189,25 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                // TODO 好像還有一格，要等和融匯入備審資料
-                // DepartmentApplicationDocument::where()
-                $table .= '<tr><td>' . $dept->description . '</td><td>備審資料（？</td></tr>';
+                $docs = DepartmentApplicationDocument::where('dept_id', '=', $dept->id)->get();
+
+                $doc_count = 1;
+
+                $doc_output = '';
+
+                foreach ($docs as $doc) {
+                    if ((bool)$doc->required) {
+                        $is_required = '(必)';
+                    } else {
+                        $is_required = '(選)';
+                    }
+
+                    $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+
+                    $doc_count++;
+                }
+
+                $table .= '<tr><td>' . $dept->description . '</td><td>' . $doc_output . '</td></tr>';
             }
 
             $table .= '</table>';
@@ -201,11 +216,17 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $time_for_md5 = $data->history->created_at;
 
+            if (Auth::check()) {
+                $maker = Auth::user()->name . '&nbsp;&nbsp;' . Auth::user()->phone . '<br />' . Auth::user()->email . '<br />';
+            } else {
+                $maker = 'NCNU Overseas<br />';
+            }
+
             $mpdf->SetHTMLFooter('
 
-            <table  style="width: 100%; vertical-align: top; border: none; font-size: 6pt;"><tr style="border: none;">
+            <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
             
-            <td style="width: 33%; border: none;">※承辦人簽章<br />' . $now . '</td>
+            <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
             
             <td style="width: 33%; border: none;">※單位主管簽章</td>
 
