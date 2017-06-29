@@ -36,7 +36,7 @@ class AppServiceProvider extends ServiceProvider
             // 若 admission_placement_quota 比 MIN(last_year_admission_placement_quota, last_year_admission_placement_amount) 小，需要填 decrease_reason_of_admission_placement
             $minimalvalue = min($departmentHistoryData->last_year_admission_placement_quota, $departmentHistoryData->last_year_admission_placement_amount);
 
-            if ($admission_placement_quota > $minimalvalue) {
+            if ($admission_placement_quota >= $minimalvalue) {
                 return true;
             } else {
                 return !empty($value);

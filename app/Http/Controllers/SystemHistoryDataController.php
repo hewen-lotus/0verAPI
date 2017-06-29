@@ -310,7 +310,7 @@ class SystemHistoryDataController extends Controller
                     'departments.*.admission_selection_quota' => 'required|integer',
                     'departments.*.admission_placement_quota' => 'required|integer',
                     'departments.*.decrease_reason_of_admission_placement' =>
-                        'if_decrease_reason_required:id,admission_placement_quota|string',
+                        'if_decrease_reason_required:id,admission_placement_quota',
                 ];
 
                 // 驗證輸入資料
