@@ -135,6 +135,8 @@ class DepartmentHistoryData extends Model
 
     protected $table = 'department_history_data';
 
+    protected $primaryKey = 'history_id';
+
     protected $dateFormat = Carbon::ISO8601;
 
     protected $dates = ['deleted_at'];
@@ -168,7 +170,6 @@ class DepartmentHistoryData extends Model
         'last_year_personal_apply_amount', //'去年個人申請名額
         'admission_selection_quota', //個人申請名額
         'has_self_enrollment', //是否有自招
-//        'self_enrollment_quota', //自招名額(不調查）
         'has_special_class', //是否招收僑生專班
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
@@ -191,11 +192,6 @@ class DepartmentHistoryData extends Model
         'evaluation', //系所評鑑等級
         'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
-        'info_status', //waiting|confirmed|editing|returned
-        'quota_status', //waiting|confirmed|editing|returned
-        'review_memo', //讓學校再次修改的原因
-        'review_by', //海聯回覆的人員
-        'review_at', //海聯回覆的時間點
         'created_at', //此版本建立時間
     ];
 
@@ -208,11 +204,6 @@ class DepartmentHistoryData extends Model
     public function editor_permission()
     {
         return $this->hasMany('App\DepartmentEditorPermission', 'dept_id', 'id');
-    }
-
-    public function reviewer()
-    {
-        return $this->belongsTo('App\User', 'review_by', 'username');
     }
 
     public function creator()

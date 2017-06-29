@@ -130,6 +130,8 @@ class TwoYearTechHistoryDepartmentData extends Model
 
     protected $table = 'two_year_tech_department_history_data';
 
+    protected $primaryKey = 'history_id';
+
     protected $dateFormat = Carbon::ISO8601;
 
     protected $casts = [
@@ -184,11 +186,6 @@ class TwoYearTechHistoryDepartmentData extends Model
         'evaluation', //系所評鑑等級
         'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
-        'info_status', //waiting|confirmed|editing|returned
-        'quota_status', //waiting|confirmed|editing|returned
-        'review_memo', //讓學校再次修改的原因
-        'review_by', //海聯回覆的人員
-        'review_at', //海聯回覆的時間點
         'created_at', //此版本建立時間
     ];
 

@@ -6,9 +6,8 @@ use Illuminate\Http\Request;
 
 use Auth;
 use Validator;
-use DB;
 
-use App\SchoolData;
+//use App\SchoolData;
 use App\SchoolHistoryData;
 use App\SchoolLastYearSelfEnrollmentAndFiveYearStatus;
 
@@ -19,14 +18,19 @@ class SchoolHistoryDataController extends Controller
         $this->middleware(['auth', 'switch']);
     }
 
+    public function index()
+    {
+        $messages = ['Method Not Allowed.'];
+
+        return response()->json(compact('messages'), 405);
+    }
+
     /**
-     * 取得學校資訊的歷史版本
-     *
-     * @param  string $school_id
-     * @param  string $histories_id
-     * @return \Illuminate\Http\Response
+     * @param $school_id
+     * @param $history_id
+     * @return \Illuminate\Http\JsonResponse
      */
-    public function show($school_id, $histories_id)
+    public function show($school_id, $history_id)
     {
         $user = Auth::user();
 
@@ -37,131 +41,82 @@ class SchoolHistoryDataController extends Controller
             }
         }
 
-        if (SchoolHistoryData::where('id', '=', $school_id)->exists()) {
-            // 確認使用者權限
-            if ($user->can('view', [SchoolHistoryData::class, $school_id, $histories_id])) {
-                return $this->getDataById($school_id);
-            } else {
-                $messages = array('User don\'t have permission to access');
-
-                return response()->json(compact('messages'), 403);
+        // 確認使用者權限
+        if ($user->can('view', [SchoolHistoryData::class, $school_id, $history_id])) {
+            $data = $this->get_data($school_id, $history_id);
+            
+            if ($data == null) {
+                $messages = ['School Data Not Found!'];
+                return response()->json(compact('messages'), 404);
             }
+            
+            return response()->json($data, 200);
+        } else {
+            $messages = ['User don\'t have permission to access'];
+            
+            return response()->json(compact('messages'), 403);
         }
-
-        $messages = array('School Data Not Found!');
-
-        return response()->json(compact('messages'), 404);
     }
 
     /**
-     * 新增學校資料歷史版本
-     *
-     * @param  \Illuminate\Http\Request $request
-     * @param  string  $school_id
-     * @return \Illuminate\Http\Response
+     * @param Request $request
+     * @param $school_id
+     * @return \Illuminate\Http\JsonResponse
      */
     public function store(Request $request, $school_id)
     {
         $user = Auth::user();
 
+        // 接受 me 參數
+        if ($school_id == 'me') {
+            $school_id = $user->school_editor->school_code;
+        }
+        
         // 確認使用者權限
         if ($user->can('create', [SchoolHistoryData::class, $school_id])) {
-            // 接受 me 參數
-            if ($school_id == 'me') {
-                $school_id = $user->school_editor->school_code;
-            }
-
-            $historyData = SchoolHistoryData::select()
-                ->where('id', '=', $school_id)
-                ->latest()
-                ->first();
-
-            if ($historyData->info_status == 'waiting' || $historyData->info_status == 'confirmed') {
-                $messages = array('Data is locked');
-
-                return response()->json(compact('messages'), 403);
-            }
+            $history_data = $this->get_data($school_id);
 
             // 設定資料驗證欄位
-            if ($request->input('action') == 'commit') {
-                // 送出需要驗證所有欄位
-                $validator = Validator::make($request->all(), [
-                    'action' => 'required|in:save,commit|string', //動作
-                    'address' => 'required|string|max:191', //學校地址
-                    'eng_address' => 'present|string|max:191', //學校英文地址
-                    'organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位名稱
-                    'eng_organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位英文名稱
-                    'has_dorm' => 'required|boolean', //是否提供宿舍
-                    'dorm_info' => 'required_if:has_dorm,1|string', //宿舍說明
-                    'eng_dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍英文說明
-                    'url' => 'required|url', //學校網站網址
-                    'eng_url' => 'present|url', //學校英文網站網址
-                    'phone' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
-                    'fax' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
-                    'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
-                    'scholarship_url' => 'required_if:has_scholarship,1|url', //僑生專屬獎學金說明網址
-                    'eng_scholarship_url' => 'required_if:has_scholarship,1|nullable|url', //僑生專屬獎學金英文說明網址
-                    'scholarship_dept' => 'required_if:has_scholarship,1|string', //獎學金負責單位名稱
-                    'eng_scholarship_dept' => 'required_if:has_scholarship,1|nullable|string', //獎學金負責單位英文名稱
-                    'has_five_year_student_allowed' => 'required|boolean', //[中五]我可以招呢
-                    'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|string', //[中五]給海聯看的學則
-                    'has_self_enrollment' => 'required|boolean', //[自招]是否單獨招收僑生
-                    'approval_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|string', //[自招]核定文號
-                ]);
-            } else {
-                // 儲存不驗證欄位是否為空值
-                $validator = Validator::make($request->all(), [
-                    'action' => 'required|in:save,commit|string', //動作
-                    'address' => 'present|string|max:191', //學校地址
-                    'eng_address' => 'present|string|max:191', //學校英文地址
-                    'organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位名稱
-                    'eng_organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位英文名稱
-                    'has_dorm' => 'required|boolean', //是否提供宿舍
-                    'dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍說明
-                    'eng_dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍英文說明
-                    'url' => 'present|url', //學校網站網址
-                    'eng_url' => 'present|url', //學校英文網站網址
-                    'phone' => 'present|string', //學校聯絡電話（+886-49-2910960#1234）
-                    'fax' => 'present|string', //學校聯絡電話（+886-49-2910960#1234）
-                    'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
-                    'scholarship_url' => 'required_if:has_scholarship,1|url', //僑生專屬獎學金說明網址
-                    'eng_scholarship_url' => 'required_if:has_scholarship,1|nullable|url', //僑生專屬獎學金英文說明網址
-                    'scholarship_dept' => 'required_if:has_scholarship,1|nullable|string', //獎學金負責單位名稱
-                    'eng_scholarship_dept' => 'required_if:has_scholarship,1|nullable|string', //獎學金負責單位英文名稱
-                    'has_five_year_student_allowed' => 'required|boolean', //[中五]我可以招呢
-                    'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|nullable|string', //[中五]給海聯看的學則
-                    'has_self_enrollment' => 'required|boolean', //[自招]是否單獨招收僑生
-                    'approval_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|nullable|string', //[自招]核定文號
-                ]);
-            }
-
-
+            $validator = Validator::make($request->all(), [
+                'address' => 'required|string|max:191', //學校地址
+                'eng_address' => 'present|string|max:191', //學校英文地址
+                'organization' => 'required|string|max:191', //學校負責僑生事務的承辦單位名稱
+                'eng_organization' => 'present|string|max:191', //學校負責僑生事務的承辦單位英文名稱
+                'has_dorm' => 'required|boolean', //是否提供宿舍
+                'dorm_info' => 'required_if:has_dorm,1|string', //宿舍說明
+                'eng_dorm_info' => 'required_if:has_dorm,1|nullable|string', //宿舍英文說明
+                'url' => 'required|url', //學校網站網址
+                'eng_url' => 'present|url', //學校英文網站網址
+                'phone' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
+                'fax' => 'required|string', //學校聯絡電話（+886-49-2910960#1234）
+                'has_scholarship' => 'required|boolean', //是否提供僑生專屬獎學金
+                'scholarship_url' => 'required_if:has_scholarship,1|url', //僑生專屬獎學金說明網址
+                'eng_scholarship_url' => 'required_if:has_scholarship,1|nullable|url', //僑生專屬獎學金英文說明網址
+                'scholarship_dept' => 'required_if:has_scholarship,1|string', //獎學金負責單位名稱
+                'eng_scholarship_dept' => 'required_if:has_scholarship,1|nullable|string', //獎學金負責單位英文名稱
+                'has_five_year_student_allowed' => 'required|boolean', //[中五]我可以招呢
+                'rule_of_five_year_student' => 'required_if:has_five_year_student_allowed,1|string', //[中五]給海聯看的學則
+                'has_self_enrollment' => 'required|boolean', //[自招]是否單獨招收僑生
+                'approval_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|string', //[自招]核定文號
+            ]);
+            
             // 驗證輸入資料
             if ($validator->fails()) {
                 $messages = $validator->errors()->all();
                 return response()->json(compact('messages'), 400);
             }
-
-            // 分辨動作為儲存還是送出
-            if ($request->input('action') == 'commit') {
-                $info_status = 'waiting';
-            } else {
-                $info_status = 'editing';
-            }
-
+            
             // 整理輸入資料
-            $insertData = array(
+            $insert_data = [
                 'id' => $school_id,
-                'info_status' => $info_status,
                 'created_by' => Auth::id(),
                 'ip_address' => $request->ip(),
                 // 不可修改資料承襲上次版本內容
-                'title' => $historyData->title,
-                'eng_title' => $historyData->eng_title,
-                'type' => $historyData->type,
-                'sort_order' => $historyData->sort_order,
+                'title' => $history_data->title,
+                'eng_title' => $history_data->eng_title,
+                'type' => $history_data->type,
+                'sort_order' => $history_data->sort_order,
                 // 基本資料
-                'action' => $request->input('action'),
                 'address' => $request->input('address'),
                 'eng_address' => $request->input('eng_address'),
                 'organization' => $request->input('organization'),
@@ -174,24 +129,24 @@ class SchoolHistoryDataController extends Controller
                 'has_scholarship' => $request->input('has_scholarship'),
                 'has_five_year_student_allowed' => $request->input('has_five_year_student_allowed'),
                 'has_self_enrollment' => $request->input('has_self_enrollment'),
-            );
+            ];
 
             // 整理住宿資料
             if ((bool)$request->input('has_dorm')) {
-                $insertData += array(
+                $insert_data += [
                     'dorm_info' => $request->input('dorm_info'),
                     'eng_dorm_info' => $request->input('eng_dorm_info'),
-                );
+                ];
             }
 
             // 整理獎學金資料
             if ((bool)$request->input('has_scholarship')) {
-                $insertData += array(
+                $insert_data += [
                     'scholarship_url' => $request->input('scholarship_url'),
                     'eng_scholarship_url' => $request->input('eng_scholarship_url'),
                     'scholarship_dept' => $request->input('scholarship_dept'),
                     'eng_scholarship_dept' => $request->input('eng_scholarship_dept'),
-                );
+                ];
             }
 
             $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::find($school_id);
@@ -202,19 +157,19 @@ class SchoolHistoryDataController extends Controller
                     $extension = $request->rule_doc_of_five_year_student->extension();
 
                     $five_year_rule_doc_path = $request->file('rule_doc_of_five_year_student')
-                        ->storeAs('/', uniqid($historyData->title.'-'.'five_year_rule_doc_').'.'.$extension, 'public');
-                } else if ($historyData->rule_doc_of_five_year_student != NULL || (bool)$request->input('has_five_year_student_allowed') == $school_last_year_self_enrollment_and_five_year_status->has_five_year_student_allowed) {
-                    $five_year_rule_doc_path = $historyData->rule_doc_of_five_year_student;
+                        ->storeAs('/', uniqid($history_data->title.'-'.'five_year_rule_doc_').'.'.$extension, 'public');
+                } else if ($history_data->rule_doc_of_five_year_student != NULL || (bool)$request->input('has_five_year_student_allowed') == $school_last_year_self_enrollment_and_five_year_status->has_five_year_student_allowed) {
+                    $five_year_rule_doc_path = $history_data->rule_doc_of_five_year_student;
                 } else {
-                    $messages = array('The rule doc of five year student field is required when has five year student allowed is 1.');
+                    $messages = ['The rule doc of five year student field is required when has five year student allowed is 1.'];
 
                     return response()->json(compact('messages'), 400);
                 }
 
-                $insertData += array(
+                $insert_data += [
                     'rule_of_five_year_student' => $request->input('rule_of_five_year_student'),
                     'rule_doc_of_five_year_student' => $five_year_rule_doc_path,
-                );
+                ];
             }
 
             // 整理自招資料
@@ -223,51 +178,65 @@ class SchoolHistoryDataController extends Controller
                     $extension = $request->approval_doc_of_self_enrollment->extension();
 
                     $self_enrollment_approval_doc_path = $request->file('approval_doc_of_self_enrollment')
-                        ->storeAs('/', uniqid($historyData->title.'-self_enrollment_approval_doc_').'.'.$extension, 'public');
-                } else if ($historyData->approval_doc_of_self_enrollment != NULL || (bool)$request->input('has_self_enrollment') == $school_last_year_self_enrollment_and_five_year_status->has_self_enrollment) {
-                    $self_enrollment_approval_doc_path = $historyData->approval_doc_of_self_enrollment;
+                        ->storeAs('/', uniqid($history_data->title.'-self_enrollment_approval_doc_').'.'.$extension, 'public');
+                } else if ($history_data->approval_doc_of_self_enrollment != NULL || (bool)$request->input('has_self_enrollment') == $school_last_year_self_enrollment_and_five_year_status->has_self_enrollment) {
+                    $self_enrollment_approval_doc_path = $history_data->approval_doc_of_self_enrollment;
                 } else {
-                    $messages = array('The approval doc of self enrollment field is required when has self enrollment is 1.');
+                    $messages = ['The approval doc of self enrollment field is required when has self enrollment is 1.'];
 
                     return response()->json(compact('messages'), 400);
                 }
 
-                $insertData += array(
+                $insert_data += [
                     'approval_no_of_self_enrollment' => $request->input('approval_no_of_self_enrollment'),
                     'approval_doc_of_self_enrollment' => $self_enrollment_approval_doc_path,
-                );
+                ];
             }
 
             // 寫入資料
-            $newData = SchoolHistoryData::create($insertData);
+            $new_data = SchoolHistoryData::create($insert_data);
 
-            return $this->getDataById($newData->id, 201);
+            $new_data = $this->get_data($school_id, $new_data->history_id);
+
+            return response()->json($new_data, 201);
         } else {
-            $messages = array('User don\'t have permission to access');
+            $messages = ['User don\'t have permission to access'];
 
             return response()->json(compact('messages'), 403);
         }
     }
 
-    public function getDataById($id, $status_code = 200)
+    public function update()
     {
-        $data = SchoolHistoryData::where('id', '=', $id)
-            ->with('creator.school_editor', 'reviewer.admin')
-            ->latest()
-            ->first();
+        $messages = ['Method Not Allowed.'];
 
-        if ($data->info_status == 'editing' || $data->info_status == 'returned') {
-            $lastReturnedData = SchoolHistoryData::where('id', '=', $id)
-                ->where('info_status', '=', 'returned')
-                ->with('creator.school_editor', 'reviewer.admin')
-                ->latest()
-                ->first();
+        return response()->json(compact('messages'), 405);
+    }
+
+    public function destroy()
+    {
+        $messages = ['Method Not Allowed.'];
+
+        return response()->json(compact('messages'), 405);
+    }
+
+    /**
+     * @param $school_id
+     * @param string $history_id
+     * @return $this|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|static
+     */
+    public function get_data($school_id, $history_id = 'latest')
+    {
+        $data = SchoolHistoryData::where('id', '=', $school_id)
+            ->with('creator.school_editor');
+        
+        // 容許 latest 字眼（取最新一筆）
+        if ($history_id == 'latest') {
+            $data = $data->latest()->first();
         } else {
-            $lastReturnedData = NULL;
+            $data = $data->where('history_id', '=', $history_id)->first();
         }
-
-        $data->last_returned_data = $lastReturnedData;
-
-        return response()->json($data, $status_code);
+        
+        return $data;
     }
 }

@@ -115,15 +115,10 @@ class SchoolHistoryData extends Model
         'has_self_enrollment' => 'boolean'
     ];
 
-    protected $hidden = [
-        // 'history_id',
-        'action',
-        'sort_order'
-    ];
+    protected $hidden = [];
 
     protected $fillable = [
         'id', //學校代碼
-        'action', // 儲存或送出
         'title', //學校名稱
         'eng_title', //學校英文名稱
         'address', //學校地址
@@ -152,17 +147,7 @@ class SchoolHistoryData extends Model
         'approval_doc_of_self_enrollment', //[自招]核定公文電子檔(file path)
         'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
-        'info_status', //waiting|confirmed|editing|returned
-        'review_memo', //讓學校再次修改的原因
-        'review_by', //海聯回覆的人員
-        'review_at', //海聯回覆的時間點
     ];
-
-
-    public function reviewer()
-    {
-        return $this->belongsTo('App\User', 'review_by', 'username');
-    }
 
     public function creator()
     {

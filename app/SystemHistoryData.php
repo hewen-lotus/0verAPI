@@ -80,19 +80,12 @@ class SystemHistoryData extends Model
 
     protected $dates = ['deleted_at'];
 
-    protected $casts = [
+    protected $casts = [];
 
-    ];
-
-    protected $hidden = [
-        // 'history_id',
-        'action',
-        'sort_order'
-    ];
+    protected $hidden = [];
 
     protected $fillable = [
         'school_code', //學校代碼
-        'action', // 儲存或送出
         'type_id', //學制種類（學士, 碩士, 二技, 博士）
         'description', //學制描述
         'eng_description', //'學制描述
@@ -102,17 +95,7 @@ class SystemHistoryData extends Model
         'ratify_quota_for_self_enrollment', //單獨招收名額（只有學士班有）
         'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
-        'info_status', //waiting|confirmed|editing|returned
-        'quota_status', //waiting|confirmed|editing|returned
-        'review_memo', //讓學校再次修改的原因
-        'review_by', //海聯回覆的人員
-        'review_at', //海聯回覆的時間點
     ];
-
-    public function reviewer()
-    {
-        return $this->belongsTo('App\User', 'review_by', 'username');
-    }
 
     public function creator()
     {

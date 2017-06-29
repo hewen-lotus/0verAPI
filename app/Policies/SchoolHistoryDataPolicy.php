@@ -15,17 +15,17 @@ class SchoolHistoryDataPolicy
      *
      * @param  \App\User  $user
      * @param  string $school_id
-     * @param  string $histories_id
+     * @param  string $history_id
      * @return mixed
      */
-    public function view(User $user, $school_id, $histories_id)
+    public function view(User $user, $school_id, $history_id)
     {
         if ($user->admin != NULL && $school_id != 'me') {
             return true;
         }
 
         if ($user->school_editor != NULL) {
-            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $histories_id == 'latest') {
+            if (($user->school_editor->school_code == $school_id || $school_id == 'me') && $history_id == 'latest') {
                 return true;
             }
         }

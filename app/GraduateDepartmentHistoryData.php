@@ -124,7 +124,7 @@ class GraduateDepartmentHistoryData extends Model
 
     protected $table = 'graduate_department_history_data';
 
-    public $incrementing = false;
+    protected $primaryKey = 'history_id';
 
     protected $dates = ['deleted_at'];
 
@@ -179,11 +179,6 @@ class GraduateDepartmentHistoryData extends Model
         'evaluation', //系所評鑑等級
         'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
-        'info_status', //waiting|confirmed|editing|returned
-        'quota_status', //waiting|confirmed|editing|returned
-        'review_memo', //讓學校再次修改的原因
-        'review_by', //海聯回覆的人員
-        'review_at', //海聯回覆的時間點
         'created_at', //此版本建立時間
     ];
 
@@ -196,11 +191,6 @@ class GraduateDepartmentHistoryData extends Model
     public function editor_permission()
     {
         return $this->hasMany('App\GraduateDepartmentEditorPermission', 'dept_id', 'id');
-    }
-
-    public function reviewer()
-    {
-        return $this->belongsTo('App\User', 'review_by', 'username');
     }
 
     public function creator()
