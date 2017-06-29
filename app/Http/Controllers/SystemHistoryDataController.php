@@ -518,7 +518,7 @@ class SystemHistoryDataController extends Controller
                 }
             }
 
-            DB::transaction(function () use ($request, $system_id, $school_id, $user, $school_history_data, $system_history_data){
+            $new_data = DB::transaction(function () use ($request, $system_id, $school_id, $user, $school_history_data, $system_history_data){
                 // 整理輸入資料
                 $insert_data = [
                     'school_code' => $school_id,
@@ -801,7 +801,7 @@ class SystemHistoryDataController extends Controller
                 return $new_data;
             });
 
-            return $this->return_quota($school_id, $system_id, 201);
+            return $this->return_quota($school_id, $system_id, $new_data->history_id, 201);
         } else {
             $messages = ['User don\'t have permission to access'];
             
