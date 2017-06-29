@@ -17,6 +17,10 @@ class ApplicationDocumentTypeController extends Controller
         $this->middleware(['auth', 'switch']);
     }
 
+    /**
+     * @param $system_id
+     * @return \Illuminate\Database\Eloquent\Collection|static[]
+     */
     public function index($system_id)
     {
         //$user = Auth::user();
@@ -24,6 +28,11 @@ class ApplicationDocumentTypeController extends Controller
         return ApplicationDocumentType::where('system_id', '=', $system_id)->get();
     }
 
+    /**
+     * @param $system_id
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
     public function show($system_id, $id)
     {
         //$user = Auth::user();
@@ -40,6 +49,11 @@ class ApplicationDocumentTypeController extends Controller
         }
     }
 
+    /**
+     * @param Request $request
+     * @param $system_id
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Http\JsonResponse
+     */
     public function store(Request $request, $system_id)
     {
         $user = Auth::user();
@@ -82,6 +96,12 @@ class ApplicationDocumentTypeController extends Controller
         return response()->json(compact('messages'), 403);
     }
 
+    /**
+     * @param Request $request
+     * @param $system_id
+     * @param $id
+     * @return \Illuminate\Http\JsonResponse|mixed
+     */
     public function update(Request $request, $system_id, $id)
     {
         $user = Auth::user();
@@ -135,6 +155,11 @@ class ApplicationDocumentTypeController extends Controller
         return response()->json(compact('messages'), 403);
     }
 
+    /**
+     * @param $system_id
+     * @param $id
+     * @return \Illuminate\Database\Eloquent\Collection|\Illuminate\Http\JsonResponse|static[]
+     */
     public function destroy($system_id, $id)
     {
         $user = Auth::user();
