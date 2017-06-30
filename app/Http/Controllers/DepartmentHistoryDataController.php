@@ -224,6 +224,15 @@ class DepartmentHistoryDataController extends Controller
             return response()->json(compact('messages'), 400);
         }
 
+        // 出生日期限制不能都空著喔
+        if ($request->input('has_birth_limit')) {
+            if ( ($request->input('birth_limit_after') == NULL) && ($request->input('birth_limit_before') == NULL) ) {
+                $messages = ['請至少輸入一項出生日期限制'];
+
+                return response()->json(compact('messages'), 400);
+            }
+        }
+
         // 取得該校的 has_enrollment
         $school_history_data = SchoolHistoryData::select('has_self_enrollment')
             ->where('id', '=', $school_id)
