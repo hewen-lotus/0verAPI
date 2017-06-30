@@ -49,13 +49,6 @@ class DepartmentHistoryDataController extends Controller
         ]);
     }
 
-    public function index()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
-    }
-
     /**
      * @param $school_id
      * @param $system_id
@@ -391,20 +384,6 @@ class DepartmentHistoryDataController extends Controller
         }
 
         return response()->json($new_data, 201);
-    }
-
-    public function update()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
-    }
-
-    public function destroy()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
     }
 
     /**

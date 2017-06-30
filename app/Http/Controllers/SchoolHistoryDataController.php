@@ -18,13 +18,6 @@ class SchoolHistoryDataController extends Controller
         $this->middleware(['auth', 'switch']);
     }
 
-    public function index()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
-    }
-
     /**
      * @param $school_id
      * @param $history_id
@@ -204,20 +197,6 @@ class SchoolHistoryDataController extends Controller
 
             return response()->json(compact('messages'), 403);
         }
-    }
-
-    public function update()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
-    }
-
-    public function destroy()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
     }
 
     /**

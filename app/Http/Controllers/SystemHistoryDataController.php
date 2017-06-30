@@ -124,13 +124,6 @@ class SystemHistoryDataController extends Controller
             4 => 'phd_departments'
         ]);
     }
-
-    public function index()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
-    }
     
     /**
      * @param Request $request
@@ -807,20 +800,6 @@ class SystemHistoryDataController extends Controller
             
             return response()->json(compact('messages'), 403);
         }
-    }
-
-    public function update()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
-    }
-
-    public function destroy()
-    {
-        $messages = ['Method Not Allowed.'];
-
-        return response()->json(compact('messages'), 405);
     }
 
     public function return_quota($school_id, $system_id, $history_id = 'latest', $status_code = 200)

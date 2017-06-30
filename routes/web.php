@@ -21,19 +21,33 @@ Route::post('/users/login', 'Auth\LoginController@UserLogin');
 
 Route::post('/users/logout', 'Auth\LoginController@UserLogout');
 
-Route::resource('/schools.editors', 'SchoolEditorController');
+Route::resource('/schools.editors', 'SchoolEditorController', ['only' => [
+    'index', 'store', 'show', 'update'
+]]);
 
-Route::resource('/schools.histories', 'SchoolHistoryDataController');
+Route::resource('/schools.histories', 'SchoolHistoryDataController', ['only' => [
+    'store', 'show'
+]]);
 
-Route::resource('/schools.systems.histories', 'SystemHistoryDataController');
+Route::resource('/schools.systems.histories', 'SystemHistoryDataController', ['only' => [
+    'store', 'show'
+]]);
 
-Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryDataController');
+Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryDataController', ['only' => [
+    'store', 'show'
+]]);
 
-Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController');
+Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController', ['only' => [
+    'index', 'store', 'show', 'update', 'destroy'
+]]);
 
-Route::resource('/department-groups', 'DepartmentGroupController');
+Route::resource('/department-groups', 'DepartmentGroupController', ['only' => [
+    'index'
+]]);
 
-Route::resource('/evaluation-levels', 'EvaluationLevelController');
+Route::resource('/evaluation-levels', 'EvaluationLevelController', ['only' => [
+    'index'
+]]);
 
 // 系統輸出簡章調查回覆表
 //Route::post('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 'GuidelinesReplyFormGeneratorController@gen');
