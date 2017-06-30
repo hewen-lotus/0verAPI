@@ -68,22 +68,6 @@ class AppServiceProvider extends ServiceProvider
             return false;
         });
 
-        // 驗證 array 內有沒有重複的 type
-        Validator::extend('unique_array_item', function($attribute, $value, $parameters, $validator) {
-            $showed = collect([]);
-
-            foreach ($value as $item) {
-                if ( $showed->contains($item['type']) ) {
-                    return false;
-                } else {
-                    $showed->push($item['type']);
-                }
-            }
-
-            // check type in input array are unique
-            return true;
-        });
-
         // 驗證 array 內有沒有帶上不能改的項目
         Validator::extend('not_modifiable_doc_in_array', function($attribute, $value, $parameters, $validator) {
             // required_item_in_array 驗證參數：$system_id, $department_id, $mode

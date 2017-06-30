@@ -168,15 +168,16 @@ class DepartmentHistoryDataController extends Controller
             'has_review_fee' => 'required|boolean', //是否另外收取審查費用
             'review_fee_detail' => 'required_if:has_review_fee,1|string', //審查費用說明
             'eng_review_fee_detail' => 'required_if:has_review_fee,1|nullable|string', //審查費用英文說明
-            'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|birth_limit_date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
-            'birth_limit_before' => 'required_if:has_birth_limit,1|nullable|birth_limit_date_format:"Y-m-d', //限...之前出生 年月日 `1991-02-23`
+            'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
+            'birth_limit_before' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之前出生 年月日 `1991-02-23`
             'main_group' => 'required|exists:department_groups,id', //主要隸屬學群 id
             'sub_group' => 'required|nullable|exists:department_groups,id', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
-            'application_docs' => 'required|array|unique_array_item|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
+            'application_docs' => 'required|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
             'application_docs.*.type' => [
                 'required',
+                'distinct',
                 'string',
                 Rule::exists('application_document_types', 'id')->where(function ($query) use ($system_id) {
                     $query->where('system_id', $system_id);
@@ -361,10 +362,22 @@ class DepartmentHistoryDataController extends Controller
             // 依學制設定審查項目資料模型
             if ($system_id == 1) {
                 $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
+
+                $not_modifiable = DepartmentHistoryApplicationDocument::select('type_id')
+                    ->where('dept_id', '=', $department_id)
+                    ->where('modifiable', '=', 0)->distinct()->get();
             } else if ($system_id == 2) {
                 $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
+
+                $not_modifiable = TwoYearTechDepartmentHistoryApplicationDocument::select('type_id')
+                    ->where('dept_id', '=', $department_id)
+                    ->where('modifiable', '=', 0)->distinct()->get();
             } else if ($system_id == 3 || $system_id == 4) {
                 $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
+
+                $not_modifiable = GraduateDepartmentHistoryApplicationDocument::select('type_id')
+                    ->where('dept_id', '=', $department_id)
+                    ->where('modifiable', '=', 0)->distinct()->get();
             }
 
             foreach ($request->input('application_docs') as &$docs) {
@@ -376,6 +389,16 @@ class DepartmentHistoryDataController extends Controller
                     'eng_description' => $docs['eng_description'],
                     'required' => $docs['required'],
                 ];
+
+                if ($not_modifiable->contains($docs['type'])) {
+                    $docs_insert_data += [
+                        'modifiable' => false,
+                    ];
+                } else {
+                    $docs_insert_data += [
+                        'modifiable' => true,
+                    ];
+                }
 
                 $new_docs_data = $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
             }
