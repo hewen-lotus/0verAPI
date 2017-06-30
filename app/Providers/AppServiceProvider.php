@@ -7,6 +7,13 @@ use Illuminate\Support\Facades\Validator;
 
 use Illuminate\Support\Facades\Schema;
 
+use App\DepartmentApplicationDocument;
+use App\DepartmentHistoryApplicationDocument;
+use App\TwoYearTechDepartmentApplicationDocument;
+use App\TwoYearTechDepartmentHistoryApplicationDocument;
+use App\GraduateDepartmentApplicationDocument;
+use App\GraduateDepartmentHistoryApplicationDocument;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -78,14 +85,101 @@ class AppServiceProvider extends ServiceProvider
         });
 
         // 驗證 array 內有沒有帶上必填的項目
-        Validator::extend('required_item_in_array', function($attribute, $value, $parameters, $validator) {
+        Validator::extend('not_modifiable_doc_in_array', function($attribute, $value, $parameters, $validator) {
+            // required_item_in_array 驗證參數：$system_id, $department_id, $mode
             $system_id = $parameters[0];
 
-            foreach ($value as $valueQQ) {
+            $department_id = $parameters[1];
 
+            if (isset($parameters[2])) { // mode should be 'history' if need to use history db tables
+                $mode = $parameters[2];
+            } else {
+                $mode = NULL;
             }
 
-            return true;
+            if ($mode == 'history') {
+                switch ($system_id)
+                {
+                    case 1:
+                        $not_modifiable_docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    case 2:
+                        $not_modifiable_docs = TwoYearTechDepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    case 3:
+                        $not_modifiable_docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    case 4:
+                        $not_modifiable_docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    default:
+                        return false;
+                        break;
+                }
+            } else {
+                switch ($system_id)
+                {
+                    case 1:
+                        $not_modifiable_docs = DepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    case 2:
+                        $not_modifiable_docs = TwoYearTechDepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    case 3:
+                        $not_modifiable_docs = GraduateDepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    case 4:
+                        $not_modifiable_docs = GraduateDepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                            ->where('modifiable', '=', 0)->get();
+                        break;
+
+                    default:
+                        return false;
+                        break;
+                }
+            }
+
+            $pass = true;
+
+            $get_count = 0; // not_modifiable 項目命中次數
+
+            foreach ($not_modifiable_docs as $not_modifiable_doc) {
+                foreach ($value as $valueQQ) {
+                    if ($not_modifiable_doc->type_id == $valueQQ['type']) {
+                        $get_count++;
+                    }
+
+                    if ((bool)$not_modifiable_doc->required != (bool)$valueQQ['required']) {
+                        $pass = false;
+                    }
+                }
+
+                if ($get_count == 0) {
+                    $pass = false;
+                }
+                
+                $get_count = 0;
+            }
+
+            if ($pass) {
+                return true;
+            } else {
+                return false;
+            }
         });
     }
 
