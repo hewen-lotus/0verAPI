@@ -174,7 +174,7 @@ class DepartmentHistoryDataController extends Controller
             'sub_group' => 'required|nullable|exists:department_groups,id', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
-            'application_docs' => 'required|array|unique_array_item', //審查項目
+            'application_docs' => 'required|array|unique_array_item|required_item_in_array:'.$system_id, //審查項目
             'application_docs.*.type' => [
                 'required',
                 'string',

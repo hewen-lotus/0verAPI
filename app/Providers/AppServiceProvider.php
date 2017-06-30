@@ -61,24 +61,30 @@ class AppServiceProvider extends ServiceProvider
             return false;
         });
 
-        // 驗證 array 內有沒有重複值
+        // 驗證 array 內有沒有重複的 type
         Validator::extend('unique_array_item', function($attribute, $value, $parameters, $validator) {
-            $show_times = array_count_values($value);
+            $showed = collect([]);
 
-            $pass = true;
-
-            foreach ($show_times as $item => $show_time) {
-                if ($show_time > 1) {
-                    $pass = false;
+            foreach ($value as $item) {
+                if ( $showed->contains($item['type']) ) {
+                    return false;
+                } else {
+                    $showed->push($item['type']);
                 }
             }
 
-            if ($pass) {
-                // all item in array is unique
-                return true;
+            // check type in input array are unique
+            return true;
+        });
+
+        // 驗證 array 內有沒有帶上必填的項目
+        Validator::extend('required_item_in_array', function($attribute, $value, $parameters, $validator) {
+
+            foreach ($value as $valueQQ) {
+
             }
 
-            return false;
+            return true;
         });
     }
 
