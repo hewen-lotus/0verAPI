@@ -143,7 +143,8 @@ class TwoYearTechHistoryDepartmentData extends Model
         'has_eng_taught' => 'boolean',
         'has_disabilities' => 'boolean',
         'has_BuHweiHwaWen' => 'boolean',
-        'has_RiJian' => 'boolean'
+        'has_RiJian' => 'boolean',
+        'has_review_fee' => 'boolean'
     ];
 
     protected $fillable = [
