@@ -15,6 +15,18 @@ class ApplicationDocumentTypeController extends Controller
     public function __construct()
     {
         $this->middleware(['auth', 'switch']);
+
+        $this->system_id_collection = collect([
+            'bachelor' => 1,
+            1 => 1,
+            'two-year' => 2,
+            'twoYear' => 2,
+            2 => 2,
+            'master' => 3,
+            3 => 3,
+            'phd' => 4,
+            4 => 4,
+        ]);
     }
 
     /**
@@ -24,6 +36,15 @@ class ApplicationDocumentTypeController extends Controller
     public function index($system_id)
     {
         //$user = Auth::user();
+
+        // mapping 學制 id
+        $system_id = $this->system_id_collection->get($system_id, 0);
+
+        if ($system_id == 0) {
+            $messages = ['System id not found.'];
+
+            return response()->json(compact('messages'), 404);
+        }
 
         return ApplicationDocumentType::where('system_id', '=', $system_id)->get();
     }
