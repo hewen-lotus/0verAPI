@@ -159,7 +159,7 @@ class DepartmentHistoryDataController extends Controller
             'memo' => 'present|string', //給海聯備註
             'url' => 'required|url', //學校網站網址
             'eng_url' => 'present|url', //學校英文網站網址
-            'gender_limit' => 'required|in:NULL,M,F', //性別限制
+            'gender_limit' => 'in:M,F', //性別限制
             'has_foreign_special_class' => 'required|boolean', //是否招收外生專班
             'has_eng_taught' => 'required|boolean', //是否為全英文授課
             'has_disabilities' => 'required|boolean', //是否招收身障學生
