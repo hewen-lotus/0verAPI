@@ -84,7 +84,7 @@ class AppServiceProvider extends ServiceProvider
             return true;
         });
 
-        // 驗證 array 內有沒有帶上必填的項目
+        // 驗證 array 內有沒有帶上不能改的項目
         Validator::extend('not_modifiable_doc_in_array', function($attribute, $value, $parameters, $validator) {
             // required_item_in_array 驗證參數：$system_id, $department_id, $mode
             $system_id = $parameters[0];

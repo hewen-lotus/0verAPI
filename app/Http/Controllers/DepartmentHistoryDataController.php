@@ -361,7 +361,6 @@ class DepartmentHistoryDataController extends Controller
             // 依學制設定審查項目資料模型
             if ($system_id == 1) {
                 $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
-
             } else if ($system_id == 2) {
                 $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
             } else if ($system_id == 3 || $system_id == 4) {
