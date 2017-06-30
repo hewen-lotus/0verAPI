@@ -396,6 +396,11 @@ class DepartmentHistoryDataController extends Controller
      */
     public function get_data($school_id, $system_id, $department_id, $history_id = 'latest')
     {
+        $school_history_data = SchoolHistoryData::select()
+            ->where('id', '=', $school_id)
+            ->latest()
+            ->first();
+
         // 依學制設定系所資料模型
         if ($system_id == 1) {
             $DepartmentHistoryDataModel = DepartmentHistoryData::class;
@@ -427,6 +432,9 @@ class DepartmentHistoryDataController extends Controller
         } else {
             $data = $data->where('history_id', '=', $history_id)->first();
         }
+
+        // 要給校有沒有自招
+        $data->school_has_self_enrollment = $school_history_data->has_self_enrollment;
 
         return $data;
     }
