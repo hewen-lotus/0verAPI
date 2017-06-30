@@ -79,6 +79,7 @@ class AppServiceProvider extends ServiceProvider
 
         // 驗證 array 內有沒有帶上必填的項目
         Validator::extend('required_item_in_array', function($attribute, $value, $parameters, $validator) {
+            $system_id = $parameters[0];
 
             foreach ($value as $valueQQ) {
 
