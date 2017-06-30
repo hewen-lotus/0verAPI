@@ -60,6 +60,26 @@ class AppServiceProvider extends ServiceProvider
             // value did not match any of the provided formats, so return false=validation failed
             return false;
         });
+
+        // 驗證 array 內有沒有重複值
+        Validator::extend('unique_array_item', function($attribute, $value, $parameters, $validator) {
+            $show_times = array_count_values($value);
+
+            $pass = true;
+
+            foreach ($show_times as $item => $show_time) {
+                if ($show_time > 1) {
+                    $pass = false;
+                }
+            }
+
+            if ($pass) {
+                // all item in array is unique
+                return true;
+            }
+
+            return false;
+        });
     }
 
     /**

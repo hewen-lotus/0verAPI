@@ -113,8 +113,8 @@ class DepartmentHistoryDataController extends Controller
      */
     public function store(Request $request, $school_id, $system_id, $department_id)
     {
-        // TODO 書審項目同一 type 不能重複
-        // TODO 書審項目要檢查是否為 modifiable，若否則學校不可修改
+        // TODO 書審項目同一 type 不能重複 -> done by richegg
+        // TODO 書審項目要檢查是否為 modifiable，若否則學校不可修改 -> 是指審查項目的 input array 一定要有（？ richegg
 
         $user = Auth::user();
 
@@ -174,7 +174,7 @@ class DepartmentHistoryDataController extends Controller
             'sub_group' => 'required|nullable|exists:department_groups,id', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
-            'application_docs' => 'required|array', //審查項目
+            'application_docs' => 'required|array|unique_array_item', //審查項目
             'application_docs.*.type' => [
                 'required',
                 'string',
