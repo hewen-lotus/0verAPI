@@ -326,14 +326,29 @@ class SystemHistoryDataController extends Controller
                 $all_quota = 0;
 
                 // 取得二技班資料歷史版本
-                $two_years = TwoYearTechHistoryDepartmentData::where('school_code','=', $school_id)->get();
+                $two_years = TwoYearTechDepartmentData::where('school_code','=', $school_id)->get();
 
                 // 累計二技班所有系所個人申請與自招量（校可自招且系有開自招才可加入計算）
                 foreach ($two_years as $two_year) {
-                    if ($school_history_data->has_self_enrollment && $two_year->has_self_enrollment) {
-                        $all_quota += $two_year->admission_selection_quota + $two_year->self_enrollment_quota;
+                    // 取得每個系所的最新版資料
+                    $dept_history_data = TwoYearTechHistoryDepartmentData::select()
+                        ->where('id','=', $two_year['id'])
+                        ->latest()
+                        ->first();
+
+                    // 若數字為 NULL，則預設為 0
+                    if ($dept_history_data->self_enrollment_quota == null) {
+                        $dept_history_data->self_enrollment_quota = 0;
+                    }
+                    if ($dept_history_data->admission_selection_quota == null) {
+                        $dept_history_data->admission_selection_quota = 0;
+                    }
+
+                    // 累計二技人數
+                    if ($school_history_data->has_self_enrollment && $dept_history_data->self_enrollment_quota) {
+                        $all_quota += $dept_history_data->admission_selection_quota + $dept_history_data->self_enrollment_quota;
                     } else {
-                        $all_quota += $two_year->admission_selection_quota;
+                        $all_quota += $dept_history_data->admission_selection_quota;
                     }
                 }
 
@@ -406,7 +421,7 @@ class SystemHistoryDataController extends Controller
                 foreach ($depts as $dept) {
                     // 取得每個系所的最新版資料
                     $dept_history_data = DepartmentHistoryData::select()
-                        ->where('id','=', $dept->id)
+                        ->where('id','=', $dept['id'])
                         ->latest()
                         ->first();
 
