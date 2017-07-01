@@ -262,7 +262,7 @@ class DepartmentHistoryDataController extends Controller
         if ($system_id == 2) {
             // 沒日間，沒專班：不可聯招不可自招
             // TODO check variable
-            if (!has_RiJian && !has_special_class) {
+            if (!$request->input('has_RiJian') && !$request->input('has_special_class')) {
                 if ($request->input('has_self_enrollment') || $request->input('admission_selection_quota')) {
                     $messages = array('沒日間，沒專班：不可聯招不可自招');
                     return response()->json(compact('messages'), 400);
@@ -270,7 +270,7 @@ class DepartmentHistoryDataController extends Controller
             }
 
             // 沒日間，有專班：可聯招不可自招
-            if (!has_RiJian && has_special_class) {
+            if (!$request->input('has_RiJian') && $request->input('has_special_class')) {
                 if ($request->input('has_self_enrollment')) {
                     $messages = array('沒日間，有專班：可聯招不可自招');
                     return response()->json(compact('messages'), 400);
