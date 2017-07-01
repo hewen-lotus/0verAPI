@@ -156,22 +156,22 @@ class DepartmentHistoryDataController extends Controller
             'sort_order' => 'required|integer', //系所顯示排序
             'description' => 'required|string', //系所敘述
             'eng_description' => 'present|string', //學制英文敘述
-            'memo' => 'present|string', //給海聯備註
+            'memo' => 'present|nullable|string', //給海聯備註
             'url' => 'required|url', //學校網站網址
             'eng_url' => 'present|url', //學校英文網站網址
-            'gender_limit' => 'in:M,F', //性別限制
+            'gender_limit' => 'present|nullable|in:M,F', //性別限制
             'has_foreign_special_class' => 'required|boolean', //是否招收外生專班
             'has_eng_taught' => 'required|boolean', //是否為全英文授課
             'has_disabilities' => 'required|boolean', //是否招收身障學生
             'has_BuHweiHwaWen' => 'required|boolean', //是否招收不具華文基礎學生
             'has_birth_limit' => 'required|boolean', //是否限制出生日期
             'has_review_fee' => 'required|boolean', //是否另外收取審查費用
-            'review_fee_detail' => 'required_if:has_review_fee,1|string', //審查費用說明
-            'eng_review_fee_detail' => 'required_if:has_review_fee,1|nullable|string', //審查費用英文說明
+            'review_fee_detail' => 'sometimes|required_if:has_review_fee,|string', //審查費用說明
+            'eng_review_fee_detail' => 'sometimes|required_if:has_review_fee,1|string', //審查費用英文說明
             'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
             'birth_limit_before' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之前出生 年月日 `1991-02-23`
             'main_group' => 'required|exists:department_groups,id', //主要隸屬學群 id
-            'sub_group' => 'required|nullable|exists:department_groups,id', //次要隸屬學群 id
+            'sub_group' => 'present|nullable|exists:department_groups,id', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
             'application_docs' => 'required|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
@@ -193,25 +193,25 @@ class DepartmentHistoryDataController extends Controller
             $validation_rules += [
                 'admission_placement_quota' => 'required|integer', //聯合分發名額（只有學士班有聯合分發）
                 'decrease_reason_of_admission_placement' =>
-                    'if_decrease_reason_required:id,admission_placement_quota|string', //聯合分發人數減招原因（只有學士班有聯合分發）
+                    'sometimes|if_decrease_reason_required:id,admission_placement_quota|string', //聯合分發人數減招原因（只有學士班有聯合分發）
                 'has_self_enrollment' => 'required|boolean', //是否有自招
-                'has_special_class' => 'required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
+                'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
             ];
         } else if ($system_id == 2) {
             // 送出需要驗證所有欄位
             $validation_rules += [
                 'has_self_enrollment' => 'required|boolean', //是否有自招
-                'has_RiJian' => 'required_if:has_self_enrollment,1|boolean', //是否有招收日間二技學制（二技專用）
-                'has_special_class' => 'required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
-                'self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
-                'approval_no_of_special_class' => 'required_if:has_special_class,1|string', //招收僑生專班文號（二技專用）
+                'has_RiJian' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否有招收日間二技學制（二技專用）
+                'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
+                'self_enrollment_quota' => 'sometimes|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
+                'approval_no_of_special_class' => 'sometimes|required_if:has_special_class,1|string', //招收僑生專班文號（二技專用）
                 'approval_doc_of_special_class' => 'required|nullable|file', //招收僑生專班文件電子檔（二技專用）沒給則沿用舊檔案
             ];
         } else if ($system_id == 3 || $system_id == 4)  {
             $validation_rules += [
                 'has_self_enrollment' => 'required|boolean', //是否有自招
-                'has_special_class' => 'required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
-                'self_enrollment_quota' => 'required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
+                'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
+                'self_enrollment_quota' => 'sometimes|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
             ];
         }
 
@@ -326,25 +326,24 @@ class DepartmentHistoryDataController extends Controller
                 'main_group' => $request->input('main_group'),
                 'sub_group' => $request->input('sub_group'),
                 'evaluation' => $request->input('evaluation'),
-                'admission_selection_quota' => $request->input('admission_selection_quota', 0),
+                'admission_selection_quota' => $request->input('admission_selection_quota'),
             ];
 
             // 各學制特別資料整理
             if ($system_id == 1) {
                 $insert_data += [
                     'last_year_admission_placement_quota' => $department_history_data->last_year_admission_placement_quota,
-                    'admission_placement_quota' => $request->input('admission_placement_quota', 0),
+                    'admission_placement_quota' => $request->input('admission_placement_quota'),
                     'decrease_reason_of_admission_placement' => $request->input('decrease_reason_of_admission_placement'),
                     'has_self_enrollment' => $request->input('has_self_enrollment'),
                     'has_special_class' => $request->input('has_special_class'),
                 ];
             } else if ($system_id == 2) {
                 $insert_data += [
-                    'quota_status' => $status,
                     'has_self_enrollment' => $request->input('has_self_enrollment'),
                     'has_RiJian' => $request->input('has_RiJian'),
                     'has_special_class' => $request->input('has_special_class'),
-                    'self_enrollment_quota' => $request->input('self_enrollment_quota', 0),
+                    'self_enrollment_quota' => $request->input('self_enrollment_quota'),
                     'approval_no_of_special_class' => $request->input('approval_no_of_special_class'),
                     'approval_doc_of_special_class' => $request->input('approval_doc_of_special_class', $department_history_data->approval_doc_of_special_class),
                 ];
