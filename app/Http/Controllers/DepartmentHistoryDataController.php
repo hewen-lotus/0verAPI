@@ -175,7 +175,7 @@ class DepartmentHistoryDataController extends Controller
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
             'application_docs' => 'required|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
-            'application_docs.*.type' => [
+            'application_docs.*.type_id' => [
                 'required',
                 'distinct',
                 'string',
@@ -383,13 +383,13 @@ class DepartmentHistoryDataController extends Controller
                 $docs_insert_data = [
                     'history_id' => $new_department_data->history_id,
                     'dept_id' => $department_id,
-                    'type_id' => $docs['type'],
+                    'type_id' => $docs['type_id'],
                     'description' => $docs['description'],
                     'eng_description' => $docs['eng_description'],
                     'required' => $docs['required'],
                 ];
 
-                if ($not_modifiable->contains($docs['type'])) {
+                if ($not_modifiable->contains($docs['type_id'])) {
                     $docs_insert_data += [
                         'modifiable' => false,
                     ];
