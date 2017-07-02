@@ -143,7 +143,7 @@ class AppServiceProvider extends ServiceProvider
 
             foreach ($not_modifiable_docs as $not_modifiable_doc) {
                 foreach ($value as $valueQQ) {
-                    if ($not_modifiable_doc->type_id == $valueQQ['type']) {
+                    if ($not_modifiable_doc->type_id == $valueQQ['type_id']) {
                         $get_count++;
                     }
 
