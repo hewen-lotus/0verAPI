@@ -205,7 +205,7 @@ class DepartmentHistoryDataController extends Controller
                 'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
                 'self_enrollment_quota' => 'sometimes|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
                 'approval_no_of_special_class' => 'sometimes|required_if:has_special_class,1|string', //招收僑生專班文號（二技專用）
-                'approval_doc_of_special_class' => 'required|nullable|file', //招收僑生專班文件電子檔（二技專用）沒給則沿用舊檔案
+                'approval_doc_of_special_class' => 'required_if:has_special_class,1|nullable|file', //招收僑生專班文件電子檔（二技專用）沒給則沿用舊檔案
             ];
         } else if ($system_id == 3 || $system_id == 4)  {
             $validation_rules += [
@@ -261,7 +261,6 @@ class DepartmentHistoryDataController extends Controller
         // 二技特殊限制
         if ($system_id == 2) {
             // 沒日間，沒專班：不可聯招不可自招
-            // TODO check variable
             if (!$request->input('has_RiJian') && !$request->input('has_special_class')) {
                 if ($request->input('has_self_enrollment') || $request->input('admission_selection_quota')) {
                     $messages = array('沒日間，沒專班：不可聯招不可自招');
@@ -339,13 +338,24 @@ class DepartmentHistoryDataController extends Controller
                     'has_special_class' => $request->input('has_special_class'),
                 ];
             } else if ($system_id == 2) {
+                // 整理招收僑生專班資料
+                if ($request->hasFile('approval_doc_of_special_class') && $request->file('approval_doc_of_special_class')->isValid()) {
+                    // 有給文件
+                    $extension = $request->approval_doc_of_special_class->extension();
+
+                    $approval_doc_of_special_class_path = $request->file('approval_doc_of_special_class')
+                        ->storeAs('/', uniqid($department_history_data->title.'-'.'approval_doc_of_special_class_').'.'.$extension, 'public');
+                } else if ($department_history_data->approval_doc_of_special_class != NULL) {
+                    $approval_doc_of_special_class_path = $department_history_data->approval_doc_of_special_class;
+                }
+
                 $insert_data += [
                     'has_self_enrollment' => $request->input('has_self_enrollment'),
                     'has_RiJian' => $request->input('has_RiJian'),
                     'has_special_class' => $request->input('has_special_class'),
                     'self_enrollment_quota' => $request->input('self_enrollment_quota'),
                     'approval_no_of_special_class' => $request->input('approval_no_of_special_class'),
-                    'approval_doc_of_special_class' => $request->input('approval_doc_of_special_class', $department_history_data->approval_doc_of_special_class),
+                    'approval_doc_of_special_class' => $approval_doc_of_special_class_path,
                 ];
             } else if ($system_id == 3 || $system_id == 4) {
                 $insert_data += [
