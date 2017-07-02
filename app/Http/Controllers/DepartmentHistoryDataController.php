@@ -150,7 +150,10 @@ class DepartmentHistoryDataController extends Controller
             
             return response()->json(compact('messages'), 403);
         }
-        
+
+        // 這是一個 object array string，所以要先 decode 喔
+        $request->merge(['application_docs' => json_decode($request->input('application_docs'), true)]);
+
         // 設定資料驗證欄位
         $validation_rules = [
             'sort_order' => 'required|integer', //系所顯示排序
@@ -178,7 +181,7 @@ class DepartmentHistoryDataController extends Controller
             'application_docs.*.type_id' => [
                 'required',
                 'distinct',
-                'string',
+                'integer',
                 Rule::exists('application_document_types', 'id')->where(function ($query) use ($system_id) {
                     $query->where('system_id', $system_id);
                 })
