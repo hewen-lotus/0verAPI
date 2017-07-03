@@ -144,11 +144,12 @@ class AppServiceProvider extends ServiceProvider
             foreach ($not_modifiable_docs as $not_modifiable_doc) {
                 foreach ($value as $valueQQ) {
                     if ($not_modifiable_doc->type_id == $valueQQ['type_id']) {
-                        $get_count++;
-                    }
+                        // 如果必填欄位的 required 與資料庫不同就直接跳掉
+                        if ((bool)$not_modifiable_doc->required != (bool)$valueQQ['required']) {
+                            return false;
+                        }
 
-                    if ((bool)$not_modifiable_doc->required != (bool)$valueQQ['required']) {
-                        $pass = false;
+                        $get_count++;
                     }
                 }
 
