@@ -374,22 +374,10 @@ class DepartmentHistoryDataController extends Controller
             // 依學制設定審查項目資料模型
             if ($system_id == 1) {
                 $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
-
-                $not_modifiable = DepartmentHistoryApplicationDocument::select('type_id')
-                    ->where('dept_id', '=', $department_id)
-                    ->where('modifiable', '=', 0)->distinct()->get();
             } else if ($system_id == 2) {
                 $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
-
-                $not_modifiable = TwoYearTechDepartmentHistoryApplicationDocument::select('type_id')
-                    ->where('dept_id', '=', $department_id)
-                    ->where('modifiable', '=', 0)->distinct()->get();
             } else if ($system_id == 3 || $system_id == 4) {
                 $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
-
-                $not_modifiable = GraduateDepartmentHistoryApplicationDocument::select('type_id')
-                    ->where('dept_id', '=', $department_id)
-                    ->where('modifiable', '=', 0)->distinct()->get();
             }
 
             foreach ($request->input('application_docs') as &$docs) {
@@ -402,13 +390,19 @@ class DepartmentHistoryDataController extends Controller
                     'required' => $docs['required'],
                 ];
 
-                if ($not_modifiable->contains($docs['type_id'])) {
+                $last_modifiable =
+                    $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
+                        ->where('type_id', '=', $docs['type_id'])
+                        ->orderBy('created_at', 'desc')
+                        ->first();
+
+                if ((bool)$last_modifiable->modifiable) {
                     $docs_insert_data += [
-                        'modifiable' => false,
+                        'modifiable' => true,
                     ];
                 } else {
                     $docs_insert_data += [
-                        'modifiable' => true,
+                        'modifiable' => false,
                     ];
                 }
 
