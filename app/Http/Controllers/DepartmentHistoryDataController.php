@@ -159,22 +159,22 @@ class DepartmentHistoryDataController extends Controller
             'sort_order' => 'required|integer', //系所顯示排序
             'description' => 'required|string', //系所敘述
             'eng_description' => 'present|string', //學制英文敘述
-            'memo' => 'present|nullable|string', //給海聯備註
+            'memo' => 'present|string', //給海聯備註
             'url' => 'required|url', //學校網站網址
             'eng_url' => 'present|url', //學校英文網站網址
-            'gender_limit' => 'present|nullable|in:M,F', //性別限制
+            'gender_limit' => 'present|in:M,F', //性別限制
             'has_foreign_special_class' => 'required|boolean', //是否招收外生專班
             'has_eng_taught' => 'required|boolean', //是否為全英文授課
             'has_disabilities' => 'required|boolean', //是否招收身障學生
             'has_BuHweiHwaWen' => 'required|boolean', //是否招收不具華文基礎學生
             'has_birth_limit' => 'required|boolean', //是否限制出生日期
             'has_review_fee' => 'required|boolean', //是否另外收取審查費用
-            'review_fee_detail' => 'sometimes|required_if:has_review_fee,|string', //審查費用說明
-            'eng_review_fee_detail' => 'sometimes|required_if:has_review_fee,1|string', //審查費用英文說明
+            'review_fee_detail' => 'present|required_if:has_review_fee,1|string', //審查費用說明
+            'eng_review_fee_detail' => 'present|required_if:has_review_fee,1|string', //審查費用英文說明
             'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
             'birth_limit_before' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之前出生 年月日 `1991-02-23`
             'main_group' => 'required|exists:department_groups,id', //主要隸屬學群 id
-            'sub_group' => 'present|nullable|exists:department_groups,id', //次要隸屬學群 id
+            'sub_group' => 'present|exists:department_groups,id', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
             'application_docs' => 'required|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
@@ -196,25 +196,25 @@ class DepartmentHistoryDataController extends Controller
             $validation_rules += [
                 'admission_placement_quota' => 'required|integer', //聯合分發名額（只有學士班有聯合分發）
                 'decrease_reason_of_admission_placement' =>
-                    'sometimes|if_decrease_reason_required:id,admission_placement_quota|string', //聯合分發人數減招原因（只有學士班有聯合分發）
+                    'present|if_decrease_reason_required:id,admission_placement_quota|string', //聯合分發人數減招原因（只有學士班有聯合分發）
                 'has_self_enrollment' => 'required|boolean', //是否有自招
-                'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
+                'has_special_class' => 'required|boolean', //是否招收僑生專班（二技的很複雜）
             ];
         } else if ($system_id == 2) {
             // 送出需要驗證所有欄位
             $validation_rules += [
                 'has_self_enrollment' => 'required|boolean', //是否有自招
-                'has_RiJian' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否有招收日間二技學制（二技專用）
-                'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
-                'self_enrollment_quota' => 'sometimes|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
-                'approval_no_of_special_class' => 'sometimes|required_if:has_special_class,1|string', //招收僑生專班文號（二技專用）
-                'approval_doc_of_special_class' => 'required_if:has_special_class,1|nullable|file', //招收僑生專班文件電子檔（二技專用）沒給則沿用舊檔案
+                'has_RiJian' => 'required|boolean', //是否有招收日間二技學制（二技專用）
+                'has_special_class' => 'required|boolean', //是否招收僑生專班（二技的很複雜）
+                'self_enrollment_quota' => 'present|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
+                'approval_no_of_special_class' => 'present|required_if:has_special_class,1|string', //招收僑生專班文號（二技專用）
+                'approval_doc_of_special_class' => 'present|file', //招收僑生專班文件電子檔（二技專用）沒給則沿用舊檔案
             ];
         } else if ($system_id == 3 || $system_id == 4)  {
             $validation_rules += [
                 'has_self_enrollment' => 'required|boolean', //是否有自招
-                'has_special_class' => 'sometimes|required_if:has_self_enrollment,1|boolean', //是否招收僑生專班（二技的很複雜）
-                'self_enrollment_quota' => 'sometimes|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
+                'has_special_class' => 'required|boolean', //是否招收僑生專班（二技的很複雜）
+                'self_enrollment_quota' => 'present|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
             ];
         }
 
@@ -309,10 +309,10 @@ class DepartmentHistoryDataController extends Controller
                 'last_year_personal_apply_offer' => $department_history_data->last_year_personal_apply_offer,
                 // 可修改的資料
                 'sort_order' => $request->input('sort_order'),
-                'memo' => $request->input('memo'),
+                'memo' => $request->input('memo') == '' ? NULL : $request->input('memo'),
                 'url' => $request->input('url'),
                 'eng_url' => $request->input('eng_url'),
-                'gender_limit' => $request->input('gender_limit'),
+                'gender_limit' => $request->input('gender_limit') == '' ? NULL : $request->input('gender_limit'),
                 'description' => $request->input('description'),
                 'eng_description' => $request->input('eng_description'),
                 'has_foreign_special_class' => $request->input('has_foreign_special_class'),
@@ -320,13 +320,13 @@ class DepartmentHistoryDataController extends Controller
                 'has_disabilities' => $request->input('has_disabilities'),
                 'has_BuHweiHwaWen' => $request->input('has_BuHweiHwaWen'),
                 'has_birth_limit' => $request->input('has_birth_limit'),
-                'birth_limit_after' => $request ->input('birth_limit_after'),
-                'birth_limit_before' => $request->input('birth_limit_before'),
+                'birth_limit_after' => $request->input('birth_limit_after') == '' ? NULL : $request->input('birth_limit_after'),
+                'birth_limit_before' => $request->input('birth_limit_before') == '' ? NULL : $request->input('birth_limit_before'),
                 'has_review_fee' => $request->input('has_review_fee'),
-                'review_fee_detail' => $request->input('review_fee_detail'),
-                'eng_review_fee_detail' => $request->input('eng_review_fee_detail'),
+                'review_fee_detail' => $request->input('review_fee_detail') == '' ? NULL : $request->input('review_fee_detail'),
+                'eng_review_fee_detail' => $request->input('eng_review_fee_detail') == '' ? NULL : $request->input('eng_review_fee_detail'),
                 'main_group' => $request->input('main_group'),
-                'sub_group' => $request->input('sub_group'),
+                'sub_group' => $request->input('sub_group') == '' ? NULL : $request->input('sub_group'),
                 'evaluation' => $request->input('evaluation'),
                 'admission_selection_quota' => $request->input('admission_selection_quota'),
             ];
