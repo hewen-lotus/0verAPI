@@ -390,19 +390,28 @@ class DepartmentHistoryDataController extends Controller
                     'required' => $docs['required'],
                 ];
 
-                $last_modifiable =
-                    $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
-                        ->where('type_id', '=', $docs['type_id'])
-                        ->orderBy('created_at', 'desc')
-                        ->first();
+                if ($DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
+                    ->where('type_id', '=', $docs['type_id'])
+                    ->exists()
+                ) {
+                    $last_modifiable =
+                        $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
+                            ->where('type_id', '=', $docs['type_id'])
+                            ->orderBy('created_at', 'desc')
+                            ->first();
 
-                if ((bool)$last_modifiable->modifiable) {
-                    $docs_insert_data += [
-                        'modifiable' => true,
-                    ];
+                    if ((bool)$last_modifiable->modifiable) {
+                        $docs_insert_data += [
+                            'modifiable' => true,
+                        ];
+                    } else {
+                        $docs_insert_data += [
+                            'modifiable' => false,
+                        ];
+                    }
                 } else {
                     $docs_insert_data += [
-                        'modifiable' => false,
+                        'modifiable' => $docs['modifiable'],
                     ];
                 }
 
