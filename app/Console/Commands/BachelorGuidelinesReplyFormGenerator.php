@@ -7,10 +7,10 @@ use Illuminate\Console\Command;
 use Mail;
 use App\Mail\GuidelinesReplyFormGenerated;
 
-use App\SchoolData;
+use App\SchoolHistoryData;
 use App\EvaluationLevel;
 use App\DepartmentGroup;
-use App\DepartmentApplicationDocument;
+use App\DepartmentHistoryApplicationDocument;
 
 use mPDF;
 use Auth;
@@ -26,7 +26,8 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      */
     protected $signature = 'pdf-generator:bachelor-guidelines-reply-form
                             {school_code : The ID of the school}
-                            {email? : mail result to someone}';
+                            {email? : mail result to someone}
+                            {--preview : output preview version}';
 
     /**
      * The console command description.
@@ -52,23 +53,31 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      */
     public function handle()
     {
-        if (SchoolData::where('id', '=', $this->argument('school_code'))
+        if (SchoolHistoryData::where('id', '=', $this->argument('school_code'))
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 1);
             })
             ->exists()
         ) {
-            $data = SchoolData::find($this->argument('school_code'));
+            $data = SchoolHistoryData::where('id', '=', $this->argument('school_code'))->latest()->first();
 
             $mpdf = new mPDF('UTF-8', 'A4', '10', 'sun-exta');
+
+            $mpdf->SetAuthor('海外聯合招生委員會');
 
             $mpdf->autoScriptToLang = true;
 
             $mpdf->autoLangToFont = true;
 
-            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+            if ($this->option('preview')) {
+                $mpdf->SetWatermarkText('PREVIEW VERSION');
 
-            $mpdf->showWatermarkImage = true;
+                $mpdf->showWatermarkText = true;
+            } else {
+                $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+
+                $mpdf->showWatermarkImage = true;
+            }
 
             $mpdf->shrink_tables_to_fit = 0;
 
@@ -189,7 +198,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = DepartmentApplicationDocument::where('dept_id', '=', $dept->id)->get();
+                $docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->get();
 
                 $doc_count = 1;
 
@@ -214,7 +223,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $now = Carbon::now('Asia/Taipei');
 
-            $time_for_md5 = $data->history->created_at;
+            $time_for_md5 = $data->created_at;
 
             if (Auth::check()) {
                 $maker = Auth::user()->name . '&nbsp;&nbsp;' . Auth::user()->phone . '<br />' . Auth::user()->email . '<br />';
@@ -222,19 +231,15 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $maker = 'NCNU Overseas<br />';
             }
 
-            $mpdf->SetHTMLFooter('
-
-            <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
-            
-            <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
-            
-            <td style="width: 33%; border: none;">※單位主管簽章</td>
-
-            <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：'. hash('md5', $time_for_md5 . $table . $time_for_md5) .'</span></td>
-
-            </tr></table>
-
-            ');
+            if (!$this->option('preview')) {
+                $mpdf->SetHTMLFooter('
+                    <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
+                    <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
+                    <td style="width: 33%; border: none;">※單位主管簽章</td>
+                    <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . hash('md5', $time_for_md5 . $table . $time_for_md5) . '</span></td>
+                    </tr></table>
+                ');
+            }
 
             $mpdf->WriteHTML($css, 1);
 
@@ -261,11 +266,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $this->info('PDF 產生完成！');
             }
 
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success'], 200);
         }
 
         $this->error('school_code 或所屬 system_id 不存在！');
 
-        return response()->json(['status' => 'failed']);
+        return response()->json(['status' => 'failed'], 400);
     }
 }
