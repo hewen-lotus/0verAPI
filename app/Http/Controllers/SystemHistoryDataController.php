@@ -12,12 +12,15 @@ use Validator;
 use App\SchoolEditor;
 use App\SystemHistoryData;
 use App\SchoolHistoryData;
+use App\DepartmentData;
+use App\DepartmentHistoryData;
+use App\DepartmentHistoryApplicationDocument;
 use App\TwoYearTechDepartmentData;
 use App\TwoYearTechHistoryDepartmentData;
+use App\TwoYearTechDepartmentHistoryApplicationDocument;
 use App\GraduateDepartmentData;
 use App\GraduateDepartmentHistoryData;
-use App\DepartmentHistoryData;
-use App\DepartmentData;
+use App\GraduateDepartmentHistoryApplicationDocument;
 
 class SystemHistoryDataController extends Controller
 {
@@ -639,7 +642,7 @@ class SystemHistoryDataController extends Controller
                         }
 
                         // 寫入名額資訊
-                        DepartmentHistoryData::create($department_insert_data);
+                        $new_department_data = DepartmentHistoryData::create($department_insert_data);
                     } else if ($system_id == 2) { // 二技班
                         // 取得最新版系所資料
                         $department_history_data = TwoYearTechHistoryDepartmentData::select()
@@ -734,7 +737,7 @@ class SystemHistoryDataController extends Controller
                         }
 
                         // 寫入名額資訊
-                        TwoYearTechHistoryDepartmentData::create($department_insert_data);
+                        $new_department_data = TwoYearTechHistoryDepartmentData::create($department_insert_data);
                     } else if ($system_id == 3 || $system_id == 4) { // 碩博學制
                         // 取得最新版系所資料
                         $department_history_data = GraduateDepartmentHistoryData::select()
@@ -801,7 +804,36 @@ class SystemHistoryDataController extends Controller
                         }
 
                         // 寫入名額資料
-                        GraduateDepartmentHistoryData::create($department_insert_data);
+                        $new_department_data = GraduateDepartmentHistoryData::create($department_insert_data);
+                    }
+
+                    // COPY 歷史版本的審查項目
+
+                    // 依學制設定審查項目資料模型
+                    if ($system_id == 1) {
+                        $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
+                    } else if ($system_id == 2) {
+                        $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
+                    } else if ($system_id == 3 || $system_id == 4) {
+                        $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
+                    }
+
+                    // 取得上一版審查項目歷史版本
+                    $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
+
+                    // COPY 歷史版本的審查項目至最新版
+                    foreach ($application_docs as &$docs) {
+                        $docs_insert_data = [
+                            'history_id' => $new_department_data->history_id,
+                            'dept_id' => $docs['dept_id'],
+                            'type_id' => $docs['type_id'],
+                            'description' => $docs['description'],
+                            'eng_description' => $docs['eng_description'],
+                            'required' => $docs['required'],
+                            'modifiable' => $docs['modifiable'],
+                        ];
+
+                        $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
                     }
                 }
 
