@@ -168,7 +168,7 @@ class DepartmentHistoryDataController extends Controller
             'has_disabilities' => 'required|boolean', //是否招收身障學生
             'has_BuHweiHwaWen' => 'required|boolean', //是否招收不具華文基礎學生
             'has_birth_limit' => 'required|boolean', //是否限制出生日期
-            'has_review_fee' => 'required|boolean', //是否另外收取審查費用
+            'has_review_fee' => 'required_unless:admission_selection_quota,0|boolean', //是否另外收取審查費用
             'review_fee_detail' => 'present|required_if:has_review_fee,1|string', //審查費用說明
             'eng_review_fee_detail' => 'present|required_if:has_review_fee,1|string', //審查費用英文說明
             'birth_limit_after' => 'required_if:has_birth_limit,1|nullable|date_format:"Y-m-d"', //限...之後出生 年月日 `1991-02-23`
@@ -177,7 +177,7 @@ class DepartmentHistoryDataController extends Controller
             'sub_group' => 'present|exists:department_groups,id', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
-            'application_docs' => 'required|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
+            'application_docs' => 'required_unless:admission_selection_quota,0|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
             'application_docs.*.type_id' => [
                 'required',
                 'distinct',
@@ -322,15 +322,27 @@ class DepartmentHistoryDataController extends Controller
                 'has_birth_limit' => $request->input('has_birth_limit'),
                 'birth_limit_after' => $request->input('birth_limit_after') == '' ? NULL : $request->input('birth_limit_after'),
                 'birth_limit_before' => $request->input('birth_limit_before') == '' ? NULL : $request->input('birth_limit_before'),
-                'has_review_fee' => $request->input('has_review_fee'),
-                'review_fee_detail' => $request->input('review_fee_detail') == '' ? NULL : $request->input('review_fee_detail'),
-                'eng_review_fee_detail' => $request->input('eng_review_fee_detail') == '' ? NULL : $request->input('eng_review_fee_detail'),
                 'main_group' => $request->input('main_group'),
                 'sub_group' => $request->input('sub_group') == '' ? NULL : $request->input('sub_group'),
                 'evaluation' => $request->input('evaluation'),
                 'admission_selection_quota' => $request->input('admission_selection_quota'),
             ];
 
+            // 個人申請人數為 0，則審查費用資料照舊版本；否則照輸入資料
+            if ($request->input('admission_selection_quota') <= 0) {
+                $insert_data += [
+                    'has_review_fee' => $department_history_data->has_review_fee,
+                    'review_fee_detail' => $department_history_data->review_fee_detail,
+                    'eng_review_fee_detail' => $department_history_data->eng_review_fee_detail,
+                ];
+            } else {
+                $insert_data += [
+                    'has_review_fee' => $request->input('has_review_fee'),
+                    'review_fee_detail' => $request->input('review_fee_detail') == '' ? NULL : $request->input('review_fee_detail'),
+                    'eng_review_fee_detail' => $request->input('eng_review_fee_detail') == '' ? NULL : $request->input('eng_review_fee_detail'),
+                ];
+            }
+            
             // 各學制特別資料整理
             if ($system_id == 1) {
                 $insert_data += [
@@ -380,7 +392,14 @@ class DepartmentHistoryDataController extends Controller
                 $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
             }
 
-            foreach ($request->input('application_docs') as &$docs) {
+            // 個人申請人數為 0，則審查費用資料照舊版本；否則照輸入資料
+            if ($request->input('admission_selection_quota') <= 0) {
+                $application_docs = $request->input('application_docs');
+            } else {
+                $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
+            }
+
+            foreach ($application_docs as &$docs) {
                 $docs_insert_data = [
                     'history_id' => $new_department_data->history_id,
                     'dept_id' => $department_id,
