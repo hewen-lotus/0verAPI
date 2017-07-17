@@ -12,12 +12,15 @@ use Validator;
 use App\SchoolEditor;
 use App\SystemHistoryData;
 use App\SchoolHistoryData;
+use App\DepartmentData;
+use App\DepartmentHistoryData;
+use App\DepartmentHistoryApplicationDocument;
 use App\TwoYearTechDepartmentData;
 use App\TwoYearTechHistoryDepartmentData;
+use App\TwoYearTechDepartmentHistoryApplicationDocument;
 use App\GraduateDepartmentData;
 use App\GraduateDepartmentHistoryData;
-use App\DepartmentHistoryData;
-use App\DepartmentData;
+use App\GraduateDepartmentHistoryApplicationDocument;
 
 class SystemHistoryDataController extends Controller
 {
@@ -579,41 +582,41 @@ class SystemHistoryDataController extends Controller
 
                         // 整理系所寫入資料
                         $department_insert_data = [
-                            'id' => $department_history_data->id,
-                            'card_code' => $department_history_data->card_code,
+                            'created_by' => $user->username,
+                            'ip_address' => $request->ip(),
+                            // 不可修改的資料承襲上次版本內容
                             'school_code' => $department_history_data->school_code,
-                            'special_dept_type' => $department_history_data->special_dept_type,
-                            'sort_order' => $department_history_data->sort_order,
+                            'id' => $department_history_data->id,
                             'title' => $department_history_data->title,
                             'eng_title' => $department_history_data->eng_title,
-                            'description' => $department_history_data->description,
-                            'eng_description' => $department_history_data->eng_description,
+                            'rank' => $department_history_data->rank,
+                            'card_code' => $department_history_data->card_code,
+                            'special_dept_type' => $department_history_data->special_dept_type,
+                            'last_year_admission_placement_amount' => $department_history_data->last_year_admission_placement_amount,
+                            'last_year_admission_placement_quota' => $department_history_data->last_year_admission_placement_quota,
+                            'last_year_personal_apply_amount' => $department_history_data->last_year_personal_apply_amount,
+                            'last_year_personal_apply_offer' => $department_history_data->last_year_personal_apply_offer,
+                            'sort_order' => $department_history_data->sort_order,
                             'memo' => $department_history_data->memo,
-                            'eng_memo' => $department_history_data->eng_memo,
                             'url' => $department_history_data->url,
                             'eng_url' => $department_history_data->eng_url,
                             'gender_limit' => $department_history_data->gender_limit,
-                            'rank' => $department_history_data->rank,
-                            'has_review_fee' => $department_history_data->has_review_fee,
-                            'review_fee_detail' => $department_history_data->review_fee_detail,
-                            'eng_review_fee_detail' => $department_history_data->has_birth_limit,
-                            'has_birth_limit' => $department_history_data->has_birth_limit,
-                            'birth_limit_after' => $department_history_data->birth_limit_after,
-                            'birth_limit_before' => $department_history_data->birth_limit_before,
-                            'main_group' => $department_history_data->main_group,
-                            'sub_group' => $department_history_data->sub_group,
+                            'description' => $department_history_data->description,
+                            'eng_description' => $department_history_data->eng_description,
+                            'has_foreign_special_class' => $department_history_data->has_foreign_special_class,
                             'has_eng_taught' => $department_history_data->has_eng_taught,
                             'has_disabilities' => $department_history_data->has_disabilities,
                             'has_BuHweiHwaWen' => $department_history_data->has_BuHweiHwaWen,
+                            'has_birth_limit' => $department_history_data->has_birth_limit,
+                            'birth_limit_after' => $department_history_data->birth_limit_after,
+                            'birth_limit_before' => $department_history_data->birth_limit_before,
+                            'has_review_fee' => $department_history_data->has_review_fee,
+                            'review_fee_detail' => $department_history_data->review_fee_detail,
+                            'eng_review_fee_detail' => $department_history_data->has_birth_limit,
+                            'main_group' => $department_history_data->main_group,
+                            'sub_group' => $department_history_data->sub_group,
                             'evaluation' => $department_history_data->evaluation,
-                            'last_year_admission_placement_amount' => $department_history_data->last_year_admission_placement_amount,
-                            'last_year_admission_placement_quota' => $department_history_data->last_year_admission_placement_quota,
-                            'last_year_personal_apply_offer' => $department_history_data->last_year_personal_apply_offer,
-                            'last_year_personal_apply_amount' => $department_history_data->last_year_personal_apply_amount,
                             'has_special_class' => $department_history_data->has_special_class,
-                            'has_foreign_special_class' => $department_history_data->has_foreign_special_class,
-                            'created_by' => $user->username,
-                            'ip_address' => $request->ip(),
                             'admission_selection_quota' => $department['admission_selection_quota'],
                             'admission_placement_quota' => $department['admission_placement_quota']
                         ];
@@ -639,7 +642,7 @@ class SystemHistoryDataController extends Controller
                         }
 
                         // 寫入名額資訊
-                        DepartmentHistoryData::create($department_insert_data);
+                        $new_department_data = DepartmentHistoryData::create($department_insert_data);
                     } else if ($system_id == 2) { // 二技班
                         // 取得最新版系所資料
                         $department_history_data = TwoYearTechHistoryDepartmentData::select()
@@ -656,43 +659,43 @@ class SystemHistoryDataController extends Controller
 
                         // 整理系所寫入資料
                         $department_insert_data = [
-                            'id' => $department_history_data->id,
-                            'special_dept_type' => $department_history_data->special_dept_type,
+                            'created_by' => $user->username,
+                            'ip_address' => $request->ip(),
+                            // 不可修改的資料承襲上次版本內容
                             'school_code' => $department_history_data->school_code,
-                            'sort_order' => $department_history_data->sort_order,
+                            'id' => $department_history_data->id,
                             'title' => $department_history_data->title,
                             'eng_title' => $department_history_data->eng_title,
-                            'description' => $department_history_data->description,
-                            'eng_description' => $department_history_data->eng_description,
-                            'memo' => $department_history_data->memo,
-                            'eng_memo' => $department_history_data->eng_memo,
-                            'url' => $department_history_data->url,
-                            'eng_url' => $department_history_data->eng_url,
+                            'special_dept_type' => $department_history_data->special_dept_type,
                             'last_year_personal_apply_offer' => $department_history_data->last_year_personal_apply_offer,
                             'last_year_personal_apply_amount' => $department_history_data->last_year_personal_apply_amount,
-                            'has_self_enrollment' => $department_history_data->has_self_enrollment,
-                            'has_special_class' => $department_history_data->has_special_class,
+                            'sort_order' => $department_history_data->sort_order,
+                            'memo' => $department_history_data->memo,
+                            'url' => $department_history_data->url,
+                            'eng_url' => $department_history_data->eng_url,
+                            'gender_limit' => $department_history_data->gender_limit,
+                            'description' => $department_history_data->description,
+                            'eng_description' => $department_history_data->eng_description,
                             'has_foreign_special_class' => $department_history_data->has_foreign_special_class,
-                            'approve_no_of_special_class' => $department_history_data->approve_no_of_special_class,
-                            'approval_doc_of_special_class' => $department_history_data->approval_doc_of_special_class,
-                            'self_enrollment_quota' => $department_history_data->self_enrollment_quota,
-                            'has_review_fee' => $department_history_data->has_review_fee,
-                            'review_fee_detail' => $department_history_data->review_fee_detail,
-                            'eng_review_fee_detail' => $department_history_data->eng_review_fee_detail,
-                            'has_birth_limit' => $department_history_data->has_birth_limit,
-                            'birth_limit_after' => $department_history_data->birth_limit_after,
-                            'birth_limit_before' => $department_history_data->birth_limit_before,
-                            'main_group' => $department_history_data->main_group,
-                            'sub_group' => $department_history_data->sub_group,
                             'has_eng_taught' => $department_history_data->has_eng_taught,
                             'has_disabilities' => $department_history_data->has_disabilities,
                             'has_BuHweiHwaWen' => $department_history_data->has_BuHweiHwaWen,
+                            'has_birth_limit' => $department_history_data->has_birth_limit,
+                            'birth_limit_after' => $department_history_data->birth_limit_after,
+                            'birth_limit_before' => $department_history_data->birth_limit_before,
+                            'has_review_fee' => $department_history_data->has_review_fee,
+                            'review_fee_detail' => $department_history_data->review_fee_detail,
+                            'eng_review_fee_detail' => $department_history_data->eng_review_fee_detail,
+                            'main_group' => $department_history_data->main_group,
+                            'sub_group' => $department_history_data->sub_group,
                             'evaluation' => $department_history_data->evaluation,
+                            'has_special_class' => $department_history_data->has_special_class,
+                            'has_self_enrollment' => $department_history_data->has_self_enrollment,
+                            'approve_no_of_special_class' => $department_history_data->approve_no_of_special_class,
+                            'approval_doc_of_special_class' => $department_history_data->approval_doc_of_special_class,
+                            'self_enrollment_quota' => $department_history_data->self_enrollment_quota,
                             'has_RiJian' => $department_history_data->has_RiJian,
-                            'gender_limit' => $department_history_data->gender_limit,
-                            'created_by' => $user->username,
-                            'ip_address' => $request->ip(),
-                            'info_status' => $department_history_data->info_status
+
                         ];
 
                         // 有 has_RiJian => 可個人申請可自招
@@ -734,7 +737,7 @@ class SystemHistoryDataController extends Controller
                         }
 
                         // 寫入名額資訊
-                        TwoYearTechHistoryDepartmentData::create($department_insert_data);
+                        $new_department_data = TwoYearTechHistoryDepartmentData::create($department_insert_data);
                     } else if ($system_id == 3 || $system_id == 4) { // 碩博學制
                         // 取得最新版系所資料
                         $department_history_data = GraduateDepartmentHistoryData::select()
@@ -752,39 +755,38 @@ class SystemHistoryDataController extends Controller
 
                         // 整理系所寫入資料
                         $department_insert_data = [
-                            'id' => $department_history_data->id,
+                            'created_by' => $user->username,
+                            'ip_address' => $request->ip(),
+                            // 不可修改的資料承襲上次版本內容
                             'school_code' => $department_history_data->school_code,
-                            'system_id' => $system_id,
-                            'special_dept_type' => $department_history_data->special_dept_type,
-                            'sort_order' => $department_history_data->sort_order,
+                            'id' => $department_history_data->id,
                             'title' => $department_history_data->title,
                             'eng_title' => $department_history_data->eng_title,
-                            'description' => $department_history_data->description,
-                            'eng_description' => $department_history_data->eng_description,
+                            'special_dept_type' => $department_history_data->special_dept_type,
+                            'last_year_personal_apply_offer' => $department_history_data->last_year_personal_apply_offer,
+                            'last_year_personal_apply_amount' => $department_history_data->last_year_personal_apply_amount,
+                            'sort_order' => $department_history_data->sort_order,
                             'memo' => $department_history_data->memo,
                             'url' => $department_history_data->url,
                             'eng_url' => $department_history_data->eng_url,
-                            'last_year_personal_apply_offer' => $department_history_data->last_year_personal_apply_offer,
-                            'last_year_personal_apply_amount' => $department_history_data->last_year_personal_apply_amount,
-                            'has_special_class' => $department_history_data->has_special_class,
-                            'has_foreign_special_class' => $department_history_data->has_foreign_special_class,
                             'gender_limit' => $department_history_data->gender_limit,
-                            'rank' => $department_history_data->rank,
-                            'has_review_fee' => $department_history_data->has_review_fee,
-                            'review_fee_detail' => $department_history_data->review_fee_detail,
-                            'eng_review_fee_detail' => $department_history_data->eng_review_fee_detail,
-                            'has_birth_limit' => $department_history_data->has_birth_limit,
-                            'birth_limit_after' => $department_history_data->birth_limit_after,
-                            'birth_limit_before' => $department_history_data->birth_limit_before,
-                            'created_by' => $user->username,
-                            'main_group' => $department_history_data->main_group,
-                            'sub_group' => $department_history_data->sub_group,
+                            'description' => $department_history_data->description,
+                            'eng_description' => $department_history_data->eng_description,
+                            'has_foreign_special_class' => $department_history_data->has_foreign_special_class,
                             'has_eng_taught' => $department_history_data->has_eng_taught,
                             'has_disabilities' => $department_history_data->has_disabilities,
                             'has_BuHweiHwaWen' => $department_history_data->has_BuHweiHwaWen,
+                            'has_birth_limit' => $department_history_data->has_birth_limit,
+                            'birth_limit_after' => $department_history_data->birth_limit_after,
+                            'birth_limit_before' => $department_history_data->birth_limit_before,
+                            'has_review_fee' => $department_history_data->has_review_fee,
+                            'review_fee_detail' => $department_history_data->review_fee_detail,
+                            'eng_review_fee_detail' => $department_history_data->eng_review_fee_detail,
+                            'main_group' => $department_history_data->main_group,
+                            'sub_group' => $department_history_data->sub_group,
                             'evaluation' => $department_history_data->evaluation,
-                            'has_RiJian' => $department_history_data->has_RiJian,
-                            'ip_address' => $request->ip(),
+                            'has_special_class' => $department_history_data->has_special_class,
+                            'system_id' => $system_id,
                             'admission_selection_quota' => $department['admission_selection_quota']
                         ];
 
@@ -802,7 +804,36 @@ class SystemHistoryDataController extends Controller
                         }
 
                         // 寫入名額資料
-                        GraduateDepartmentHistoryData::create($department_insert_data);
+                        $new_department_data = GraduateDepartmentHistoryData::create($department_insert_data);
+                    }
+
+                    // COPY 歷史版本的審查項目
+
+                    // 依學制設定審查項目資料模型
+                    if ($system_id == 1) {
+                        $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
+                    } else if ($system_id == 2) {
+                        $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
+                    } else if ($system_id == 3 || $system_id == 4) {
+                        $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
+                    }
+
+                    // 取得上一版審查項目歷史版本
+                    $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
+
+                    // COPY 歷史版本的審查項目至最新版
+                    foreach ($application_docs as &$docs) {
+                        $docs_insert_data = [
+                            'history_id' => $new_department_data->history_id,
+                            'dept_id' => $docs['dept_id'],
+                            'type_id' => $docs['type_id'],
+                            'description' => $docs['description'],
+                            'eng_description' => $docs['eng_description'],
+                            'required' => $docs['required'],
+                            'modifiable' => $docs['modifiable'],
+                        ];
+
+                        $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
                     }
                 }
 

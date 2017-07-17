@@ -158,4 +158,24 @@ class SchoolHistoryData extends Model
     {
         return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
     }
+
+    public function departments()
+    {
+        return $this->hasMany('App\DepartmentHistoryData', 'school_code', 'id');
+    }
+
+    public function graduate_departments()
+    {
+        return $this->hasMany('App\GraduateDepartmentHistoryData', 'school_code', 'id');
+    }
+
+    public function two_year_tech_departments()
+    {
+        return $this->hasMany('App\TwoYearTechHistoryDepartmentData', 'school_code', 'id');
+    }
+
+    public function systems()
+    {
+        return $this->hasMany('App\SystemHistoryData', 'school_code', 'id');
+    }
 }
