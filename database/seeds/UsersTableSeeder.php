@@ -282,7 +282,9 @@ class UsersTableSeeder extends Seeder
         ];
 
         foreach ($schools as $school) {
-            $password = $this->random_str(15);
+            //$password = $this->random_str(15);
+
+            $password = $school['username'];
 
             $email = str_replace('z%z', '@', $school['email']);
 
