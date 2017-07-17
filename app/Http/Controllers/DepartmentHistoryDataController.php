@@ -302,7 +302,7 @@ class DepartmentHistoryDataController extends Controller
                 'title' => $department_history_data->title,
                 'eng_title' => $department_history_data->eng_title,
                 'rank' => $department_history_data->rank,
-                'card_code' => $department_history_data->action,
+                'card_code' => $department_history_data->card_code,
                 'special_dept_type' => $department_history_data->special_dept_type,
                 'last_year_admission_placement_amount' => $department_history_data->last_year_admission_placement_amount,
                 'last_year_personal_apply_amount' => $department_history_data->last_year_personal_apply_amount,
