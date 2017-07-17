@@ -196,7 +196,7 @@ class DepartmentHistoryDataController extends Controller
             $validation_rules += [
                 'admission_placement_quota' => 'required|integer', //聯合分發名額（只有學士班有聯合分發）
                 'decrease_reason_of_admission_placement' =>
-                    'present|if_decrease_reason_required:id,admission_placement_quota|string', //聯合分發人數減招原因（只有學士班有聯合分發）
+                    'present|if_decrease_reason_required:'.$department_id.',admission_placement_quota,object|string', //聯合分發人數減招原因（只有學士班有聯合分發）
                 'has_self_enrollment' => 'required|boolean', //是否有自招
                 'has_special_class' => 'required|boolean', //是否招收僑生專班（二技的很複雜）
             ];

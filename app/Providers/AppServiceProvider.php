@@ -29,11 +29,18 @@ class AppServiceProvider extends ServiceProvider
         Validator::extend('if_decrease_reason_required', function ($attribute, $value, $parameters, $validator) {
             $input = $validator->getData();
 
+            // 切開 $attribute 將 input 結構陣列化
             $route = explode('.', $attribute);
 
-            $dept_id = $input[$route[0]][$route[1]][$parameters[0]];
-
-            $admission_placement_quota = $input[$route[0]][$route[1]][$parameters[1]];
+            // 第三參數若為 'array' 表示結構為 departments.*.id
+            if ($parameters[2] == 'array') {
+                $dept_id = $input[$route[0]][$route[1]][$parameters[0]];
+                $admission_placement_quota = $input[$route[0]][$route[1]][$parameters[1]];
+            } else {
+                // 第三參數若為 'object' 表示結構為 id
+                $dept_id = $parameters[0];
+                $admission_placement_quota = $input[$parameters[1]];
+            }
 
             $departmentHistoryData = \App\DepartmentHistoryData::select()
                 ->where('id', '=', $dept_id)
