@@ -19,6 +19,7 @@ use Carbon\Carbon;
 class TwoYearGuidelinesReplyFormGenerator extends Command
 {
     use OverseasMailerTrait;
+
     /**
      * The name and signature of the console command.
      *
