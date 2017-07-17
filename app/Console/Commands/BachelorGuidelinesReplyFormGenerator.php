@@ -134,7 +134,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
             } else {
-                $scholarship = '未提供';
+                $scholarship = '無僑生專屬獎學金';
             }
 
             $table .= '<tr><th>獎學金</th><td colspan="4">' . $scholarship . '</td></tr>';
@@ -169,7 +169,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
                 if ($dept->has_self_enrollment) {
-                    $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                    if ($dept->self_enrollment_quota != NULL) {
+                        $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                    } else {
+                        $dept_self_enrollment_quota = 0;
+                    }
                 } else {
                     $dept_self_enrollment_quota = '-';
                 }
