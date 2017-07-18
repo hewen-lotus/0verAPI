@@ -114,15 +114,11 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
             $depts = $data->graduate_departments()->where('system_id', '=', 3)->get();
 
-            $total_admission_placement_quota = 0; // 聯合分發總人數
-
             $total_admission_selection_quota = 0; // 個人申請總人數
 
             $total_self_enrollment_quota = 0; // 自招總人數
 
             foreach ($depts as $dept) {
-                $total_admission_placement_quota += $dept->admission_placement_quota;
-
                 $total_admission_selection_quota += $dept->admission_selection_quota;
 
                 $total_self_enrollment_quota += $dept->self_enrollment_quota;
@@ -130,7 +126,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
             $system = $data->systems()->where('type_id', '=', 3)->get();
 
-            $table .= '<tr><th>總計</th><td colspan="4">' . $data->graduate_departments()->where('system_id', '=', 3)->count() . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system['0']['last_year_admission_amount'] . ' 人,本國學生學士班未招足名額：' . (int)$system['0']['last_year_surplus_admission_quota'] . ' 人, 教育部核定擴增名額：' . (int)$system['0']['ratify_expanded_quota'] . ' 人</td></tr>';
+            $table .= '<tr><th>總計</th><td colspan="4">' . $data->graduate_departments()->where('system_id', '=', 3)->count() . ' 系組 / (個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system['0']['last_year_admission_amount'] . ' 人,本國學生碩士班未招足名額：' . (int)$system['0']['last_year_surplus_admission_quota'] . ' 人, 教育部核定擴增名額：' . (int)$system['0']['ratify_expanded_quota'] . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
@@ -156,16 +152,14 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
             $table .= '<table style="width: 100%; font-size: 12pt;">';
 
-            $table .= '<tr><th style="width: 15%;" rowspan="2">系所代碼</th><th colspan="3">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 15%;" rowspan="2">系所代碼</th><th colspan="2">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
 
-            $table .= '<tr><th style="width: 4%;">聯</th><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
+            $table .= '<tr><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
             foreach ($depts as $dept) {
                 $table .= '<tr>';
 
                 $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->id . '</td>';
-
-                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_placement_quota . '</td>';
 
                 $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
@@ -203,7 +197,10 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->get();
+                // 拿到最新一筆的 history_id
+                $latest_rec = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->max('history_id');
+
+                $docs = GraduateDepartmentHistoryApplicationDocument::where('history_id', '=', $latest_rec)->get();
 
                 $doc_count = 1;
 
