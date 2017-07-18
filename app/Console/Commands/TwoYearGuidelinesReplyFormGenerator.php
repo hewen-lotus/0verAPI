@@ -203,7 +203,10 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = TwoYearTechDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->get();
+                // 拿到最新一筆的 history_id
+                $latest_rec = TwoYearTechDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->max('history_id');
+
+                $docs = TwoYearTechDepartmentHistoryApplicationDocument::where('history_id', '=', $latest_rec)->get();
 
                 $doc_count = 1;
 

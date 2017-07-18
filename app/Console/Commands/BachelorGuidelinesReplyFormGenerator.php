@@ -203,7 +203,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->get();
+                // 拿到最新一筆的 history_id
+                $latest_rec = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->max('history_id');
+
+                $docs = DepartmentHistoryApplicationDocument::where('history_id', '=', $latest_rec)->get();
 
                 $doc_count = 1;
 
