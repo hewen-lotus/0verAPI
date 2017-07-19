@@ -392,8 +392,8 @@ class DepartmentHistoryDataController extends Controller
                 $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
             }
 
-            // 個人申請人數為 0，則審查費用資料照舊版本；否則照輸入資料
-            if ($request->input('admission_selection_quota') <= 0) {
+            // 個人申請人數為 0，則審查項目資料照舊版本；否則照輸入資料
+            if ($request->input('admission_selection_quota') > 0) {
                 $application_docs = $request->input('application_docs');
             } else {
                 $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
