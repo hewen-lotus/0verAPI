@@ -264,6 +264,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 Mail::send('emails.guidelines-reply-form', [], function ($m) use ($data) {
                     $m->to($this->argument('email'))->subject($data->title . '-學士班簡章調查回覆表');
 
+                    if (!$this->option('preview')) {
+                        $m->bcc('overseas@ncnu.edu.tw');
+                    }
+
                     $m->attach(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf');
                 });
 
