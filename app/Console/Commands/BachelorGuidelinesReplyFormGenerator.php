@@ -239,39 +239,45 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $maker = 'NCNU Overseas<br />';
             }
 
+            $file_check_code = hash('md5', $time_for_md5 . $table . $time_for_md5);
+
             if (!$this->option('preview')) {
                 $mpdf->SetHTMLFooter('
                     <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
                     <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
                     <td style="width: 33%; border: none;">※單位主管簽章</td>
-                    <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . hash('md5', $time_for_md5 . $table . $time_for_md5) . '</span></td>
+                    <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . $file_check_code . '</span></td>
                     </tr></table>
                 ');
             }
+
+            $output_file_name = $data->title . '-學士班簡章調查回覆表-' . $file_check_code . '.pdf';
 
             $mpdf->WriteHTML($css, 1);
 
             $mpdf->WriteHTML($table, 2);
 
             if ($this->argument('email')) {
-                $mpdf->Output(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf', 'F');
+                $mpdf->Output(sys_get_temp_dir() . '/' . $output_file_name, 'F');
 
                 // use function in OverseasMailerTrait
                 $this->mailer();
 
                 //Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
 
-                Mail::send('emails.guidelines-reply-form', [], function ($m) use ($data) {
+                Mail::send('emails.guidelines-reply-form', [], function ($m) use ($data, $output_file_name) {
                     $m->to($this->argument('email'))->subject($data->title . '-學士班簡章調查回覆表');
 
                     if (!$this->option('preview')) {
                         $m->bcc('overseas@ncnu.edu.tw');
                     }
 
-                    $m->attach(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf');
+                    $m->attach(sys_get_temp_dir() . '/' . $output_file_name);
                 });
 
                 $this->info('信件已寄出！');
+
+                unlink(sys_get_temp_dir() . '/' . $output_file_name);
             } else {
                 $mpdf->Output(storage_path('app/public/' . $data->title . '-學士班簡章調查回覆表.pdf'), 'F');
 
