@@ -81,7 +81,7 @@ class SchoolEditorController extends Controller
                     'password' => 'required|string|min:6',
                     'email' => 'present|email',
                     'name' => 'required|string',
-                    'eng_name' => 'present|string',
+                    'job_title' => 'required|string',
                     'phone' => 'required|string',
                     'organization' => 'required|string',
                     'has_admin' => 'present|boolean',
@@ -127,7 +127,7 @@ class SchoolEditorController extends Controller
                         'password' => Hash::make($request->password),
                         'email' => $request->email,
                         'name' => $request->name,
-                        'eng_name' => $request->eng_name,
+                        'job_title' => $request->job_title,
                         'phone' => $request->phone,
                         'created_by' => Auth::id(),
                         'updated_by' => Auth::id()
@@ -289,7 +289,7 @@ class SchoolEditorController extends Controller
                     'password' => 'present|nullable|string|min:6',
                     'email' => 'present|email',
                     'name' => 'required|string',
-                    'eng_name' => 'present|string',
+                    'job_title' => 'required|string',
                     'phone' => 'required|string',
                     'organization' => 'required|string',
                     'has_admin' => 'present|boolean',
@@ -340,7 +340,7 @@ class SchoolEditorController extends Controller
                     $UserUpdateData = array(
                         'email' => $request->email,
                         'name' => $request->name,
-                        'eng_name' => $request->eng_name,
+                        'job_title' => $request->job_title,
                         'phone' => $request->phone,
                         'updated_by' => Auth::id()
                     );

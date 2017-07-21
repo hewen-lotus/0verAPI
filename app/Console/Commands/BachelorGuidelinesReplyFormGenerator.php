@@ -7,10 +7,10 @@ use Illuminate\Console\Command;
 use Mail;
 use App\Mail\GuidelinesReplyFormGenerated;
 
-use App\SchoolData;
+use App\SchoolHistoryData;
 use App\EvaluationLevel;
 use App\DepartmentGroup;
-use App\DepartmentApplicationDocument;
+use App\DepartmentHistoryApplicationDocument;
 
 use mPDF;
 use Auth;
@@ -19,6 +19,7 @@ use Carbon\Carbon;
 class BachelorGuidelinesReplyFormGenerator extends Command
 {
     use OverseasMailerTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -26,7 +27,8 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      */
     protected $signature = 'pdf-generator:bachelor-guidelines-reply-form
                             {school_code : The ID of the school}
-                            {email? : mail result to someone}';
+                            {email? : mail result to someone}
+                            {--preview : output preview version}';
 
     /**
      * The console command description.
@@ -52,23 +54,31 @@ class BachelorGuidelinesReplyFormGenerator extends Command
      */
     public function handle()
     {
-        if (SchoolData::where('id', '=', $this->argument('school_code'))
+        if (SchoolHistoryData::where('id', '=', $this->argument('school_code'))
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 1);
             })
             ->exists()
         ) {
-            $data = SchoolData::find($this->argument('school_code'));
+            $data = SchoolHistoryData::where('id', '=', $this->argument('school_code'))->latest()->first();
 
             $mpdf = new mPDF('UTF-8', 'A4', '10', 'sun-exta');
+
+            $mpdf->SetAuthor('海外聯合招生委員會');
 
             $mpdf->autoScriptToLang = true;
 
             $mpdf->autoLangToFont = true;
 
-            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+            if ($this->option('preview')) {
+                $mpdf->SetWatermarkText('PREVIEW VERSION');
 
-            $mpdf->showWatermarkImage = true;
+                $mpdf->showWatermarkText = true;
+            } else {
+                $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+
+                $mpdf->showWatermarkImage = true;
+            }
 
             $mpdf->shrink_tables_to_fit = 0;
 
@@ -125,7 +135,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
             } else {
-                $scholarship = '未提供';
+                $scholarship = '無僑生專屬獎學金';
             }
 
             $table .= '<tr><th>獎學金</th><td colspan="4">' . $scholarship . '</td></tr>';
@@ -160,7 +170,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
                 if ($dept->has_self_enrollment) {
-                    $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                    if ($dept->self_enrollment_quota != NULL) {
+                        $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                    } else {
+                        $dept_self_enrollment_quota = 0;
+                    }
                 } else {
                     $dept_self_enrollment_quota = '-';
                 }
@@ -189,7 +203,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = DepartmentApplicationDocument::where('dept_id', '=', $dept->id)->get();
+                // 拿到最新一筆的 history_id
+                $latest_rec = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->max('history_id');
+
+                $docs = DepartmentHistoryApplicationDocument::where('history_id', '=', $latest_rec)->get();
 
                 $doc_count = 1;
 
@@ -214,7 +231,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $now = Carbon::now('Asia/Taipei');
 
-            $time_for_md5 = $data->history->created_at;
+            $time_for_md5 = $data->created_at;
 
             if (Auth::check()) {
                 $maker = Auth::user()->name . '&nbsp;&nbsp;' . Auth::user()->phone . '<br />' . Auth::user()->email . '<br />';
@@ -222,19 +239,15 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $maker = 'NCNU Overseas<br />';
             }
 
-            $mpdf->SetHTMLFooter('
-
-            <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
-            
-            <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
-            
-            <td style="width: 33%; border: none;">※單位主管簽章</td>
-
-            <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：'. hash('md5', $time_for_md5 . $table . $time_for_md5) .'</span></td>
-
-            </tr></table>
-
-            ');
+            if (!$this->option('preview')) {
+                $mpdf->SetHTMLFooter('
+                    <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
+                    <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
+                    <td style="width: 33%; border: none;">※單位主管簽章</td>
+                    <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . hash('md5', $time_for_md5 . $table . $time_for_md5) . '</span></td>
+                    </tr></table>
+                ');
+            }
 
             $mpdf->WriteHTML($css, 1);
 
@@ -251,6 +264,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 Mail::send('emails.guidelines-reply-form', [], function ($m) use ($data) {
                     $m->to($this->argument('email'))->subject($data->title . '-學士班簡章調查回覆表');
 
+                    if (!$this->option('preview')) {
+                        $m->bcc('overseas@ncnu.edu.tw');
+                    }
+
                     $m->attach(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf');
                 });
 
@@ -261,11 +278,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $this->info('PDF 產生完成！');
             }
 
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success'], 200);
         }
 
         $this->error('school_code 或所屬 system_id 不存在！');
 
-        return response()->json(['status' => 'failed']);
+        return response()->json(['status' => 'failed'], 400);
     }
 }

@@ -7,10 +7,10 @@ use Illuminate\Console\Command;
 use Mail;
 use App\Mail\GuidelinesReplyFormGenerated;
 
-use App\SchoolData;
+use App\SchoolHistoryData;
 use App\EvaluationLevel;
 use App\DepartmentGroup;
-use App\TwoYearTechDepartmentApplicationDocument;
+use App\TwoYearTechDepartmentHistoryApplicationDocument;
 
 use mPDF;
 use Auth;
@@ -19,6 +19,7 @@ use Carbon\Carbon;
 class TwoYearGuidelinesReplyFormGenerator extends Command
 {
     use OverseasMailerTrait;
+
     /**
      * The name and signature of the console command.
      *
@@ -26,7 +27,8 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
      */
     protected $signature = 'pdf-generator:two-year-guidelines-reply-form
                             {school_code : The ID of the school}
-                            {email? : mail result to someone}';
+                            {email? : mail result to someone}
+                            {--preview : output preview version}';
 
     /**
      * The console command description.
@@ -52,23 +54,31 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
      */
     public function handle()
     {
-        if (SchoolData::where('id', '=', $this->argument('school_code'))
+        if (SchoolHistoryData::where('id', '=', $this->argument('school_code'))
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 2);
             })
             ->exists()
         ) {
-            $data = SchoolData::find($this->argument('school_code'));
+            $data = SchoolHistoryData::where('id', '=', $this->argument('school_code'))->latest()->first();
 
             $mpdf = new mPDF('UTF-8', 'A4', '10', 'sun-exta');
+
+            $mpdf->SetAuthor('海外聯合招生委員會');
 
             $mpdf->autoScriptToLang = true;
 
             $mpdf->autoLangToFont = true;
 
-            $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+            if ($this->option('preview')) {
+                $mpdf->SetWatermarkText('PREVIEW VERSION');
 
-            $mpdf->showWatermarkImage = true;
+                $mpdf->showWatermarkText = true;
+            } else {
+                $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+
+                $mpdf->showWatermarkImage = true;
+            }
 
             $mpdf->shrink_tables_to_fit = 0;
 
@@ -104,24 +114,24 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $depts = $data->two_year_tech_departments()->get();
 
-            $total_admission_placement_quota = 0; // 聯合分發總人數
+            $total_admission_selection_quota = 0; // 個人申請總人數
 
             $total_self_enrollment_quota = 0; // 自招總人數
 
             foreach ($depts as $dept) {
-                $total_admission_placement_quota += $dept->admission_placement_quota;
+                $total_admission_selection_quota += $dept->admission_selection_quota;
 
                 $total_self_enrollment_quota += $dept->self_enrollment_quota;
             }
 
-            $system = $data->systems()->where('type_id', '=', 1)->get();
+            $system = $data->systems()->where('type_id', '=', 2)->get();
 
-            $table .= '<tr><th>總計</th><td colspan="4">' . $data->departments()->count() . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system['0']['last_year_admission_amount'] . ' 人,本國學生學士班未招足名額：' . (int)$system['0']['last_year_surplus_admission_quota'] . ' 人, 教育部核定擴增名額：' . (int)$system['0']['ratify_expanded_quota'] . ' 人</td></tr>';
+            $table .= '<tr><th>總計</th><td colspan="4">' . $data->two_year_tech_departments()->count() . ' 系組 / (個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system['0']['last_year_admission_amount'] . ' 人,本國學生學士班未招足名額：' . (int)$system['0']['last_year_surplus_admission_quota'] . ' 人, 教育部核定擴增名額：' . (int)$system['0']['ratify_expanded_quota'] . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
             } else {
-                $scholarship = '未提供';
+                $scholarship = '無僑生專屬獎學金';
             }
 
             $table .= '<tr><th>獎學金</th><td colspan="4">' . $scholarship . '</td></tr>';
@@ -144,17 +154,21 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $table .= '<tr><th style="width: 15%;" rowspan="2">系所代碼</th><th colspan="2">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
 
-            $table .= '<tr><th style="width: 4%;">聯</th><th style="width: 4%;">自</th></tr>';
+            $table .= '<tr><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
             foreach ($depts as $dept) {
                 $table .= '<tr>';
 
                 $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->id . '</td>';
 
-                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_placement_quota . '</td>';
+                $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
                 if ($dept->has_self_enrollment) {
-                    $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                    if ($dept->self_enrollment_quota != NULL) {
+                        $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                    } else {
+                        $dept_self_enrollment_quota = 0;
+                    }
                 } else {
                     $dept_self_enrollment_quota = '-';
                 }
@@ -162,9 +176,15 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                 $table .= '<td rowspan="2" style="text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
                 if ($dept->has_special_class) {
-                    $dept_has_special_class = '是';
+                    $dept_has_special_class = '是 (專班報部文號：'. $dept->approve_no_of_special_class .')';
                 } else {
                     $dept_has_special_class = '否';
+                }
+
+                if ($dept->has_RiJian) {
+                    $dept_has_RiJian = '有';
+                } else {
+                    $dept_has_RiJian = '無';
                 }
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
@@ -179,11 +199,14 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                     $group = $main_group->title;
                 }
 
-                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td>';
 
                 $table .= '</tr>';
 
-                $docs = TwoYearTechDepartmentApplicationDocument::where('dept_id', '=', $dept->id)->get();
+                // 拿到最新一筆的 history_id
+                $latest_rec = TwoYearTechDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->max('history_id');
+
+                $docs = TwoYearTechDepartmentHistoryApplicationDocument::where('history_id', '=', $latest_rec)->get();
 
                 $doc_count = 1;
 
@@ -208,7 +231,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $now = Carbon::now('Asia/Taipei');
 
-            $time_for_md5 = $data->history->created_at;
+            $time_for_md5 = $data->created_at;
 
             if (Auth::check()) {
                 $maker = Auth::user()->name . '&nbsp;&nbsp;' . Auth::user()->phone . '<br />' . Auth::user()->email . '<br />';
@@ -216,26 +239,22 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                 $maker = 'NCNU Overseas<br />';
             }
 
-            $mpdf->SetHTMLFooter('
-
-            <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
-            
-            <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
-            
-            <td style="width: 33%; border: none;">※單位主管簽章</td>
-
-            <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：'. hash('md5', $time_for_md5 . $table . $time_for_md5) .'</span></td>
-
-            </tr></table>
-
-            ');
+            if (!$this->option('preview')) {
+                $mpdf->SetHTMLFooter('
+                    <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
+                    <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
+                    <td style="width: 33%; border: none;">※單位主管簽章</td>
+                    <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . hash('md5', $time_for_md5 . $table . $time_for_md5) . '</span></td>
+                    </tr></table>
+                ');
+            }
 
             $mpdf->WriteHTML($css, 1);
 
             $mpdf->WriteHTML($table, 2);
 
             if ($this->argument('email')) {
-                $mpdf->Output(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf', 'F');
+                $mpdf->Output(sys_get_temp_dir() . '/' . $data->title . '-港二技簡章調查回覆表.pdf', 'F');
 
                 // use function in OverseasMailerTrait
                 $this->mailer();
@@ -243,23 +262,27 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                 //Mail::to($this->argument('email'))->send(new GuidelinesReplyFormGenerated());
 
                 Mail::send('emails.guidelines-reply-form', [], function ($m) use ($data) {
-                    $m->to($this->argument('email'))->subject($data->title . '-學士班簡章調查回覆表');
+                    $m->to($this->argument('email'))->subject($data->title . '-港二技簡章調查回覆表');
 
-                    $m->attach(sys_get_temp_dir() . '/' . $data->title . '-學士班簡章調查回覆表.pdf');
+                    if (!$this->option('preview')) {
+                        $m->bcc('overseas@ncnu.edu.tw');
+                    }
+
+                    $m->attach(sys_get_temp_dir() . '/' . $data->title . '-港二技簡章調查回覆表.pdf');
                 });
 
                 $this->info('信件已寄出！');
             } else {
-                $mpdf->Output(storage_path('app/public/' . $data->title . '-學士班簡章調查回覆表.pdf'), 'F');
+                $mpdf->Output(storage_path('app/public/' . $data->title . '-港二技簡章調查回覆表.pdf'), 'F');
 
                 $this->info('PDF 產生完成！');
             }
 
-            return response()->json(['status' => 'success']);
+            return response()->json(['status' => 'success'], 200);
         }
 
         $this->error('school_code 或所屬 system_id 不存在！');
 
-        return response()->json(['status' => 'failed']);
+        return response()->json(['status' => 'failed'], 400);
     }
 }

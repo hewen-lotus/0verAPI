@@ -134,7 +134,7 @@ class SchoolHistoryData extends Model
         'phone', //學校聯絡電話（+886-49-2910960#1234）
         'fax', //學校聯絡電話（+886-49-2910960#1234）
         'sort_order', //學校顯示排序（教育部給）
-        'scholarship', //是否提供僑生專屬獎學金
+        'has_scholarship', //是否提供僑生專屬獎學金
         'scholarship_url', //僑生專屬獎學金說明網址
         'eng_scholarship_url', //僑生專屬獎學金英文說明網址
         'scholarship_dept', //獎學金負責單位名稱
@@ -157,5 +157,25 @@ class SchoolHistoryData extends Model
     public function confirmed()
     {
         return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
+    }
+
+    public function departments()
+    {
+        return $this->hasMany('App\DepartmentHistoryData', 'school_code', 'id');
+    }
+
+    public function graduate_departments()
+    {
+        return $this->hasMany('App\GraduateDepartmentHistoryData', 'school_code', 'id');
+    }
+
+    public function two_year_tech_departments()
+    {
+        return $this->hasMany('App\TwoYearTechHistoryDepartmentData', 'school_code', 'id');
+    }
+
+    public function systems()
+    {
+        return $this->hasMany('App\SystemHistoryData', 'school_code', 'id');
     }
 }
