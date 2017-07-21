@@ -83,9 +83,11 @@ class CSVToSeeder extends Command
                         $seeds .= '\''.$key.'\' => NULL,';
                     } else if ($value == 'true') {
                         $seeds .= '\''.$key.'\' => true,';
+                    } else if ($value == 'TRUE') {
+                        $seeds .= '\''.$key.'\' => true,';
                     } else if ($value == 'false') {
                         $seeds .= '\''.$key.'\' => false,';
-                    } else if ($value == 'false') {
+                    } else if ($value == 'FALSE') {
                         $seeds .= '\''.$key.'\' => false,';
                     } else {
                         $seeds .= '\''.$key.'\' => \''.addslashes($value).'\',';
@@ -96,7 +98,7 @@ class CSVToSeeder extends Command
             // $seeds .= '\'modified_by\' => \'admin1\',\'ip_address\' => \'163.22.9.234\',';
 
             // committed table
-            $seeds .= '\'saved_id\' => \''.$i.'\',\'committed_by\' => \'admin1\',\'ip_address\' => \'163.22.9.234\',\'review_status\' => \'editing\',';
+            // $seeds .= '\'saved_id\' => \''.$i.'\',\'committed_by\' => \'admin1\',\'ip_address\' => \'163.22.9.234\',\'review_status\' => \'editing\',';
             $i++;
 
 
