@@ -39,6 +39,16 @@ class GuidelinesReplyFormGeneratorController extends Controller
          * {email? : mail result to someone}
          * {--preview : output preview version}'
          */
+
+        $user = Auth::user();
+
+        // 接受 me 參數
+        if ($user->school_editor != NULL) {
+            if ($school_code == 'me') {
+                $school_code = $user->school_editor->school_code;
+            }
+        }
+        
         $system_id = $this->systemIdCollection->get($system_id, 0);
 
         if (SchoolHistoryData::where('id', '=', $school_code)
