@@ -175,6 +175,7 @@ class DepartmentHistoryDataController extends Controller
             'birth_limit_before' => 'sometimes|nullable|date_format:"Y-m-d"', //限...之前出生 年月日 `1991-02-23`
             'main_group' => 'required|exists:department_groups,id', //主要隸屬學群 id
             'sub_group' => 'present|exists:department_groups,id', //次要隸屬學群 id
+            'group_code' => 'required|in:1,2,3', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer', //個人申請名額
             'application_docs' => 'required_unless:admission_selection_quota,0|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
@@ -324,6 +325,7 @@ class DepartmentHistoryDataController extends Controller
                 'birth_limit_before' => $request->input('birth_limit_before') == '' ? NULL : $request->input('birth_limit_before'),
                 'main_group' => $request->input('main_group'),
                 'sub_group' => $request->input('sub_group') == '' ? NULL : $request->input('sub_group'),
+                'group_code' => $request->input('group_code'),
                 'evaluation' => $request->input('evaluation'),
                 'admission_selection_quota' => $request->input('admission_selection_quota'),
             ];

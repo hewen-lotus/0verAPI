@@ -175,6 +175,7 @@ class GraduateDepartmentHistoryData extends Model
         'birth_limit_before', //限…之前出生
         'main_group', //主要隸屬學群代碼
         'sub_group', //次要隸屬學群代碼
+        'group_code', //類組
         'has_eng_taught', //全英文授課
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
