@@ -23,6 +23,8 @@ use Carbon\Carbon;
  */
 class GuidelinesReplyFormRecord extends Model
 {
+    public $timestamps = false;
+
     protected $table = 'guidelines_reply_form_records';
 
     protected $primaryKey = 'checksum';

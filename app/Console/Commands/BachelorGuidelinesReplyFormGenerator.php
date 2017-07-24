@@ -11,6 +11,7 @@ use App\SchoolHistoryData;
 use App\EvaluationLevel;
 use App\DepartmentGroup;
 use App\DepartmentHistoryApplicationDocument;
+use App\GuidelinesReplyFormRecord;
 
 use mPDF;
 use Auth;
@@ -247,15 +248,13 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $now = Carbon::now('Asia/Taipei');
 
-            $time_for_md5 = $data->created_at;
-
             if (Auth::check()) {
                 $maker = Auth::user()->name . '&nbsp;&nbsp;' . Auth::user()->phone . '<br />' . Auth::user()->email . '<br />';
             } else {
                 $maker = 'NCNU Overseas<br />';
             }
 
-            $file_check_code = hash('md5', $time_for_md5 . $table . $time_for_md5);
+            $file_check_code = hash('md5', $table . $maker . $now);
 
             if (!$this->option('preview')) {
                 $mpdf->SetHTMLFooter('
@@ -265,6 +264,16 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                     <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . $file_check_code . '</span></td>
                     </tr></table>
                 ');
+
+                $record = new GuidelinesReplyFormRecord;
+
+                $record->checksum = $file_check_code;
+
+                $record->data = json_encode($pdf_gen_record);
+
+                $record->created_at = Carbon::now('Asia/Taipei')->toIso8601String();
+
+                $record->save();
             }
 
             $output_file_name = $data->title . '-學士班簡章調查回覆表-' . $file_check_code . '.pdf';
@@ -295,10 +304,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 unlink(sys_get_temp_dir() . '/' . $output_file_name);
             } else {
-                $mpdf->Output(storage_path('app/public/' . $data->title . '-學士班簡章調查回覆表.pdf'), 'F');
+                $mpdf->Output(storage_path('app/' . $output_file_name), 'F');
 
                 $this->info('PDF 產生完成！');
-                $this->info(json_encode($pdf_gen_record, true));
+                //$this->info(json_encode($pdf_gen_record, true));
             }
 
             return response()->json(['status' => 'success'], 200);

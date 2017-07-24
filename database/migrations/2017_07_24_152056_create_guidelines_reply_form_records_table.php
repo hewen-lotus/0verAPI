@@ -17,8 +17,6 @@ class CreateGuidelinesReplyFormRecordsTable extends Migration
             $table->string('checksum')->primary()->comment('pdf 檢查碼');
             $table->longText('data')->comment('pdf 內含資料');
             $table->string('created_at');
-            $table->string('updated_at');
-            $table->string('deleted_at')->nullable();
         });
     }
 
