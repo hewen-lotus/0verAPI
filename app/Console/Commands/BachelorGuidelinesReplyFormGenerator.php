@@ -62,6 +62,8 @@ class BachelorGuidelinesReplyFormGenerator extends Command
         ) {
             $data = SchoolHistoryData::where('id', '=', $this->argument('school_code'))->latest()->first();
 
+            $pdf_gen_record = ['system_id' => 1, 'school_history_data' => $data->history_id];
+
             $mpdf = new mPDF('UTF-8', 'A4', '10', 'sun-exta');
 
             $mpdf->SetAuthor('海外聯合招生委員會');
@@ -112,7 +114,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
-            $depts = $data->departments()->get();
+            $all_depts_id = $data->departments()->select('id')->distinct()->get();
 
             $total_admission_placement_quota = 0; // 聯合分發總人數
 
@@ -120,17 +122,33 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $total_self_enrollment_quota = 0; // 自招總人數
 
-            foreach ($depts as $dept) {
+            $total_dept = 0; // 系所總數
+
+            $depts = [];
+
+            $used_dept_history_id = [];
+
+            foreach ($all_depts_id as $all_dept_id) {
+                $dept = $data->departments()->where('id', '=', $all_dept_id->id)->latest()->first();
+
                 $total_admission_placement_quota += $dept->admission_placement_quota;
 
                 $total_admission_selection_quota += $dept->admission_selection_quota;
 
                 $total_self_enrollment_quota += $dept->self_enrollment_quota;
+
+                $depts[] = $dept;
+
+                $total_dept++;
+
+                $used_dept_history_id[] = ['id' => $dept->id, 'history_id' => $dept->history_id];
             }
 
-            $system = $data->systems()->where('type_id', '=', 1)->get();
+            $system = $data->systems()->where('type_id', '=', 1)->latest()->first();
 
-            $table .= '<tr><th>總計</th><td colspan="4">' . $data->departments()->count() . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system['0']['last_year_admission_amount'] . ' 人,本國學生學士班未招足名額：' . (int)$system['0']['last_year_surplus_admission_quota'] . ' 人, 教育部核定擴增名額：' . (int)$system['0']['ratify_expanded_quota'] . ' 人</td></tr>';
+            $pdf_gen_record += ['system_history_data' => $system->history_id, 'depts' => $used_dept_history_id];
+
+            $table .= '<tr><th>總計</th><td colspan="4">' . $total_dept . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system->last_year_admission_amount . ' 人,本國學生學士班未招足名額：' . (int)$system->last_year_surplus_admission_quota . ' 人, 教育部核定擴增名額：' . (int)$system->ratify_expanded_quota . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '<br />僑生專屬獎學金網址：' . $data->scholarship_url;
@@ -148,7 +166,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<tr><th>宿舍</th><td colspan="4">' . $dorm . ' </td></tr>';
 
-            $table .= '<tr><th>備註</th><td colspan="4">' . $system['0']['description'] . '</td></tr>';
+            $table .= '<tr><th>備註</th><td colspan="4">' . $system->description . '</td></tr>';
 
             $table .= '</table>';
 
@@ -203,10 +221,8 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                // 拿到最新一筆的 history_id
-                $latest_rec = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)->max('history_id');
-
-                $docs = DepartmentHistoryApplicationDocument::where('history_id', '=', $latest_rec)->get();
+                $docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                    ->where('history_id', '=', $dept->history_id)->get();
 
                 $doc_count = 1;
 
@@ -282,6 +298,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $mpdf->Output(storage_path('app/public/' . $data->title . '-學士班簡章調查回覆表.pdf'), 'F');
 
                 $this->info('PDF 產生完成！');
+                $this->info(json_encode($pdf_gen_record, true));
             }
 
             return response()->json(['status' => 'success'], 200);
