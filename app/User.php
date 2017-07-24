@@ -50,6 +50,8 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\User withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
+ * @property string $job_title
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereJobTitle($value)
  */
 class User extends Authenticatable
 {

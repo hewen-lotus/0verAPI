@@ -117,6 +117,7 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryApplicationDocument[] $application_docs
  */
 class GraduateDepartmentHistoryData extends Model
 {

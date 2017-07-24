@@ -121,6 +121,7 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentHistoryApplicationDocument[] $application_docs
  */
 class TwoYearTechHistoryDepartmentData extends Model
 {

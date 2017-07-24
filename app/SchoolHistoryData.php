@@ -95,6 +95,10 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\SchoolHistoryData withoutTrashed()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentHistoryData[] $departments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryData[] $graduate_departments
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\SystemHistoryData[] $systems
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechHistoryDepartmentData[] $two_year_tech_departments
  */
 class SchoolHistoryData extends Model
 {
