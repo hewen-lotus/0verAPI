@@ -92,22 +92,26 @@ class AppServiceProvider extends ServiceProvider
                 switch ($system_id)
                 {
                     case 1:
-                        $not_modifiable_docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = DepartmentHistoryApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
                     case 2:
-                        $not_modifiable_docs = TwoYearTechDepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = TwoYearTechDepartmentHistoryApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
                     case 3:
-                        $not_modifiable_docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = GraduateDepartmentHistoryApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
                     case 4:
-                        $not_modifiable_docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = GraduateDepartmentHistoryApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
@@ -119,22 +123,26 @@ class AppServiceProvider extends ServiceProvider
                 switch ($system_id)
                 {
                     case 1:
-                        $not_modifiable_docs = DepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = DepartmentApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
                     case 2:
-                        $not_modifiable_docs = TwoYearTechDepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = TwoYearTechDepartmentApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
                     case 3:
-                        $not_modifiable_docs = GraduateDepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = GraduateDepartmentApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
                     case 4:
-                        $not_modifiable_docs = GraduateDepartmentApplicationDocument::where('dept_id', '=', $department_id)
+                        $not_modifiable_docs = GraduateDepartmentApplicationDocument::select(['type_id', 'required'])->distinct()
+                            ->where('dept_id', '=', $department_id)
                             ->where('modifiable', '=', 0)->get();
                         break;
 
