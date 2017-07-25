@@ -441,7 +441,7 @@ class DepartmentHistoryDataController extends Controller
                         'address' => $docs['recieve_address'],
                         'recipient' => $docs['recipient'] ,
                         'phone' => $docs['recipient_phone'],
-                        'email' => $docs['email'],
+                        'email' => $docs['recieve_email'],
                         'deadline' => $docs['recieve_deadline'],
                         'created_by' => $user->username
                     ]);
