@@ -118,6 +118,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryData withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\GraduateDepartmentHistoryApplicationDocument[] $application_docs
+ * @property string $group_code 系所類組（1|2|3）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\GraduateDepartmentHistoryData whereGroupCode($value)
  */
 class GraduateDepartmentHistoryData extends Model
 {

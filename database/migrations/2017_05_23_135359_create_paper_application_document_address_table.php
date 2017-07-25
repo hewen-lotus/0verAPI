@@ -57,12 +57,10 @@ class CreatePaperApplicationDocumentAddressTable extends Migration
     public function down()
     {
         Schema::table('paper_application_document_history_address', function (Blueprint $table) {
-            $table->dropForeign('history_address_dept_id_foreign');
             $table->dropForeign('history_address_type_id_foreign');
         });
 
         Schema::table('paper_application_document_address', function (Blueprint $table) {
-            $table->dropForeign('address_dept_id_foreign');
             $table->dropForeign('address_type_id_foreign');
         });
 

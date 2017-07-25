@@ -37,6 +37,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryApplicationDocument withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentHistoryApplicationDocument withoutTrashed()
  * @property-read \App\ApplicationDocumentType $type
+ * @property-read \App\PaperApplicationDocumentHistoryAddress $paper
  */
 class GraduateDepartmentHistoryApplicationDocument extends Model
 {
@@ -68,5 +69,10 @@ class GraduateDepartmentHistoryApplicationDocument extends Model
     public function type()
     {
         return $this->belongsTo('App\ApplicationDocumentType', 'type_id', 'id');
+    }
+
+    public function paper()
+    {
+        return $this->hasOne('App\PaperApplicationDocumentHistoryAddress', 'type_id', 'type_id');
     }
 }

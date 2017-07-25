@@ -110,6 +110,8 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData withoutTrashed()
+ * @property string $group_code 系所類組（1|2|3）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\GraduateDepartmentData whereGroupCode($value)
  */
 class GraduateDepartmentData extends Model
 {

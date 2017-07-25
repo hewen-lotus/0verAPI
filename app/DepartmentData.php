@@ -121,6 +121,8 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData withoutTrashed()
+ * @property string $group_code 系所類組（1|2|3）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\DepartmentData whereGroupCode($value)
  */
 class DepartmentData extends Model
 {

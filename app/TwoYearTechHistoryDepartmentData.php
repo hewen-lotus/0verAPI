@@ -122,6 +122,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechHistoryDepartmentData withoutTrashed()
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentHistoryApplicationDocument[] $application_docs
+ * @property string $group_code 系所類組（1|2|3）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechHistoryDepartmentData whereGroupCode($value)
  */
 class TwoYearTechHistoryDepartmentData extends Model
 {

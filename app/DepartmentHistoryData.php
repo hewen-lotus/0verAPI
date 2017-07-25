@@ -128,6 +128,8 @@ use Carbon\Carbon;
  * @method static bool|null restore()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentHistoryData withoutTrashed()
+ * @property string $group_code 系所類組（1|2|3）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\DepartmentHistoryData whereGroupCode($value)
  */
 class DepartmentHistoryData extends Model
 {

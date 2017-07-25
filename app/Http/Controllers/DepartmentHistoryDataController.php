@@ -9,18 +9,15 @@ use DB;
 use Auth;
 use Validator;
 
-//use App\SchoolEditor;
 use App\SchoolHistoryData;
-//use App\SystemHistoryData;
-//use App\DepartmentData;
 use App\DepartmentHistoryData;
 use App\DepartmentHistoryApplicationDocument;
-//use App\TwoYearTechDepartmentData;
 use App\TwoYearTechHistoryDepartmentData;
 use App\TwoYearTechDepartmentHistoryApplicationDocument;
-//use App\GraduateDepartmentData;
 use App\GraduateDepartmentHistoryData;
 use App\GraduateDepartmentHistoryApplicationDocument;
+use App\ApplicationDocumentType;
+use App\PaperApplicationDocumentHistoryAddress;
 
 /**
  * Class DepartmentHistoryDataController
@@ -390,7 +387,9 @@ class DepartmentHistoryDataController extends Controller
                 $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
             } else if ($system_id == 2) {
                 $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
-            } else if ($system_id == 3 || $system_id == 4) {
+            } else if ($system_id == 3) {
+                $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
+            } else { // $system_id == 4
                 $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
             }
 
@@ -400,6 +399,9 @@ class DepartmentHistoryDataController extends Controller
             } else {
                 $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
             }
+
+            $recommendation_doc_id = ApplicationDocumentType::where('name', 'like', '%推薦函%')
+                ->where('system_id', '=', $system_id)->value('id');
 
             foreach ($application_docs as &$docs) {
                 $docs_insert_data = [
@@ -411,32 +413,39 @@ class DepartmentHistoryDataController extends Controller
                     'required' => $docs['required'],
                 ];
 
-                if ($DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
-                    ->where('type_id', '=', $docs['type_id'])
-                    ->exists()
-                ) {
-                    $last_modifiable =
-                        $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
-                            ->where('type_id', '=', $docs['type_id'])
-                            ->orderBy('created_at', 'desc')
-                            ->first();
+                // 是否可編輯沿用上一筆資料，如果是新的就拿帶入的參數
+                $modifiable_status = $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
+                    ->where('type_id', '=', $docs['type_id'])->latest()->first();
 
-                    if ((bool)$last_modifiable->modifiable) {
-                        $docs_insert_data += [
-                            'modifiable' => true,
-                        ];
-                    } else {
-                        $docs_insert_data += [
-                            'modifiable' => false,
-                        ];
-                    }
+                if (isset($modifiable_status->modifiable)) {
+                    $docs_insert_data += [
+                        'modifiable' => $modifiable_status->modifiable,
+                    ];
                 } else {
                     $docs_insert_data += [
                         'modifiable' => $docs['modifiable'],
                     ];
                 }
 
-                $new_docs_data = $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
+                $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
+
+                // 清除全部的紙本推薦函地址資料
+                PaperApplicationDocumentHistoryAddress::where('dept_id', '=', $department_id)
+                    ->where('type_id', '=', $docs['type_id'])->delete();
+
+                // 如果要紙本推薦函再新增一筆新的
+                if ($docs['type_id'] == $recommendation_doc_id && $docs['need_paper'] == true) {
+                    PaperApplicationDocumentHistoryAddress::create([
+                        'dept_id' => $department_id,
+                        'type_id' => $docs['type_id'],
+                        'address' => $docs['postal_code'] . ' ' . $docs['recieve_address'],
+                        'recipient' => $docs['recipient'] ,
+                        'phone' => $docs['recipient_phone'],
+                        'email' => $user->email,
+                        'deadline' => $docs['recieve_deadline'],
+                        'created_by' => $user->username
+                    ]);
+                }
             }
 
             return $new_department_data;
@@ -473,7 +482,9 @@ class DepartmentHistoryDataController extends Controller
             $DepartmentHistoryDataModel = DepartmentHistoryData::class;
         } else if ($system_id == 2) {
             $DepartmentHistoryDataModel = TwoYearTechHistoryDepartmentData::class;
-        } else if ($system_id == 3 || $system_id == 4) {
+        } else if ($system_id == 3) {
+            $DepartmentHistoryDataModel = GraduateDepartmentHistoryData::class;
+        } else { // $system_id == 4
             $DepartmentHistoryDataModel = GraduateDepartmentHistoryData::class;
         }
 
@@ -483,14 +494,14 @@ class DepartmentHistoryDataController extends Controller
             $data = $DepartmentHistoryDataModel::select()
                 ->where('id', '=', $department_id)
                 ->where('school_code', '=', $school_id)
-                ->with('creator.school_editor', 'application_docs.type');
+                ->with('creator.school_editor', 'application_docs.type','application_docs.paper');
         } else if ($system_id == 3 || $system_id == 4) {
             // 碩博同表，需多加規則
             $data = $DepartmentHistoryDataModel::select()
                 ->where('id', '=', $department_id)
                 ->where('school_code', '=', $school_id)
                 ->where('system_id', '=', $system_id)
-                ->with('creator.school_editor', 'application_docs.type');
+                ->with('creator.school_editor', 'application_docs.type','application_docs.paper');
         }
 
         // 接受 latest 字串
