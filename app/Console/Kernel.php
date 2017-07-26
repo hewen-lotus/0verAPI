@@ -2,6 +2,7 @@
 
 namespace App\Console;
 
+use Hamcrest\Core\CombinableMatcher;
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
@@ -20,6 +21,7 @@ class Kernel extends ConsoleKernel
         Commands\TwoYearGuidelinesReplyFormGenerator::class,
         Commands\MasterGuidelinesReplyFormGenerator::class,
         Commands\PhDGuidelinesReplyFormGenerator::class,
+        Commands\UpdateSchoolTotal::class,
     ];
 
     /**
