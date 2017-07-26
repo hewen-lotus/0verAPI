@@ -21,7 +21,7 @@ class UpdateSchoolTotal extends Command
      *
      * @var string
      */
-    protected $description = '更新學校名額（測試 QQ）';
+    protected $description = '更新學校名額總量（測試 QQ）';
 
     /**
      * Create a new command instance.
@@ -40,17 +40,22 @@ class UpdateSchoolTotal extends Command
      */
     public function handle()
     {
-        $path = $this->argument('file_path');
+        if ($this->confirm('此功能將直接修改資料庫資料，是否繼續？')) {
+            $path = $this->argument('file_path');
 
-        // $csv_enctype = mb_detect_encoding(file_get_contents($path), 'UTF-8, BIG-5', true);
+            // $csv_enctype = mb_detect_encoding(file_get_contents($path), 'UTF-8, BIG-5', true);
 
-        $obj = Excel::selectSheetsByIndex(2)->load($path, function($reader) {
-            // Getting all results
-            $reader->calculate(false);
-            $reader->noHeading();
-            //$reader->dump();
-        })->get();
+            $obj = Excel::selectSheetsByIndex(2)->load($path, function($reader) {
+                // Getting all results
+                $reader->calculate(false);
+                $reader->noHeading();
+                //$reader->dump();
+            })->get();
 
-        print_r($obj[2][1]);
+            print_r($obj[2][1]);
+        } else {
+            $this->error('離開');
+            return 0;
+        }
     }
 }
