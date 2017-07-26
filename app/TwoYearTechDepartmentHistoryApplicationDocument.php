@@ -69,4 +69,9 @@ class TwoYearTechDepartmentHistoryApplicationDocument extends Model
     {
         return $this->belongsTo('App\ApplicationDocumentType', 'type_id', 'id');
     }
+
+    public function paper()
+    {
+        return $this->hasOne('App\PaperApplicationDocumentHistoryAddress', 'type_id', 'type_id');
+    }
 }
