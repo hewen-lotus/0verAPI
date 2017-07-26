@@ -78,7 +78,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                 $mpdf->showWatermarkText = true;
             } else {
-                $mpdf->SetWatermarkImage(public_path('img/manysunnyworm.jpg'), '0.2', 'D');
+                $mpdf->SetWatermarkImage(public_path('img/0verseas-logo.png'), '0.2', 'D');
 
                 $mpdf->showWatermarkImage = true;
             }
