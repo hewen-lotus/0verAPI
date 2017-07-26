@@ -438,10 +438,10 @@ class DepartmentHistoryDataController extends Controller
                     PaperApplicationDocumentHistoryAddress::create([
                         'dept_id' => $department_id,
                         'type_id' => $docs['type_id'],
-                        'address' => $docs['postal_code'] . ' ' . $docs['recieve_address'],
+                        'address' => $docs['recieve_address'],
                         'recipient' => $docs['recipient'] ,
                         'phone' => $docs['recipient_phone'],
-                        'email' => $user->email,
+                        'email' => $docs['recieve_email'],
                         'deadline' => $docs['recieve_deadline'],
                         'created_by' => $user->username
                     ]);
