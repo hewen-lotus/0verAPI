@@ -52,7 +52,10 @@ class UpdateSchoolTotal extends Command
                 //$reader->dump();
             })->get();
 
-            print_r($obj[2][1]);
+            // print_r($obj[2][2]);
+            foreach ($obj as $row) {
+                print_r([$row[1], $row[2], $row[5], $row[8], $row[11], $row[12], $row[13], $row[15], $row[16], $row[17]]);
+            }
         } else {
             $this->error('離開');
             return 0;
