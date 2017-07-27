@@ -201,6 +201,17 @@ class SchoolEditorsTableSeeder extends Seeder
             ['school_code' => 'F6','has_admin' => true,'username' => '2017iktcdsF6','organization' => '請輸入學校負責僑生事務的承辦單位名稱','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => 'F7','has_admin' => true,'username' => '2017tgstF7','organization' => '請輸入學校負責僑生事務的承辦單位名稱','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => 'FF','has_admin' => true,'username' => '2017nupsFF','organization' => '僑先部招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30A','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30B','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30C','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30D','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30E','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30F','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30G','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30H','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30I','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '30','has_admin' => true,'username' => '2017ntupes30J','organization' => '招生組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
+            ['school_code' => '01','has_admin' => true,'username' => '2017ntu02','organization' => '註冊組','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
         ]);
     }
 }
