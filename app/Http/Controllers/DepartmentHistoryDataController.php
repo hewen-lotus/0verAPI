@@ -494,14 +494,20 @@ class DepartmentHistoryDataController extends Controller
             $data = $DepartmentHistoryDataModel::select()
                 ->where('id', '=', $department_id)
                 ->where('school_code', '=', $school_id)
-                ->with('creator.school_editor', 'application_docs.type','application_docs.paper');
-        } else if ($system_id == 3 || $system_id == 4) {
+                ->with('creator.school_editor', 'application_docs.type')
+                ->with(['application_docs.paper' => function ($query) use ($department_id) {
+                    $query->where('dept_id', '=', $department_id);
+                }]);
+        } else {  // $system_id == 3 || $system_id == 4
             // 碩博同表，需多加規則
             $data = $DepartmentHistoryDataModel::select()
                 ->where('id', '=', $department_id)
                 ->where('school_code', '=', $school_id)
                 ->where('system_id', '=', $system_id)
-                ->with('creator.school_editor', 'application_docs.type','application_docs.paper');
+                ->with('creator.school_editor', 'application_docs.type')
+                ->with(['application_docs.paper' => function ($query) use ($department_id) {
+                    $query->where('dept_id', '=', $department_id);
+                }]);
         }
 
         // 接受 latest 字串
