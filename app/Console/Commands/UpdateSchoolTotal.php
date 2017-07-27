@@ -4,6 +4,11 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App\SchoolHistoryData;
+use App\SystemHistoryData;
+use Carbon\Carbon;
+use DB;
+
 use Excel;
 use Storage;
 
@@ -54,7 +59,81 @@ class UpdateSchoolTotal extends Command
 
             // print_r($obj[2][2]);
             foreach ($obj as $row) {
-                print_r([$row[1], $row[2], $row[5], $row[8], $row[11], $row[12], $row[13], $row[15], $row[16], $row[17]]);
+                $school_code = $row[1];
+                $bs_10pa = $row[2];
+                $master_10pa = $row[5];
+                $phd_10pa = $row[8];
+                $bs_bugo = $row[11];
+                $master_bugo = $row[12];
+                $phd_bugo = $row[13];
+                $bs_expand = $row[15];
+                $master_expand = $row[16];
+                $phd_expand = $row[17];
+
+                $bs_update_quota = array(
+                    'last_year_admission_amount' => $bs_10pa,
+                    'last_year_surplus_admission_quota' => $bs_bugo,
+                    'ratify_expanded_quota' => $bs_expand
+                );
+
+                $master_update_quota = array(
+                    'last_year_admission_amount' => $master_10pa,
+                    'last_year_surplus_admission_quota' => $master_bugo,
+                    'ratify_expanded_quota' => $master_expand
+                );
+
+                $phd_update_quota = array(
+                    'last_year_admission_amount' => $phd_10pa,
+                    'last_year_surplus_admission_quota' => $phd_bugo,
+                    'ratify_expanded_quota' => $phd_expand
+                );
+
+
+                if (SchoolHistoryData::where('id', '=', $school_code)
+                    ->whereHas('systems', function ($query) {
+                        $query->where('type_id', '=', 1);
+                    })
+                    ->exists()
+                ) {
+                    print_r($school_code);
+                    print_r($bs_update_quota);
+                    DB::statement("update system_history_data set
+                    last_year_admission_amount = ?,
+                    last_year_surplus_admission_quota = ?,
+                    ratify_expanded_quota = ?
+                    where school_code = ? and type_id = '1';",
+                    [$bs_10pa, $bs_bugo, $bs_expand, $school_code]);
+                }
+
+                if (SchoolHistoryData::where('id', '=', $school_code)
+                    ->whereHas('systems', function ($query) {
+                        $query->where('type_id', '=', 2);
+                    })
+                    ->exists()
+                ) {
+                    print_r($school_code);
+                    print_r($bs_update_quota);
+                }
+
+                if (SchoolHistoryData::where('id', '=', $school_code)
+                    ->whereHas('systems', function ($query) {
+                        $query->where('type_id', '=', 3);
+                    })
+                    ->exists()
+                ) {
+                    print_r($school_code);
+                    print_r($master_update_quota);
+                }
+
+                if (SchoolHistoryData::where('id', '=', $school_code)
+                    ->whereHas('systems', function ($query) {
+                        $query->where('type_id', '=', 4);
+                    })
+                    ->exists()
+                ) {
+                    print_r($school_code);
+                    print_r($phd_update_quota);
+                }
             }
         } else {
             $this->error('離開');
