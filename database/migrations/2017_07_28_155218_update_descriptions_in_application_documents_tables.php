@@ -13,35 +13,17 @@ class UpdateDescriptionsInApplicationDocumentsTables extends Migration
      */
     public function up()
     {
-        Schema::table('dept_application_docs', function (Blueprint $table) {
-            $table->longText('description')->change();
-            $table->longText('eng_description')->change();
-        });
+        DB::statement('ALTER TABLE `dept_application_docs` MODIFY COLUMN `description` LONGTEXT NOT NULL, MODIFY COLUMN `eng_description` LONGTEXT NOT NULL;');
 
-        Schema::table('dept_history_application_docs', function (Blueprint $table) {
-            $table->longText('description')->change();
-            $table->longText('eng_description')->change();
-        });
+        DB::statement('ALTER TABLE `dept_history_application_docs` MODIFY COLUMN `description` LONGTEXT NOT NULL, MODIFY COLUMN `eng_description` LONGTEXT NOT NULL;');
 
-        Schema::table('graduate_dept_application_docs', function (Blueprint $table) {
-            $table->longText('description')->change();
-            $table->longText('eng_description')->change();
-        });
+        DB::statement('ALTER TABLE `graduate_dept_application_docs` MODIFY COLUMN `description` LONGTEXT NOT NULL, MODIFY COLUMN `eng_description` LONGTEXT NOT NULL;');
 
-        Schema::table('graduate_dept_history_application_docs', function (Blueprint $table) {
-            $table->longText('description')->change();
-            $table->longText('eng_description')->change();
-        });
+        DB::statement('ALTER TABLE `graduate_dept_history_application_docs` MODIFY COLUMN `description` LONGTEXT NOT NULL, MODIFY COLUMN `eng_description` LONGTEXT NOT NULL;');
 
-        Schema::table('two_year_tech_dept_application_docs', function (Blueprint $table) {
-            $table->longText('description')->change();
-            $table->longText('eng_description')->change();
-        });
+        DB::statement('ALTER TABLE `two_year_tech_dept_application_docs` MODIFY COLUMN `description` LONGTEXT NOT NULL, MODIFY COLUMN `eng_description` LONGTEXT NOT NULL;');
 
-        Schema::table('two_year_tech_dept_history_application_docs', function (Blueprint $table) {
-            $table->longText('description')->change();
-            $table->longText('eng_description')->change();
-        });
+        DB::statement('ALTER TABLE `two_year_tech_dept_history_application_docs` MODIFY COLUMN `description` LONGTEXT NOT NULL, MODIFY COLUMN `eng_description` LONGTEXT NOT NULL;');
     }
 
     /**
