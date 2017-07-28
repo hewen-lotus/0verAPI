@@ -115,8 +115,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
-            // 取得所有系所 id，並把 admission_selection_quota <= 0 的過濾掉
-            $all_depts_id = $data->graduate_departments()->select('id')->distinct()->where('system_id', '=', 4)->where('admission_selection_quota', '>', 0)->get();
+            $all_depts_id = $data->graduate_departments()->select('id')->distinct()->where('system_id', '=', 4)->get();
 
             $total_admission_selection_quota = 0; // 個人申請總人數
 
@@ -217,23 +216,25 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
-                    ->where('history_id', '=', $dept->history_id)->get();
-
-                $doc_count = 1;
-
                 $doc_output = '';
 
-                foreach ($docs as $doc) {
-                    if ((bool)$doc->required) {
-                        $is_required = '(必)';
-                    } else {
-                        $is_required = '(選)';
+                if ($dept->admission_selection_quota > 0) {
+                    $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                        ->where('history_id', '=', $dept->history_id)->get();
+
+                    $doc_count = 1;
+
+                    foreach ($docs as $doc) {
+                        if ((bool)$doc->required) {
+                            $is_required = '(必)';
+                        } else {
+                            $is_required = '(選)';
+                        }
+
+                        $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+
+                        $doc_count++;
                     }
-
-                    $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
-
-                    $doc_count++;
                 }
 
                 $table .= '<tr><td>' . $dept->description . '</td><td>' . $doc_output . '</td></tr>';
