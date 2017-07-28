@@ -371,6 +371,10 @@ class DepartmentHistoryDataController extends Controller
                         ->storeAs('/', uniqid($department_history_data->title.'-'.'approval_doc_of_special_class_').'.'.$extension, 'public');
                 } else if ($department_history_data->approval_doc_of_special_class != NULL) {
                     $approval_doc_of_special_class_path = $department_history_data->approval_doc_of_special_class;
+                } else {
+                    $messages = ['The approval doc of special class field is required.'];
+
+                    return response()->json(compact('messages'), 400);
                 }
 
                 $insert_data += [
