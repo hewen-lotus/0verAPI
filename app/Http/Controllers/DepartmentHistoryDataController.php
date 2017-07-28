@@ -148,8 +148,18 @@ class DepartmentHistoryDataController extends Controller
             return response()->json(compact('messages'), 403);
         }
 
-        // 這是一個 object array string，所以要先 decode 喔
-        $request->merge(['application_docs' => json_decode($request->input('application_docs'), true)]);
+        // 收到的會是 multipart/form-data，所以要先 decode 喔
+        $request->merge([
+            'application_docs' => json_decode($request->input('application_docs'), true),
+            'has_foreign_special_class' => json_decode($request->input('has_foreign_special_class'), true),
+            'has_eng_taught' => json_decode($request->input('has_eng_taught'), true),
+            'has_disabilities' => json_decode($request->input('has_disabilities'), true),
+            'has_BuHweiHwaWen' => json_decode($request->input('has_BuHweiHwaWen'), true),
+            'has_birth_limit' => json_decode($request->input('has_birth_limit'), true),
+            'has_RiJian' => json_decode($request->input('has_RiJian'), true),
+            'has_self_enrollment' => json_decode($request->input('has_self_enrollment'), true),
+            'has_special_class' => json_decode($request->input('has_special_class'), true),
+        ]);
 
         // 設定資料驗證欄位
         $validation_rules = [
