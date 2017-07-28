@@ -115,7 +115,8 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
-            $all_depts_id = $data->two_year_tech_departments()->select('id')->distinct()->get();
+            // 取得所有系所 id，並把 admission_selection_quota <= 0 的過濾掉
+            $all_depts_id = $data->two_year_tech_departments()->select('id')->distinct()->where('admission_selection_quota', '>', 0)->get();
 
             $total_admission_selection_quota = 0; // 個人申請總人數
 
