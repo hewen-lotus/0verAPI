@@ -243,6 +243,9 @@ class SystemHistoryDataController extends Controller
                 'quota_status' => $system_history_data->quota_status,
                 'last_year_admission_amount' => $system_history_data->last_year_admission_amount,
                 'ratify_expanded_quota' => $system_history_data->ratify_expanded_quota,
+                'last_year_surplus_admission_quota' => $system_history_data->last_year_surplus_admission_quota,
+                'ratify_quota_for_self_enrollment' => $system_history_data->ratify_quota_for_self_enrollment,
+                'ratify_quota_for_admission' => $system_history_data->ratify_quota_for_admission,
                 // 可修改的資料
                 'description' => $request->input('description'),
                 'eng_description' => $request->input('eng_description')
