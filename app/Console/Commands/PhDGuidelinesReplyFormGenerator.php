@@ -216,23 +216,25 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
-                    ->where('history_id', '=', $dept->history_id)->get();
-
-                $doc_count = 1;
-
                 $doc_output = '';
 
-                foreach ($docs as $doc) {
-                    if ((bool)$doc->required) {
-                        $is_required = '(必)';
-                    } else {
-                        $is_required = '(選)';
+                if ($dept->admission_selection_quota > 0) {
+                    $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                        ->where('history_id', '=', $dept->history_id)->get();
+
+                    $doc_count = 1;
+
+                    foreach ($docs as $doc) {
+                        if ((bool)$doc->required) {
+                            $is_required = '(必)';
+                        } else {
+                            $is_required = '(選)';
+                        }
+
+                        $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+
+                        $doc_count++;
                     }
-
-                    $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
-
-                    $doc_count++;
                 }
 
                 $table .= '<tr><td>' . $dept->description . '</td><td>' . $doc_output . '</td></tr>';
