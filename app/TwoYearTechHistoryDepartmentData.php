@@ -129,8 +129,6 @@ class TwoYearTechHistoryDepartmentData extends Model
 {
     use SoftDeletes;
 
-    public $incrementing = false;
-
     protected $table = 'two_year_tech_department_history_data';
 
     protected $primaryKey = 'history_id';
@@ -166,7 +164,7 @@ class TwoYearTechHistoryDepartmentData extends Model
         'has_self_enrollment', //是否有自招
         'self_enrollment_quota', //自招名額
         'has_special_class', //是否招收僑生專班
-        'approve_no_of_special_class', //招收僑生專班核定文號
+        'approval_no_of_special_class', //招收僑生專班核定文號
         'approval_doc_of_special_class', //招收僑生專班核定公文電子檔(file path)
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
