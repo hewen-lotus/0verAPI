@@ -222,11 +222,17 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '</tr>';
 
-                $doc_output = '';
+                if ((bool)$dept->has_review_fee) {
+                    $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
+                } else {
+                    $doc_output = '';
+                }
 
                 if ($dept->admission_selection_quota > 0) {
                     $docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
-                        ->where('history_id', '=', $dept->history_id)->get();
+                        ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
+                            $query->where('dept_id', '=', $dept->id);
+                        }])->get();
 
                     $doc_count = 1;
 
@@ -238,6 +244,10 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                         }
 
                         $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+
+                        if ($doc->paper != NULL) {
+                            $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
+                        }
 
                         $doc_count++;
                     }
