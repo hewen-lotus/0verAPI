@@ -11,9 +11,9 @@
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+Route::resource('/', 'MainRouteController', ['only' => [
+    'index'
+]]);
 
 Route::get('/users/login', 'Auth\LoginController@UserLoginStatus');
 
