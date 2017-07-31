@@ -130,15 +130,17 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
             foreach ($all_depts_id as $all_dept_id) {
                 $dept = $data->two_year_tech_departments()->where('id', '=', $all_dept_id->id)->latest()->first();
 
-                $total_admission_selection_quota += $dept->admission_selection_quota;
+                if ($dept->admission_selection_quota > 0 || $dept->self_enrollment_quota > 0) {
+                    $total_admission_selection_quota += $dept->admission_selection_quota;
 
-                $total_self_enrollment_quota += $dept->self_enrollment_quota;
+                    $total_self_enrollment_quota += $dept->self_enrollment_quota;
 
-                $depts[] = $dept;
+                    $depts[] = $dept;
 
-                $total_dept++;
+                    $total_dept++;
 
-                $used_dept_history_id[] = ['id' => $dept->id, 'history_id' => $dept->history_id];
+                    $used_dept_history_id[] = ['id' => $dept->id, 'history_id' => $dept->history_id];
+                }
             }
 
             $system = $data->systems()->where('type_id', '=', 2)->latest()->first();
