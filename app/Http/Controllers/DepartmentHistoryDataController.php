@@ -381,7 +381,7 @@ class DepartmentHistoryDataController extends Controller
                     'has_self_enrollment' => $request->input('has_self_enrollment'),
                     'has_RiJian' => $request->input('has_RiJian'),
                     'has_special_class' => $request->input('has_special_class'),
-                    'self_enrollment_quota' => $request->input('self_enrollment_quota'),
+                    'self_enrollment_quota' => $request->input('self_enrollment_quota') == '' ? NULL : $request->input('self_enrollment_quota'),
                     'approval_no_of_special_class' => $request->input('approval_no_of_special_class'),
                     'approval_doc_of_special_class' => $approval_doc_of_special_class_path,
                 ];
