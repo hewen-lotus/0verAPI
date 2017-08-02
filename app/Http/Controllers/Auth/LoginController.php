@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Carbon\Carbon;
 use Session;
 use Auth;
 use Validator;
@@ -71,6 +72,8 @@ class LoginController extends Controller
         if (!Auth::attempt(['username' => $credentials['username'], 'password' => $credentials['password'], 'deleted_at' => NULL])) {
             return response()->json(['messages' => ['invalid credentials']], 401);
         }
+
+        User::where('username', '=', Auth::id())->update(['last_login_at' => Carbon::now()->toIso8601String()]);
 
         return $this->UserLoginStatus();
     }
