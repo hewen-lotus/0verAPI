@@ -97,7 +97,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $table = '<h3 style="text-align: center">' . $data->title . ' ' . $data->eng_title . ' (港二技)</h3>';
 
-            $table .= '<table style="width: 100%; font-size: 10pt;">';
+            $table .= '<table style="width: 100%;">';
 
             if ($data->has_self_enrollment) {
                 $basic_data_rowspan = 4;
@@ -171,18 +171,18 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $table .= '<br>';
 
-            $table .= '<table style="width: 100%; font-size: 12pt;">';
+            $table .= '<table style="width: 100%;">';
 
-            $table .= '<tr><th style="width: 15%;" rowspan="2">系所代碼</th><th colspan="2">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 11%;" rowspan="2">系所代碼</th><th style="width: 5%;" colspan="2">名額</th><th style="width: 44%;" rowspan="2">系所分則</th><th style="width: 44%;" rowspan="2">個人申請繳交資料說明</th></tr>';
 
             $table .= '<tr><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
             $table .= '</table>';
 
             foreach ($depts as $dept) {
-                $table .= '<table style="width: 100%; font-size: 12pt;"><tr>';
+                $table .= '<table style="width: 100%;"><tr>';
 
-                $table .= '<td rowspan="2" style="width: 15%; text-align: center; vertical-align: middle">' . $dept->id . '</td>';
+                $table .= '<td rowspan="2" style="width: 11%; text-align: center; vertical-align: middle">' . $dept->id . '</td>';
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
@@ -222,7 +222,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                     $group = $main_group->title;
                 }
 
-                $table .= '<td colspan="2" style="width: 50%;">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td>';
 
                 $table .= '</tr>';
 
@@ -257,7 +257,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                     }
                 }
 
-                $table .= '<tr><td style="width: 50%;">' . $dept->description . '</td><td style="width: 50%;">' . $doc_output . '</td></tr></table>';
+                $table .= '<tr><td style="width: 44%;">' . $dept->description . '</td><td style="width: 44%;">' . $doc_output . '</td></tr></table>';
             }
 
             $now = Carbon::now('Asia/Taipei');
