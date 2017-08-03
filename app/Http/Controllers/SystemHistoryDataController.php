@@ -946,7 +946,7 @@ class SystemHistoryDataController extends Controller
                         ->first();
 
                     // 累計二技有自招的自招名額
-                    if ($dept_history_data->has_enrollment) {
+                    if ($dept_history_data->has_self_enrollment) {
                         $another_department_self_enrollment_quota += $dept_history_data->self_enrollment_quota;
                     }
 
