@@ -130,7 +130,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
             foreach ($all_depts_id as $all_dept_id) {
                 $dept = $data->two_year_tech_departments()->where('id', '=', $all_dept_id->id)->latest()->first();
 
-                if ($dept->admission_selection_quota > 0 || $dept->self_enrollment_quota > 0) {
+                if (($data->has_self_enrollment && $dept->has_self_enrollment) || $dept->admission_selection_quota > 0 || $dept->self_enrollment_quota > 0) {
                     $total_admission_selection_quota += $dept->admission_selection_quota;
 
                     $total_self_enrollment_quota += $dept->self_enrollment_quota;
@@ -186,7 +186,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
-                if ($dept->has_self_enrollment) {
+                if ((bool)$dept->has_self_enrollment) {
                     if ($dept->self_enrollment_quota != NULL) {
                         $dept_self_enrollment_quota = $dept->self_enrollment_quota;
                     } else {
@@ -198,13 +198,13 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
-                if ($dept->has_special_class) {
+                if ((bool)$dept->has_special_class) {
                     $dept_has_special_class = '是 (專班報部文號：'. $dept->approve_no_of_special_class .')';
                 } else {
                     $dept_has_special_class = '否';
                 }
 
-                if ($dept->has_RiJian) {
+                if ((bool)$dept->has_RiJian) {
                     $dept_has_RiJian = '有';
                 } else {
                     $dept_has_RiJian = '無';

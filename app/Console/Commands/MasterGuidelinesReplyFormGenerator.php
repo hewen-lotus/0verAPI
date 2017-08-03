@@ -130,7 +130,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
             foreach ($all_depts_id as $all_dept_id) {
                 $dept = $data->graduate_departments()->where('system_id', '=', 3)->where('id', '=', $all_dept_id->id)->latest()->first();
 
-                if ($dept->admission_selection_quota > 0 || $dept->self_enrollment_quota > 0) {
+                if (($data->has_self_enrollment && $dept->has_self_enrollment) || $dept->admission_selection_quota > 0 || $dept->self_enrollment_quota > 0) {
                     $total_admission_selection_quota += $dept->admission_selection_quota;
 
                     $total_self_enrollment_quota += $dept->self_enrollment_quota;
@@ -186,7 +186,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
-                if ($dept->has_self_enrollment) {
+                if ((bool)$dept->has_self_enrollment) {
                     if ($dept->self_enrollment_quota != NULL) {
                         $dept_self_enrollment_quota = $dept->self_enrollment_quota;
                     } else {
@@ -198,7 +198,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
-                if ($dept->has_special_class) {
+                if ((bool)$dept->has_special_class) {
                     $dept_has_special_class = '是';
                 } else {
                     $dept_has_special_class = '否';
