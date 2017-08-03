@@ -184,7 +184,7 @@ class DepartmentHistoryDataController extends Controller
             'sub_group' => 'present|exists:department_groups,id', //次要隸屬學群 id
             'group_code' => 'required|in:1,2,3', //次要隸屬學群 id
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
-            'admission_selection_quota' => 'required|integer', //個人申請名額
+            'admission_selection_quota' => 'required|integer|min:0', //個人申請名額
             'application_docs' => 'required_unless:admission_selection_quota,0|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
             'application_docs.*.type_id' => [
                 'required',
@@ -214,7 +214,7 @@ class DepartmentHistoryDataController extends Controller
                 'has_self_enrollment' => 'required|boolean', //是否有自招
                 'has_RiJian' => 'required|boolean', //是否有招收日間二技學制（二技專用）
                 'has_special_class' => 'required|boolean', //是否招收僑生專班（二技的很複雜）
-                'self_enrollment_quota' => 'present|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
+                'self_enrollment_quota' => 'present|required_if:has_self_enrollment,1|integer|min:0', //單獨招收名額（學士班不調查）
                 'approval_no_of_special_class' => 'present|required_if:has_special_class,1|string', //招收僑生專班文號（二技專用）
                 'approval_doc_of_special_class' => 'present|file', //招收僑生專班文件電子檔（二技專用）沒給則沿用舊檔案
             ];
@@ -222,7 +222,7 @@ class DepartmentHistoryDataController extends Controller
             $validation_rules += [
                 'has_self_enrollment' => 'required|boolean', //是否有自招
                 'has_special_class' => 'required|boolean', //是否招收僑生專班（二技的很複雜）
-                'self_enrollment_quota' => 'present|required_if:has_self_enrollment,1|integer', //單獨招收名額（學士班不調查）
+                'self_enrollment_quota' => 'present|required_if:has_self_enrollment,1|integer|min:0', //單獨招收名額（學士班不調查）
             ];
         }
 
