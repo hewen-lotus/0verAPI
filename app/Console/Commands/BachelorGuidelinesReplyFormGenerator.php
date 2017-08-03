@@ -192,11 +192,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
-                if ($dept->has_self_enrollment) {
-                    if ($dept->self_enrollment_quota != NULL) {
-                        $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                if ($data->has_self_enrollment) {
+                    if ($dept->self_enrollment_quota) {
+                        $dept_self_enrollment_quota = '是';
                     } else {
-                        $dept_self_enrollment_quota = 0;
+                        $dept_self_enrollment_quota = '否';
                     }
                 } else {
                     $dept_self_enrollment_quota = '-';
