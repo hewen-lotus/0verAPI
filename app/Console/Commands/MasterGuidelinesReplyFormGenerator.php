@@ -115,7 +115,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
-            $all_depts_id = $data->graduate_departments()->select('id')->distinct()->where('system_id', '=', 3)->get();
+            $all_depts_id = $data->graduate_departments()->select('id')->distinct()->where('system_id', '=', 3)->orderBy('sort_order', 'asc')->get();
 
             $total_admission_selection_quota = 0; // 個人申請總人數
 

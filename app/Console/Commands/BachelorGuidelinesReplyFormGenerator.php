@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Traits\OverseasMailerTrait;
+use App\Traits\NumberToZH;
 use Illuminate\Console\Command;
 use Mail;
 use App\Mail\GuidelinesReplyFormGenerated;
@@ -19,7 +20,7 @@ use Carbon\Carbon;
 
 class BachelorGuidelinesReplyFormGenerator extends Command
 {
-    use OverseasMailerTrait;
+    use OverseasMailerTrait, NumberToZH;
 
     /**
      * The name and signature of the console command.
@@ -115,7 +116,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
-            $all_depts_id = $data->departments()->select('id')->distinct()->get();
+            $all_depts_id = $data->departments()->select('id')->distinct()->orderBy('sort_order', 'asc')->get();
 
             $total_admission_placement_quota = 0; // 聯合分發總人數
 
@@ -216,10 +217,14 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $sub_group = DepartmentGroup::find($dept->sub_group);
 
+                $zh_group_code = $this->convert($dept->group_code);
+
+                $group = '第' . $zh_group_code . '類組';
+
                 if ($sub_group) {
-                    $group = $main_group->title . '、' . $sub_group->title;
+                    $group .= '：' . $main_group->title . '、' . $sub_group->title;
                 } else {
-                    $group = $main_group->title;
+                    $group .= '：' . $main_group->title;
                 }
 
                 $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
