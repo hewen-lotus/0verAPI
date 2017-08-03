@@ -296,7 +296,7 @@ class SystemHistoryDataController extends Controller
                 
                 // 設定資料驗證欄位
                 $validation_rules = [
-                    'ratify_quota_for_self_enrollment' => 'required|integer', //學士班調查自招總量
+                    'ratify_quota_for_self_enrollment' => 'required|integer|min:0', //學士班調查自招總量
                     'departments' => 'required|array',
                     'departments.*.id' => [
                         'required',
@@ -306,8 +306,8 @@ class SystemHistoryDataController extends Controller
                         })
                     ],
                     'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.admission_selection_quota' => 'required|integer',
-                    'departments.*.admission_placement_quota' => 'required|integer',
+                    'departments.*.admission_selection_quota' => 'required|integer|min:0',
+                    'departments.*.admission_placement_quota' => 'required|integer|min:0',
                     'departments.*.decrease_reason_of_admission_placement' =>
                         'if_decrease_reason_required:id,admission_placement_quota,array',
                 ];
@@ -394,8 +394,8 @@ class SystemHistoryDataController extends Controller
                             $query->where('school_code', $school_id);
                         })
                     ],
-                    'departments.*.self_enrollment_quota' => 'required|integer',
-                    'departments.*.admission_selection_quota' => 'required|integer'
+                    'departments.*.self_enrollment_quota' => 'required|integer|min:0',
+                    'departments.*.admission_selection_quota' => 'required|integer|min:0'
                 ];
 
                 // 驗證輸入資料
@@ -484,8 +484,8 @@ class SystemHistoryDataController extends Controller
                         })
                     ],
                     'departments.*.has_self_enrollment' => 'required|boolean',
-                    'departments.*.self_enrollment_quota' => 'required_if:departments.*.has_self_enrollment,1|integer',
-                    'departments.*.admission_selection_quota' => 'required|integer'
+                    'departments.*.self_enrollment_quota' => 'required_if:departments.*.has_self_enrollment,1|integer|min:0',
+                    'departments.*.admission_selection_quota' => 'required|integer|min:0'
                 ];
 
                 // 驗證輸入資料

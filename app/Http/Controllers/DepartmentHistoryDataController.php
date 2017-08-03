@@ -163,7 +163,7 @@ class DepartmentHistoryDataController extends Controller
 
         // 設定資料驗證欄位
         $validation_rules = [
-            'sort_order' => 'required|integer', //系所顯示排序
+            'sort_order' => 'required|integer|min:0', //系所顯示排序
             'description' => 'required|string', //系所敘述
             'eng_description' => 'present|string', //學制英文敘述
             'memo' => 'present|string', //給海聯備註
@@ -202,7 +202,7 @@ class DepartmentHistoryDataController extends Controller
         // 設定各學制特有欄位
         if ($system_id == 1) {
             $validation_rules += [
-                'admission_placement_quota' => 'required|integer', //聯合分發名額（只有學士班有聯合分發）
+                'admission_placement_quota' => 'required|integer|min:0', //聯合分發名額（只有學士班有聯合分發）
                 'decrease_reason_of_admission_placement' =>
                     'present|if_decrease_reason_required:'.$department_id.',admission_placement_quota,object|string', //聯合分發人數減招原因（只有學士班有聯合分發）
                 'has_self_enrollment' => 'required|boolean', //是否有自招
