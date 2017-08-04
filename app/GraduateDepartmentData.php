@@ -117,6 +117,8 @@ class GraduateDepartmentData extends Model
 {
     use SoftDeletes;
 
+    public $incrementing = false;
+
     protected $table = 'graduate_department_data';
 
     protected $dateFormat = Carbon::ISO8601;

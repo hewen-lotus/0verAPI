@@ -56,3 +56,5 @@ Route::post('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 
 //Route::resource('/schools.quotas', 'SystemQuotaController');
 
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
+
+Route::post('/test/{school_code}', 'SyncHistoryDataToFormalController@bachelor');

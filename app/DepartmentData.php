@@ -128,6 +128,8 @@ class DepartmentData extends Model
 {
     use SoftDeletes;
 
+    public $incrementing = false;
+
     protected $table = 'department_data';
 
     protected $dateFormat = Carbon::ISO8601;
@@ -142,10 +144,15 @@ class DepartmentData extends Model
         'has_birth_limit' => 'boolean',
         'has_eng_taught' => 'boolean',
         'has_disabilities' => 'boolean',
-        'has_BuHweiHwaWen' => 'boolean'
+        'has_BuHweiHwaWen' => 'boolean',
+        'has_review_fee' => 'boolean'
     ];
 
     protected $fillable = [
+        'history_id', //從哪一筆歷史紀錄匯入的
+        'updated_by', //資料最後更新者
+        'confirmed_by', //資料由哪位海聯人員確認匯入的
+        'confirmed_at',
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
         'card_code', //讀卡代碼
@@ -164,7 +171,6 @@ class DepartmentData extends Model
         'last_year_personal_apply_amount', //'去年個人申請名額
         'admission_selection_quota', //個人申請名額
         'has_self_enrollment', //是否有自招
-//        'self_enrollment_quota', //自招名額（不調查）
         'has_special_class', //是否招收僑生專班
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
@@ -181,12 +187,11 @@ class DepartmentData extends Model
         'birth_limit_before', //限…之前出生
         'main_group', //主要隸屬學群代碼
         'sub_group', //次要隸屬學群代碼
+        'group_code', //類組
         'has_eng_taught', //全英文授課
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
-        'ip_address', //ip_address
-//        'created_by', //created_by
     ];
 
 

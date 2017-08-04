@@ -116,7 +116,8 @@ class SchoolHistoryData extends Model
         'has_dorm' => 'boolean',
         'has_scholarship' => 'boolean',
         'has_five_year_student_allowed' => 'boolean',
-        'has_self_enrollment' => 'boolean'
+        'has_self_enrollment' => 'boolean',
+        'url' => 'string'
     ];
 
     protected $hidden = [];

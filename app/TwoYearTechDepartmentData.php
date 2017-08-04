@@ -119,6 +119,8 @@ class TwoYearTechDepartmentData extends Model
 {
     use SoftDeletes;
 
+    public $incrementing = false;
+
     protected $table = 'two_year_tech_department_data';
 
     protected $dateFormat = Carbon::ISO8601;

@@ -112,7 +112,8 @@ class SchoolData extends Model
         'id', //學校代碼
         'history_id', //從哪一筆歷史紀錄匯入的
         'updated_by', //資料最後更新者
-        'deleted_by', //資料由哪位海聯人員確認匯入的
+        'confirmed_by', //資料由哪位海聯人員確認匯入的
+        'confirmed_at',
         'title', //學校名稱
         'eng_title', //學校英文名稱
         'address', //學校地址
