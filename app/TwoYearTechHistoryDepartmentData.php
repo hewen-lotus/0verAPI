@@ -27,7 +27,6 @@ use Carbon\Carbon;
  * @property bool $has_self_enrollment 是否有自招
  * @property int $self_enrollment_quota 自招名額
  * @property bool $has_special_class 是否招收僑生專班
- * @property string $approve_no_of_special_class 招收僑生專班核定文號
  * @property string $approval_doc_of_special_class 招收僑生專班核定公文電子檔(file path)
  * @property bool $has_foreign_special_class 是否招收外生專班
  * @property string $special_dept_type 特殊系所（醫、牙、中醫、藝術）
@@ -124,6 +123,8 @@ use Carbon\Carbon;
  * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentHistoryApplicationDocument[] $application_docs
  * @property string $group_code 系所類組（1|2|3）
  * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechHistoryDepartmentData whereGroupCode($value)
+ * @property string|null $approval_no_of_special_class 招收僑生專班核定文號
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechHistoryDepartmentData whereApprovalNoOfSpecialClass($value)
  */
 class TwoYearTechHistoryDepartmentData extends Model
 {

@@ -28,7 +28,6 @@ use Carbon\Carbon;
  * @property int $self_enrollment_quota 自招名額
  * @property bool $has_RiJian 是否有招收日間二技學制
  * @property bool $has_special_class 是否招收僑生專班
- * @property string $approve_no_of_special_class 招收僑生專班核定文號
  * @property string $approval_doc_of_special_class 招收僑生專班核定公文電子檔(file path)
  * @property bool $has_foreign_special_class 是否招收外生專班
  * @property string $special_dept_type 特殊系所（醫學系、牙醫學系、中醫學系、藝術相關學系）
@@ -114,6 +113,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\TwoYearTechDepartmentData withoutTrashed()
  * @property string $group_code 系所類組（1|2|3）
  * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechDepartmentData whereGroupCode($value)
+ * @property string|null $approval_no_of_special_class 招收僑生專班核定文號
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechDepartmentData whereApprovalNoOfSpecialClass($value)
  */
 class TwoYearTechDepartmentData extends Model
 {
