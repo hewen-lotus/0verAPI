@@ -41,6 +41,9 @@ class AddNewDepartments extends Command
      */
     public function handle()
     {
+        // csv 檔只需要 id, school_code, system_id, title, eng_title
+        //             ^        ^           ^
+        //          系所代碼   學校代碼     學制代碼
         if ($this->confirm('此功能將直接修改資料庫資料，是否繼續？')) {
             $path = $this->argument('file_path');
 
