@@ -139,15 +139,20 @@ class GraduateDepartmentData extends Model
     protected $fillable = [
         'id', //系所代碼（系統按規則產生）
         'school_code', //學校代碼
+        'history_id', //從哪一筆歷史紀錄匯入的
+        'updated_by', //資料最後更新者
+        'confirmed_by', //資料由哪位海聯人員確認匯入的
+        'confirmed_at',
         'title', //系所名稱
         'eng_title', //系所英文名稱
+        'system_id', //這是碩士班還是博士班 QQ
         'description', //選系說明
         'eng_description', //選系英文說明
         'memo', //給海聯的備註
         'url', //系網站網址
         'eng_url', //英文系網站網址
         'last_year_personal_apply_offer', //去年個人申請錄取名額
-        'last_year_personal_apply_amount', //'去年個人申請名額
+        'last_year_personal_apply_amount', //去年個人申請名額
         'admission_selection_quota', //個人申請名額
         'has_self_enrollment', //是否有自招
         'self_enrollment_quota', //自招名額
@@ -155,6 +160,9 @@ class GraduateDepartmentData extends Model
         'has_foreign_special_class', //是否招收外生專班
         'special_dept_type', //特殊系所（醫、牙、中醫、藝術）
         'gender_limit', //性別限制
+        //'admission_placement_ratify_quota', //教育部核定聯合分發名額
+        //'admission_selection_ratify_quota', //教育部核定個人申請名額
+        //'self_enrollment_ratify_quota', //教育部核定單獨招收(自招)名額
         'sort_order', //輸出排序
         'has_review_fee', //是否另外收取審查費用
         'review_fee_detail', //審查費用說明
@@ -164,11 +172,11 @@ class GraduateDepartmentData extends Model
         'birth_limit_before', //限…之前出生
         'main_group', //主要隸屬學群代碼
         'sub_group', //次要隸屬學群代碼
+        'group_code', //類組
         'has_eng_taught', //全英文授課
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
-        'ip_address', //ip_address
     ];
 
 
