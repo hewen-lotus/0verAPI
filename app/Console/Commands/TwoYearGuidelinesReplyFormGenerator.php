@@ -58,9 +58,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
         if (SchoolHistoryData::where('id', '=', $this->argument('school_code'))
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 2);
-            })
-            ->exists()
-        ) {
+            })->exists() ) {
             $data = SchoolHistoryData::where('id', '=', $this->argument('school_code'))->latest()->first();
 
             $pdf_gen_record = ['system_id' => 2, 'school_history_data' => $data->history_id];
@@ -329,6 +327,6 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
         $this->error('school_code 或所屬 system_id 不存在！');
 
-        return response()->json(['status' => 'failed'], 400);
+        return response()->json(['status' => 'failed'], 404);
     }
 }
