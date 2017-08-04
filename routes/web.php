@@ -57,4 +57,4 @@ Route::post('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 
 
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
 
-Route::post('/test/{school_code}', 'SyncHistoryDataToFormalController@bachelor');
+Route::post('/test/{school_code}/id/{system_id}', 'SyncHistoryDataToFormalController@bachelor');
