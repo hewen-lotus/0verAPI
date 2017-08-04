@@ -23,6 +23,8 @@ class Kernel extends ConsoleKernel
         Commands\PhDGuidelinesReplyFormGenerator::class,
         Commands\UpdateSchoolTotal::class,
         Commands\EngBachelorGuidelinesReplyFormGenerator::class,
+        Commands\EngMasterGuidelinesReplyFormGenerator::class,
+        Commands\EngPhDGuidelinesReplyFormGenerator::class,
     ];
 
     /**
