@@ -137,7 +137,12 @@ class UpdateSchoolTotal extends Command
             }
         } else {
             $this->error('離開');
-            return 0;
+
+            return 1;
         }
+
+        $this->info('做完了 ^^');
+
+        return 0;
     }
 }
