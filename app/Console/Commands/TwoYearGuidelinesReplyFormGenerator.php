@@ -197,7 +197,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
                 if ((bool)$dept->has_special_class) {
-                    $dept_has_special_class = '是 (專班報部文號：'. $dept->approve_no_of_special_class .')';
+                    $dept_has_special_class = '是 (專班報部文號：'. $dept->approval_no_of_special_class .')';
                 } else {
                     $dept_has_special_class = '否';
                 }
