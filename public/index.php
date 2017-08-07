@@ -7,6 +7,10 @@
  * @author   Taylor Otwell <taylor@laravel.com>
  */
 
+define('_MPDF_TEMP_PATH', '/tmp/');
+define('_MPDF_TTFONTDATAPATH', '/tmp/');
+define('_JPGRAPH_PATH', '/tmp/');
+
 /*
 |--------------------------------------------------------------------------
 | Register The Auto Loader
