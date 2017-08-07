@@ -97,11 +97,14 @@ class SyncHistoryDataToFormalController extends Controller
                     'created_at' => Carbon::now()->toIso8601String(),
                 ]);
 
-                $all_depts_id = $school->departments()->select('id')->distinct()->get();
+                $depts = DB::table('department_history_data as depts')
+                    ->join(DB::raw('(SELECT id, max(history_id) as newest FROM department_history_data group by id) deptid'), function($join) use ($school_code) {
+                        $join->on('depts.id', '=', 'deptid.id');
+                        $join->on('depts.history_id', '=', 'newest');
+                        $join->where('school_code','=', $school_code);
+                    })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
-                foreach ($all_depts_id as $all_dept_id) {
-                    $dept = $school->departments()->where('id', '=', $all_dept_id->id)->latest()->first();
-
+                foreach ($depts as $dept) {
                     DepartmentData::updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
@@ -265,11 +268,14 @@ class SyncHistoryDataToFormalController extends Controller
                     'created_at' => Carbon::now()->toIso8601String(),
                 ]);
 
-                $all_depts_id = $school->two_year_tech_departments()->select('id')->distinct()->get();
+                $depts = DB::table('two_year_tech_department_history_data as depts')
+                    ->join(DB::raw('(SELECT id, max(history_id) as newest FROM two_year_tech_department_history_data group by id) deptid'), function($join) use ($school_code) {
+                        $join->on('depts.id', '=', 'deptid.id');
+                        $join->on('depts.history_id', '=', 'newest');
+                        $join->where('school_code','=', $school_code);
+                    })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
-                foreach ($all_depts_id as $all_dept_id) {
-                    $dept = $school->two_year_tech_departments()->where('id', '=', $all_dept_id->id)->latest()->first();
-
+                foreach ($depts as $dept) {
                     TwoYearTechDepartmentData::updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
@@ -431,11 +437,15 @@ class SyncHistoryDataToFormalController extends Controller
                     'created_at' => Carbon::now()->toIso8601String(),
                 ]);
 
-                $all_depts_id = $school->graduate_departments()->select('id')->where('system_id', '=', 3)->distinct()->get();
+                $depts = DB::table('graduate_department_history_data as depts')
+                    ->join(DB::raw('(SELECT id, max(history_id) as newest FROM graduate_department_history_data group by id) deptid'), function($join) use ($school_code) {
+                        $join->on('depts.id', '=', 'deptid.id');
+                        $join->on('depts.history_id', '=', 'newest');
+                        $join->where('school_code','=', $school_code);
+                        $join->where('system_id','=', 3);
+                    })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
-                foreach ($all_depts_id as $all_dept_id) {
-                    $dept = $school->graduate_departments()->where('system_id', '=', 3)->where('id', '=', $all_dept_id->id)->latest()->first();
-
+                foreach ($depts as $dept) {
                     GraduateDepartmentData::updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
@@ -595,11 +605,15 @@ class SyncHistoryDataToFormalController extends Controller
                     'created_at' => Carbon::now()->toIso8601String(),
                 ]);
 
-                $all_depts_id = $school->graduate_departments()->select('id')->where('system_id', '=', 4)->distinct()->get();
+                $depts = DB::table('graduate_department_history_data as depts')
+                    ->join(DB::raw('(SELECT id, max(history_id) as newest FROM graduate_department_history_data group by id) deptid'), function($join) use ($school_code) {
+                        $join->on('depts.id', '=', 'deptid.id');
+                        $join->on('depts.history_id', '=', 'newest');
+                        $join->where('school_code','=', $school_code);
+                        $join->where('system_id','=', 4);
+                    })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
-                foreach ($all_depts_id as $all_dept_id) {
-                    $dept = $school->graduate_departments()->where('system_id', '=', 4)->where('id', '=', $all_dept_id->id)->latest()->first();
-
+                foreach ($depts as $dept) {
                     GraduateDepartmentData::updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
