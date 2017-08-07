@@ -14,6 +14,7 @@ use App\DepartmentGroup;
 use App\DepartmentHistoryApplicationDocument;
 use App\GuidelinesReplyFormRecord;
 
+use DB;
 use mPDF;
 use Auth;
 use Carbon\Carbon;
@@ -114,7 +115,12 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
-            $all_depts_id = $data->departments()->select('id')->distinct()->orderBy('sort_order', 'asc')->get();
+            $all_depts = DB::table('department_history_data as depts')
+                ->join(DB::raw('(SELECT id, max(history_id) as newest FROM department_history_data group by id) deptid'), function($join) {
+                    $join->on('depts.id', '=', 'deptid.id');
+                    $join->on('depts.history_id', '=', 'newest');
+                    $join->where('school_code','=', $this->argument('school_code'));
+                })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
             $total_admission_placement_quota = 0; // 聯合分發總人數
 
@@ -128,21 +134,19 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $used_dept_history_id = [];
 
-            foreach ($all_depts_id as $all_dept_id) {
-                $dept = $data->departments()->where('id', '=', $all_dept_id->id)->latest()->first();
+            foreach ($all_depts as $dept_QQ) {
+                if (($data->has_self_enrollment && $dept_QQ->has_self_enrollment) || $dept_QQ->admission_placement_quota > 0 || $dept_QQ->admission_selection_quota > 0 || $dept_QQ->self_enrollment_quota > 0) {
+                    $total_admission_placement_quota += $dept_QQ->admission_placement_quota;
 
-                if (($data->has_self_enrollment && $dept->has_self_enrollment) || $dept->admission_placement_quota > 0 || $dept->admission_selection_quota > 0 || $dept->self_enrollment_quota > 0) {
-                    $total_admission_placement_quota += $dept->admission_placement_quota;
+                    $total_admission_selection_quota += $dept_QQ->admission_selection_quota;
 
-                    $total_admission_selection_quota += $dept->admission_selection_quota;
+                    $total_self_enrollment_quota += $dept_QQ->self_enrollment_quota;
 
-                    $total_self_enrollment_quota += $dept->self_enrollment_quota;
-
-                    $depts[] = $dept;
+                    $depts[] = $dept_QQ;
 
                     $total_dept++;
 
-                    $used_dept_history_id[] = ['id' => $dept->id, 'history_id' => $dept->history_id];
+                    $used_dept_history_id[] = ['id' => $dept_QQ->id, 'history_id' => $dept_QQ->history_id];
                 }
             }
 
