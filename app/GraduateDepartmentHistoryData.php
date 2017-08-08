@@ -190,7 +190,7 @@ class GraduateDepartmentHistoryData extends Model
 
     public function school()
     {
-        return $this->belongsTo('App\SchoolData', 'school_code', 'id');
+        return $this->belongsTo('App\SchoolHistoryData', 'school_code', 'id')->latest()->first();
     }
 
     public function editor_permission()

@@ -385,6 +385,7 @@ class DepartmentHistoryDataController extends Controller
                 'system_id' => $system_id,
                 'has_self_enrollment' => $request->input('has_self_enrollment'),
                 'has_special_class' => $request->input('has_special_class'),
+                'self_enrollment_quota' => $request->input('self_enrollment_quota') == '' ? NULL : $request->input('self_enrollment_quota'),
             ];
         }
 
