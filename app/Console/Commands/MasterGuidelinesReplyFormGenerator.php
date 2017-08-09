@@ -280,6 +280,10 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                 $record->checksum = $file_check_code;
 
+                $record->school_code = $this->argument('school_code');
+
+                $record->system_id = 3;
+
                 $record->data = json_encode($pdf_gen_record);
 
                 $record->created_at = Carbon::now('Asia/Taipei')->toIso8601String();

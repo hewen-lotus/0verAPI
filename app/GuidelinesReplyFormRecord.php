@@ -20,6 +20,10 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\GuidelinesReplyFormRecord whereDeletedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\App\GuidelinesReplyFormRecord whereUpdatedAt($value)
  * @mixin \Eloquent
+ * @property string $school_code 學校代碼
+ * @property int $system_id 學制種類（學士, 碩士, 二技, 博士）
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\GuidelinesReplyFormRecord whereSchoolCode($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\GuidelinesReplyFormRecord whereSystemId($value)
  */
 class GuidelinesReplyFormRecord extends Model
 {
@@ -34,6 +38,6 @@ class GuidelinesReplyFormRecord extends Model
     protected $dateFormat = Carbon::ISO8601;
 
     protected $fillable = [
-        'checksum', 'data'
+        'checksum', 'data', 'school_code', 'system_id', 'created_at'
     ];
 }
