@@ -292,6 +292,8 @@ class UsersTableSeeder extends Seeder
             ['username' => '2017ntu02','email' => 'ntu@ntu.edu.tw','name' => '國立臺灣大學','eng_name' => 'National  Taiwan University','phone' => '886-2-33662388轉203','job_title' => '','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
         ];
 
+        $insert_data = [];
+
         foreach ($schools as $school) {
             //$password = $this->random_str(15);
 
@@ -303,7 +305,7 @@ class UsersTableSeeder extends Seeder
 
             $school += ['password' => Hash::make(hash('sha256', $password))];
 
-            DB::table('users')->insert($school);
+            $insert_data[] = $school;
 
             if (Storage::disk('local')->exists($start.'-UserSeeder.log')) {
                 Storage::disk('local')->append($start.'-UserSeeder.log', 'name: '.$school['name'].', username: '.$school['username'].', password: '.$password);
@@ -311,6 +313,8 @@ class UsersTableSeeder extends Seeder
                 Storage::disk('local')->put($start.'-UserSeeder.log', 'name: '.$school['name'].', username: '.$school['username'].', password: '.$password);
             }
         }
+
+        DB::table('users')->insert($insert_data);
     }
 
     /**

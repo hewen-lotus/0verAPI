@@ -1874,6 +1874,7 @@ class SystemQuotaRecordsTableSeeder extends Seeder
             ['school_code' => 'F4','type_id' => '4','academic_year' => '2015','admission_selection_amount' => '0','admission_placement_amount' => '0','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()],
             ['school_code' => 'FF','type_id' => '4','academic_year' => '2015','admission_selection_amount' => '0','admission_placement_amount' => '0','created_at' => Carbon::now()->toIso8601String(),'updated_at' => Carbon::now()->toIso8601String()]
         ];
+
         foreach (array_chunk($data, 1000) as $t) {
             DB::table('system_quota_records')->insert($t);
         }
