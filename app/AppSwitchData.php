@@ -7,19 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 
 /**
- * App\AppSwitch
+ * App\AppSwitchData
  *
  * @property string $system 系統名稱
  * @property string $function 系統對應的 function name
  * @property \Carbon\Carbon $start_at function 開放時間
  * @property \Carbon\Carbon $end_at function 關閉時間
- * @method static \Illuminate\Database\Query\Builder|\App\AppSwitch whereEndAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\AppSwitch whereFunction($value)
- * @method static \Illuminate\Database\Query\Builder|\App\AppSwitch whereStartAt($value)
- * @method static \Illuminate\Database\Query\Builder|\App\AppSwitch whereSystem($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\AppSwitchData whereEndAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\AppSwitchData whereFunction($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\AppSwitchData whereStartAt($value)
+ * @method static \Illuminate\Database\Query\Builder|\App\AppSwitchData whereSystem($value)
  * @mixin \Eloquent
  */
-class AppSwitch extends Model
+class AppSwitchData extends Model
 {
     protected $table = 'function_open_time';
 
