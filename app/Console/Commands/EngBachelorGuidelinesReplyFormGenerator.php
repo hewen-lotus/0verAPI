@@ -179,16 +179,16 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<br>';
 
-            $table .= '<table style="width: 100%; font-size: 12pt;">';
+            $table .= '<table style="width: 100%;">';
 
-            $table .= '<tr><th style="width: 15%;" rowspan="2">系所代碼<br />(志願代碼)</th><th colspan="3">名額</th><th style="width: 50%;" rowspan="2">系所分則</th><th style="width: 50%;" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 15%; text-align: center; vertical-align: middle" rowspan="2">系所代碼<br />(志願代碼)</th><th style="width: 5%;" colspan="3">名額</th><th style="width: 40%;" rowspan="2">系所分則</th><th style="width: 40%;" rowspan="2">個人申請繳交資料說明</th></tr>';
 
             $table .= '<tr><th style="width: 4%;">聯</th><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
 
             $table .= '</table>';
 
             foreach ($depts as $dept) {
-                $table .= '<table style="width: 100%; font-size: 12pt;"><tr>';
+                $table .= '<table style="width: 100%;"><tr>';
 
                 $table .= '<td rowspan="2" style="width: 15%; text-align: center; vertical-align: middle">' . $dept->id . '<br />(' . $dept->card_code . ')</td>';
 
@@ -196,11 +196,11 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
 
-                if ($dept->has_self_enrollment) {
-                    if ($dept->self_enrollment_quota != NULL) {
-                        $dept_self_enrollment_quota = $dept->self_enrollment_quota;
+                if ((bool)$data->has_self_enrollment) {
+                    if ((bool)$dept->has_self_enrollment) {
+                        $dept_self_enrollment_quota = 'Y';
                     } else {
-                        $dept_self_enrollment_quota = 0;
+                        $dept_self_enrollment_quota = 'N';
                     }
                 } else {
                     $dept_self_enrollment_quota = '-';
@@ -208,25 +208,29 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
 
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
-                if ($dept->has_special_class) {
-                    $dept_has_special_class = '是';
+                if ((bool)$dept->has_special_class) {
+                    $dept_has_special_class = 'Y';
                 } else {
-                    $dept_has_special_class = '否';
+                    $dept_has_special_class = 'N';
                 }
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
 
-                $main_group = DepartmentGroup::find($dept->main_group);
+                $group = '';
 
-                $sub_group = DepartmentGroup::find($dept->sub_group);
+                if ($dept->sub_group) {
+                    $main_group = DepartmentGroup::find($dept->main_group);
 
-                if ($sub_group) {
-                    $group = $main_group->eng_title . '、' . $sub_group->eng_title;
+                    $sub_group = DepartmentGroup::find($dept->sub_group);
+
+                    $group .= $main_group->eng_title . '、' . $sub_group->eng_title;
                 } else {
-                    $group = $main_group->eng_title;
+                    $main_group = DepartmentGroup::find($dept->main_group);
+
+                    $group .= $main_group->eng_title;
                 }
 
-                $table .= '<td colspan="2" style="width: 50%;">' . $data->eng_title . ' ' . $dept->eng_title . '（' . $group . '）<br />' . $dept->title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                $table .= '<td colspan="2">' . $data->eng_title . ' ' . $dept->eng_title . '（' . $group . '）<br />' . $dept->title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->eng_title . '(' . $evaluation_level->title . ')</td>';
 
                 $table .= '</tr>';
 
@@ -261,7 +265,7 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
                     }
                 }
 
-                $table .= '<tr><td style="width: 50%;">' . $dept->eng_description . '</td><td style="width: 50%;">' . $doc_output . '</td></tr></table>';
+                $table .= '<tr><td style="width: 40%;">' . $dept->eng_description . '</td><td style="width: 40%;">' . $doc_output . '</td></tr></table>';
             }
 
             $now = Carbon::now('Asia/Taipei');

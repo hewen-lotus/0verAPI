@@ -209,13 +209,15 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
 
-                $main_group = DepartmentGroup::find($dept->main_group);
+                if ($dept->sub_group) {
+                    $main_group = DepartmentGroup::find($dept->main_group);
 
-                $sub_group = DepartmentGroup::find($dept->sub_group);
+                    $sub_group = DepartmentGroup::find($dept->sub_group);
 
-                if ($sub_group) {
                     $group = $main_group->title . '、' . $sub_group->title;
                 } else {
+                    $main_group = DepartmentGroup::find($dept->main_group);
+
                     $group = $main_group->title;
                 }
 

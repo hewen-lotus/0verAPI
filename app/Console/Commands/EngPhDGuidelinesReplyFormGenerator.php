@@ -211,17 +211,19 @@ class EngPhDGuidelinesReplyFormGenerator extends Command
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
 
-                $main_group = DepartmentGroup::find($dept->main_group);
+                if ($dept->sub_group) {
+                    $main_group = DepartmentGroup::find($dept->main_group);
 
-                $sub_group = DepartmentGroup::find($dept->sub_group);
+                    $sub_group = DepartmentGroup::find($dept->sub_group);
 
-                if ($sub_group) {
                     $group = $main_group->eng_title . '、' . $sub_group->eng_title;
                 } else {
+                    $main_group = DepartmentGroup::find($dept->main_group);
+
                     $group = $main_group->eng_title;
                 }
 
-                $table .= '<td colspan="2">' . $data->eng_title . ' ' . $dept->eng_title . '（' . $group . '）<br />' . $dept->title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                $table .= '<td colspan="2">' . $data->eng_title . ' ' . $dept->eng_title . '（' . $group . '）<br />' . $dept->title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->eng_title . '(' . $evaluation_level->title . ')</td>';
 
                 $table .= '</tr>';
 

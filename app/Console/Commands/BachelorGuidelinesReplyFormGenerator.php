@@ -215,17 +215,19 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
 
-                $main_group = DepartmentGroup::find($dept->main_group);
-
-                $sub_group = DepartmentGroup::find($dept->sub_group);
-
                 $zh_group_code = $this->convert($dept->group_code);
 
                 $group = '第' . $zh_group_code . '類組';
 
-                if ($sub_group) {
+                if ($dept->sub_group) {
+                    $main_group = DepartmentGroup::find($dept->main_group);
+
+                    $sub_group = DepartmentGroup::find($dept->sub_group);
+
                     $group .= '：' . $main_group->title . '、' . $sub_group->title;
                 } else {
+                    $main_group = DepartmentGroup::find($dept->main_group);
+
                     $group .= '：' . $main_group->title;
                 }
 
