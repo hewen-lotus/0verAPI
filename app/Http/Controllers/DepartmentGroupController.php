@@ -6,13 +6,23 @@ use App\DepartmentGroup;
 
 class DepartmentGroupController extends Controller
 {
-    public function __construct()
+    /** @var DepartmentGroup */
+    private $DepartmentGroupModel;
+
+    /**
+     * DepartmentGroupController constructor.
+     *
+     * @param DepartmentGroup $DepartmentGroupModel
+     */
+    public function __construct(DepartmentGroup $DepartmentGroupModel)
     {
         $this->middleware(['auth', 'switch']);
+
+        $this->DepartmentGroupModel = $DepartmentGroupModel;
     }
 
     public function index()
     {
-        return DepartmentGroup::select('id', 'title', 'eng_title')->get();
+        return $this->DepartmentGroupModel->select('id', 'title', 'eng_title')->get();
     }
 }

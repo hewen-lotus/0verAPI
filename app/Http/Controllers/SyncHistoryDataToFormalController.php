@@ -24,21 +24,115 @@ use DB;
 
 class SyncHistoryDataToFormalController extends Controller
 {
-    public function __construct()
+    /** @var SchoolHistoryData */
+    private $SchoolHistoryDataModel;
+
+    /** @var DepartmentHistoryApplicationDocument */
+    private $DepartmentHistoryApplicationDocumentModel;
+
+    /** @var GraduateDepartmentHistoryApplicationDocument */
+    private $GraduateDepartmentHistoryApplicationDocumentModel;
+
+    /** @var TwoYearTechDepartmentHistoryApplicationDocument */
+    private $TwoYearTechDepartmentHistoryApplicationDocumentModel;
+
+    /** @var SystemData */
+    private $SystemDataModel;
+
+    /** @var SchoolData */
+    private $SchoolDataModel;
+
+    /** @var DepartmentData */
+    private $DepartmentDataModel;
+
+    /** @var DepartmentApplicationDocument */
+    private $DepartmentApplicationDocumentModel;
+
+    /** @var TwoYearTechDepartmentData */
+    private $TwoYearTechDepartmentDataModel;
+
+    /** @var TwoYearTechDepartmentApplicationDocument */
+    private $TwoYearTechDepartmentApplicationDocumentModel;
+
+    /** @var GraduateDepartmentData */
+    private $GraduateDepartmentDataModel;
+
+    /** @var GraduateDepartmentApplicationDocument */
+    private $GraduateDepartmentApplicationDocumentModel;
+
+    /** @var PaperApplicationDocumentAddress */
+    private $PaperApplicationDocumentAddressModel;
+
+    /**
+     * SyncHistoryDataToFormalController constructor.
+     *
+     * @param SchoolHistoryData $SchoolHistoryDataModel
+     * @param DepartmentHistoryApplicationDocument $DepartmentHistoryApplicationDocumentModel
+     * @param GraduateDepartmentHistoryApplicationDocument $GraduateDepartmentHistoryApplicationDocumentModel
+     * @param TwoYearTechDepartmentHistoryApplicationDocument $TwoYearTechDepartmentHistoryApplicationDocumentModel
+     * @param SystemData $SystemDataModel
+     * @param SchoolData $SchoolDataModel
+     * @param DepartmentData $DepartmentDataModel
+     * @param DepartmentApplicationDocument $DepartmentApplicationDocumentModel
+     * @param TwoYearTechDepartmentData $TwoYearTechDepartmentDataModel
+     * @param TwoYearTechDepartmentApplicationDocument $TwoYearTechDepartmentApplicationDocumentModel
+     * @param GraduateDepartmentData $GraduateDepartmentDataModel
+     * @param GraduateDepartmentApplicationDocument $GraduateDepartmentApplicationDocumentModel
+     * @param PaperApplicationDocumentAddress $PaperApplicationDocumentAddressModel
+     */
+    public function __construct(SchoolHistoryData $SchoolHistoryDataModel,
+                                DepartmentHistoryApplicationDocument $DepartmentHistoryApplicationDocumentModel,
+                                GraduateDepartmentHistoryApplicationDocument $GraduateDepartmentHistoryApplicationDocumentModel,
+                                TwoYearTechDepartmentHistoryApplicationDocument $TwoYearTechDepartmentHistoryApplicationDocumentModel,
+                                SystemData $SystemDataModel,
+                                SchoolData $SchoolDataModel,
+                                DepartmentData $DepartmentDataModel,
+                                DepartmentApplicationDocument $DepartmentApplicationDocumentModel,
+                                TwoYearTechDepartmentData $TwoYearTechDepartmentDataModel,
+                                TwoYearTechDepartmentApplicationDocument $TwoYearTechDepartmentApplicationDocumentModel,
+                                GraduateDepartmentData $GraduateDepartmentDataModel,
+                                GraduateDepartmentApplicationDocument $GraduateDepartmentApplicationDocumentModel,
+                                PaperApplicationDocumentAddress $PaperApplicationDocumentAddressModel)
     {
-        //$this->middleware(['auth', 'switch']);
+        $this->middleware(['auth', 'switch']);
+
+        $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
+
+        $this->DepartmentHistoryApplicationDocumentModel = $DepartmentHistoryApplicationDocumentModel;
+
+        $this->GraduateDepartmentHistoryApplicationDocumentModel = $GraduateDepartmentHistoryApplicationDocumentModel;
+
+        $this->TwoYearTechDepartmentHistoryApplicationDocumentModel = $TwoYearTechDepartmentHistoryApplicationDocumentModel;
+
+        $this->SystemDataModel = $SystemDataModel;
+
+        $this->SchoolDataModel = $SchoolDataModel;
+
+        $this->DepartmentDataModel = $DepartmentDataModel;
+
+        $this->DepartmentApplicationDocumentModel = $DepartmentApplicationDocumentModel;
+
+        $this->TwoYearTechDepartmentDataModel = $TwoYearTechDepartmentDataModel;
+
+        $this->TwoYearTechDepartmentApplicationDocumentModel = $TwoYearTechDepartmentApplicationDocumentModel;
+
+        $this->GraduateDepartmentDataModel = $GraduateDepartmentDataModel;
+
+        $this->GraduateDepartmentApplicationDocumentModel = $GraduateDepartmentApplicationDocumentModel;
+
+        $this->PaperApplicationDocumentAddressModel = $PaperApplicationDocumentAddressModel;
     }
 
     public function bachelor($school_code)
     {
-        if (SchoolHistoryData::where('id', '=', $school_code)
+        if ($this->SchoolHistoryDataModel->where('id', '=', $school_code)
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 1);
             })->exists() ) {
             DB::transaction(function () use ($school_code) {
-                $school = SchoolHistoryData::where('id', '=', $school_code)->latest()->first();
+                $school = $this->SchoolHistoryDataModel->where('id', '=', $school_code)->latest()->first();
 
-                SchoolData::updateOrCreate(
+                $this->SchoolDataModel->updateOrCreate(
                     ['id' => $school->id],
                     [
                         'history_id' => $school->history_id, //從哪一筆歷史紀錄匯入的
@@ -76,7 +170,7 @@ class SyncHistoryDataToFormalController extends Controller
 
                 $system = $school->systems()->where('type_id', '=', 1)->latest()->first();
 
-                SystemData::where('type_id', '=', 1)
+                $this->SystemDataModel->where('type_id', '=', 1)
                     ->where('school_code', '=', $school_code)
                     ->forceDelete();
 
@@ -105,7 +199,7 @@ class SyncHistoryDataToFormalController extends Controller
                     })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
                 foreach ($depts as $dept) {
-                    DepartmentData::updateOrCreate(
+                    $this->DepartmentDataModel->updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
                             'history_id' => $dept->history_id, //從哪一筆歷史紀錄匯入的
@@ -150,12 +244,12 @@ class SyncHistoryDataToFormalController extends Controller
                         ]
                     );
 
-                    DepartmentApplicationDocument::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->DepartmentApplicationDocumentModel->where('dept_id', '=', $dept->id)->forceDelete();
 
-                    PaperApplicationDocumentAddress::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->PaperApplicationDocumentAddressModel->where('dept_id', '=', $dept->id)->forceDelete();
 
                     if ($dept->admission_selection_quota > 0) {
-                        $docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                        $docs = $this->DepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
                             ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
                                 $query->where('dept_id', '=', $dept->id);
                             }])->get();
@@ -202,14 +296,14 @@ class SyncHistoryDataToFormalController extends Controller
 
     public function twoyear($school_code)
     {
-        if (SchoolHistoryData::where('id', '=', $school_code)
+        if ($this->SchoolHistoryDataModel->where('id', '=', $school_code)
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 2);
             })->exists() ) {
             DB::transaction(function () use ($school_code) {
-                $school = SchoolHistoryData::where('id', '=', $school_code)->latest()->first();
+                $school = $this->SchoolHistoryDataModel->where('id', '=', $school_code)->latest()->first();
 
-                SchoolData::updateOrCreate(
+                $this->SchoolDataModel->updateOrCreate(
                     ['id' => $school->id],
                     [
                         'history_id' => $school->history_id, //從哪一筆歷史紀錄匯入的
@@ -247,7 +341,7 @@ class SyncHistoryDataToFormalController extends Controller
 
                 $system = $school->systems()->where('type_id', '=', 2)->latest()->first();
 
-                SystemData::where('type_id', '=', 2)
+                $this->SystemDataModel->where('type_id', '=', 2)
                     ->where('school_code', '=', $school_code)
                     ->forceDelete();
 
@@ -276,7 +370,7 @@ class SyncHistoryDataToFormalController extends Controller
                     })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
                 foreach ($depts as $dept) {
-                    TwoYearTechDepartmentData::updateOrCreate(
+                    $this->TwoYearTechDepartmentDataModel->updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
                             'history_id' => $dept->history_id, //從哪一筆歷史紀錄匯入的
@@ -319,12 +413,12 @@ class SyncHistoryDataToFormalController extends Controller
                         ]
                     );
 
-                    TwoYearTechDepartmentApplicationDocument::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->TwoYearTechDepartmentApplicationDocumentModel->where('dept_id', '=', $dept->id)->forceDelete();
 
-                    PaperApplicationDocumentAddress::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->PaperApplicationDocumentAddressModel->where('dept_id', '=', $dept->id)->forceDelete();
 
                     if ($dept->admission_selection_quota > 0) {
-                        $docs = TwoYearTechDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                        $docs = $this->TwoYearTechDepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
                             ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
                                 $query->where('dept_id', '=', $dept->id);
                             }])->get();
@@ -371,14 +465,14 @@ class SyncHistoryDataToFormalController extends Controller
 
     public function master($school_code)
     {
-        if (SchoolHistoryData::where('id', '=', $school_code)
+        if ($this->SchoolHistoryDataModel->where('id', '=', $school_code)
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 3);
             })->exists() ) {
             DB::transaction(function () use ($school_code) {
-                $school = SchoolHistoryData::where('id', '=', $school_code)->latest()->first();
+                $school = $this->SchoolHistoryDataModel->where('id', '=', $school_code)->latest()->first();
 
-                SchoolData::updateOrCreate(
+                $this->SchoolDataModel->updateOrCreate(
                     ['id' => $school->id],
                     [
                         'history_id' => $school->history_id, //從哪一筆歷史紀錄匯入的
@@ -416,7 +510,7 @@ class SyncHistoryDataToFormalController extends Controller
 
                 $system = $school->systems()->where('type_id', '=', 3)->latest()->first();
 
-                SystemData::where('type_id', '=', 3)
+                $this->SystemDataModel->where('type_id', '=', 3)
                     ->where('school_code', '=', $school_code)
                     ->forceDelete();
 
@@ -446,7 +540,7 @@ class SyncHistoryDataToFormalController extends Controller
                     })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
                 foreach ($depts as $dept) {
-                    GraduateDepartmentData::updateOrCreate(
+                    $this->GraduateDepartmentDataModel->updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
                             'history_id' => $dept->history_id, //從哪一筆歷史紀錄匯入的
@@ -487,12 +581,12 @@ class SyncHistoryDataToFormalController extends Controller
                         ]
                     );
 
-                    GraduateDepartmentApplicationDocument::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->GraduateDepartmentApplicationDocumentModel->where('dept_id', '=', $dept->id)->forceDelete();
 
-                    PaperApplicationDocumentAddress::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->PaperApplicationDocumentAddressModel->where('dept_id', '=', $dept->id)->forceDelete();
 
                     if ($dept->admission_selection_quota > 0) {
-                        $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                        $docs = $this->GraduateDepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
                             ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
                                 $query->where('dept_id', '=', $dept->id);
                             }])->get();
@@ -539,14 +633,14 @@ class SyncHistoryDataToFormalController extends Controller
 
     public function phd($school_code)
     {
-        if (SchoolHistoryData::where('id', '=', $school_code)
+        if ($this->SchoolHistoryDataModel->where('id', '=', $school_code)
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 4);
             })->exists() ) {
             DB::transaction(function () use ($school_code) {
-                $school = SchoolHistoryData::where('id', '=', $school_code)->latest()->first();
+                $school = $this->SchoolHistoryDataModel->where('id', '=', $school_code)->latest()->first();
 
-                SchoolData::updateOrCreate(
+                $this->SchoolDataModel->updateOrCreate(
                     ['id' => $school->id],
                     [
                         'history_id' => $school->history_id, //從哪一筆歷史紀錄匯入的
@@ -584,7 +678,7 @@ class SyncHistoryDataToFormalController extends Controller
 
                 $system = $school->systems()->where('type_id', '=', 4)->latest()->first();
 
-                SystemData::where('type_id', '=', 4)
+                $this->SystemDataModel->where('type_id', '=', 4)
                     ->where('school_code', '=', $school_code)
                     ->forceDelete();
 
@@ -614,7 +708,7 @@ class SyncHistoryDataToFormalController extends Controller
                     })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
                 foreach ($depts as $dept) {
-                    GraduateDepartmentData::updateOrCreate(
+                    $this->GraduateDepartmentDataModel->updateOrCreate(
                         ['id' => $dept->id, 'school_code' => $school_code],
                         [
                             'history_id' => $dept->history_id, //從哪一筆歷史紀錄匯入的
@@ -655,12 +749,12 @@ class SyncHistoryDataToFormalController extends Controller
                         ]
                     );
 
-                    GraduateDepartmentApplicationDocument::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->GraduateDepartmentApplicationDocumentModel->where('dept_id', '=', $dept->id)->forceDelete();
 
-                    PaperApplicationDocumentAddress::where('dept_id', '=', $dept->id)->forceDelete();
+                    $this->PaperApplicationDocumentAddressModel->where('dept_id', '=', $dept->id)->forceDelete();
 
                     if ($dept->admission_selection_quota > 0) {
-                        $docs = GraduateDepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                        $docs = $this->GraduateDepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
                             ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
                                 $query->where('dept_id', '=', $dept->id);
                             }])->get();

@@ -11,7 +11,18 @@ use App\SchoolHistoryData;
 
 class GuidelinesReplyFormGeneratorController extends Controller
 {
-    public function __construct()
+    /** @var SchoolHistoryData */
+    private $SchoolHistoryDataModel;
+
+    /** @collect systemIdCollection */
+    private $systemIdCollection;
+
+    /**
+     * GuidelinesReplyFormGeneratorController constructor.
+     *
+     * @param SchoolHistoryData $SchoolHistoryDataModel
+     */
+    public function __construct(SchoolHistoryData $SchoolHistoryDataModel)
     {
         $this->middleware(['auth', 'switch']);
 
@@ -26,6 +37,8 @@ class GuidelinesReplyFormGeneratorController extends Controller
             'phd' => 4,
             4 => 4,
         ]);
+
+        $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
     }
 
     public function gen(Request $request, $school_code, $system_id)
@@ -51,7 +64,7 @@ class GuidelinesReplyFormGeneratorController extends Controller
         
         $system_id = $this->systemIdCollection->get($system_id, 0);
 
-        if (SchoolHistoryData::where('id', '=', $school_code)
+        if ($this->SchoolHistoryDataModel->where('id', '=', $school_code)
             ->whereHas('systems', function ($query) use ($system_id) {
                 $query->where('type_id', '=', $system_id);
             })

@@ -26,10 +26,26 @@ use App\PaperApplicationDocumentHistoryAddress;
 
 class DepartmentHistoryDataController extends Controller
 {
+    /** @collect system_id_collection */
+    private $system_id_collection;
+
+    /** @var PaperApplicationDocumentHistoryAddress */
+    private $PaperApplicationDocumentHistoryAddressModel;
+
+    /** @var SchoolHistoryData */
+    private $SchoolHistoryDataModel;
+
+    /** @var ApplicationDocumentType */
+    private $ApplicationDocumentTypeModel;
+
     /**
      * DepartmentHistoryDataController constructor.
+     *
+     * @param PaperApplicationDocumentHistoryAddress $PaperApplicationDocumentHistoryAddressModel
+     * @param SchoolHistoryData $SchoolHistoryDataModel
+     * @param ApplicationDocumentType $ApplicationDocumentTypeModel
      */
-    public function __construct()
+    public function __construct(PaperApplicationDocumentHistoryAddress $PaperApplicationDocumentHistoryAddressModel, SchoolHistoryData $SchoolHistoryDataModel, ApplicationDocumentType $ApplicationDocumentTypeModel)
     {
         $this->middleware(['auth', 'switch']);
 
@@ -44,6 +60,12 @@ class DepartmentHistoryDataController extends Controller
             'phd' => 4,
             4 => 4,
         ]);
+
+        $this->PaperApplicationDocumentHistoryAddressModel = $PaperApplicationDocumentHistoryAddressModel;
+
+        $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
+
+        $this->ApplicationDocumentTypeModel = $ApplicationDocumentTypeModel;
     }
 
     /**
@@ -246,7 +268,7 @@ class DepartmentHistoryDataController extends Controller
         }
 
         // 取得該校的 has_enrollment
-        $school_history_data = SchoolHistoryData::select('has_self_enrollment')
+        $school_history_data = $this->SchoolHistoryDataModel->select('has_self_enrollment')
             ->where('id', '=', $school_id)
             ->latest()
             ->first();
@@ -410,7 +432,7 @@ class DepartmentHistoryDataController extends Controller
             $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
         }
 
-        $recommendation_doc_id = ApplicationDocumentType::where('name', 'like', '%推薦函%')
+        $recommendation_doc_id = $this->ApplicationDocumentTypeModel->where('name', 'like', '%推薦函%')
             ->where('system_id', '=', $system_id)->value('id');
 
         foreach ($application_docs as &$docs) {
@@ -440,12 +462,12 @@ class DepartmentHistoryDataController extends Controller
             $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
 
             // 清除全部的紙本推薦函地址資料
-            PaperApplicationDocumentHistoryAddress::where('dept_id', '=', $department_id)
+            $this->PaperApplicationDocumentHistoryAddressModel->where('dept_id', '=', $department_id)
                 ->where('type_id', '=', $docs['type_id'])->delete();
 
             // 如果要紙本推薦函再新增一筆新的
             if ($docs['type_id'] == $recommendation_doc_id && $docs['need_paper'] == true) {
-                PaperApplicationDocumentHistoryAddress::create([
+                $this->PaperApplicationDocumentHistoryAddressModel->create([
                     'dept_id' => $department_id,
                     'type_id' => $docs['type_id'],
                     'address' => $docs['recieve_address'],
@@ -479,7 +501,7 @@ class DepartmentHistoryDataController extends Controller
      */
     public function get_data($school_id, $system_id, $department_id, $history_id = 'latest')
     {
-        $school_history_data = SchoolHistoryData::select()
+        $school_history_data = $this->SchoolHistoryDataModel->select()
             ->where('id', '=', $school_id)
             ->latest()
             ->first();

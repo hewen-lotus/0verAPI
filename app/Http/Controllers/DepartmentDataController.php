@@ -8,15 +8,30 @@ use Auth;
 use Validator;
 use DB;
 
+use App\SchoolData;
 use App\DepartmentData;
-use App\DepartmentSavedData;
-use App\DepartmentCommittedData;
 
 class DepartmentDataController extends Controller
 {
-    public function __construct()
+    /** @var DepartmentData */
+    private $DepartmentDataModel;
+
+    /** @var SchoolData */
+    private $SchoolDataModel;
+
+    /**
+     * DepartmentDataController constructor.
+     *
+     * @param DepartmentData $DepartmentDataModel
+     * @param SchoolData $SchoolDataModel
+     */
+    public function __construct(DepartmentData $DepartmentDataModel, SchoolData $SchoolDataModel)
     {
         $this->middleware('auth');
+
+        $this->DepartmentDataModel = $DepartmentDataModel;
+
+        $this->SchoolDataModel = $SchoolDataModel;
     }
 
     public function index()
@@ -24,16 +39,16 @@ class DepartmentDataController extends Controller
         $user = Auth::user();
 
         if ($user->admin != NULL) {
-            return DepartmentData::all();
+            return $this->DepartmentDataModel->all();
         }
 
-        return DepartmentData::where('id', '=', $user->school_editor->school_code)->first();
+        return $this->DepartmentDataModel->where('id', '=', $user->school_editor->school_code)->first();
     }
 
     public function show(Request $request, $school_id)
     {
-        if (SchoolData::where('id', '=', $school_id)->exists()) {
-            return SchoolData::where('id', '=', $school_id)->with('departments')->first();
+        if ($this->SchoolDataModel->where('id', '=', $school_id)->exists()) {
+            return $this->SchoolDataModel->where('id', '=', $school_id)->with('departments')->first();
         }
 
         $messages = array('School Data Not Found!');

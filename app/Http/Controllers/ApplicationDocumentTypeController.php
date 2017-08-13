@@ -12,7 +12,18 @@ use Illuminate\Validation\Rule;
 
 class ApplicationDocumentTypeController extends Controller
 {
-    public function __construct()
+    /** @var ApplicationDocumentType */
+    private $ApplicationDocumentTypeModel;
+
+    /** @collect system_id_collection */
+    private $system_id_collection;
+
+    /**
+     * ApplicationDocumentTypeController constructor.
+     *
+     * @param ApplicationDocumentType $ApplicationDocumentTypeModel
+     */
+    public function __construct(ApplicationDocumentType $ApplicationDocumentTypeModel)
     {
         $this->middleware(['auth', 'switch']);
 
@@ -27,6 +38,8 @@ class ApplicationDocumentTypeController extends Controller
             'phd' => 4,
             4 => 4,
         ]);
+
+        $this->ApplicationDocumentTypeModel = $ApplicationDocumentTypeModel;
     }
 
     /**
@@ -46,7 +59,7 @@ class ApplicationDocumentTypeController extends Controller
             return response()->json(compact('messages'), 404);
         }
 
-        return ApplicationDocumentType::where('system_id', '=', $system_id)->get();
+        return $this->ApplicationDocumentTypeModel->where('system_id', '=', $system_id)->get();
     }
 
     /**
@@ -58,10 +71,10 @@ class ApplicationDocumentTypeController extends Controller
     {
         //$user = Auth::user();
 
-        if (ApplicationDocumentType::where('system_id', '=', $system_id)
+        if ($this->ApplicationDocumentTypeModel->where('system_id', '=', $system_id)
             ->where('id', '=', $id)->exists()
         ) {
-            return ApplicationDocumentType::where('system_id', '=', $system_id)
+            return $this->ApplicationDocumentTypeModel->where('system_id', '=', $system_id)
                 ->where('id', '=', $id)->first();
         } else {
             $messages = array('Data Not Found!');
@@ -105,7 +118,7 @@ class ApplicationDocumentTypeController extends Controller
                 return response()->json(compact('messages'), 400);
             }
 
-            return ApplicationDocumentType::create([
+            return $this->ApplicationDocumentTypeModel->create([
                 'name' => $request->name,
                 'eng_name' => $request->eng_name,
                 'system_id' => $request->system_id
@@ -128,7 +141,7 @@ class ApplicationDocumentTypeController extends Controller
         $user = Auth::user();
 
         if ($user->can('update', [ApplicationDocumentType::class])) {
-            if (ApplicationDocumentType::where('system_id', '=', $system_id)
+            if ($this->ApplicationDocumentTypeModel->where('system_id', '=', $system_id)
                 ->where('id', '=', $id)->exists()
             ) {
                 \Request::merge(['system_id' => $system_id]);
@@ -156,7 +169,7 @@ class ApplicationDocumentTypeController extends Controller
                     return response()->json(compact('messages'), 400);
                 }
 
-                ApplicationDocumentType::where('id', '=', $id)
+                $this->ApplicationDocumentTypeModel->where('id', '=', $id)
                     ->where('system_id', '=', $request->system_id)
                     ->update([
                         'name' => $request->name,
@@ -186,10 +199,10 @@ class ApplicationDocumentTypeController extends Controller
         $user = Auth::user();
 
         if ($user->can('delete', [ApplicationDocumentType::class])) {
-            if (ApplicationDocumentType::where('system_id', '=', $system_id)
+            if ($this->ApplicationDocumentTypeModel->where('system_id', '=', $system_id)
                 ->where('id', '=', $id)->exists()
             ) {
-                ApplicationDocumentType::where('system_id', '=', $system_id)
+                $this->ApplicationDocumentTypeModel->where('system_id', '=', $system_id)
                     ->where('id', '=', $id)->forceDelete();;
 
                 return $this->index($system_id);

@@ -24,7 +24,35 @@ use App\GraduateDepartmentHistoryApplicationDocument;
 
 class SystemHistoryDataController extends Controller
 {
-    public function __construct()
+    /** @collect system_id_collection */
+    private $system_id_collection;
+
+    /** @collect department_quota_columns_collection */
+    private $department_quota_columns_collection;
+
+    /** @collect department_info_columns */
+    private $department_info_columns;
+
+    /** @collect departments_key_collection */
+    private $departments_key_collection;
+
+    /** @var SystemHistoryData */
+    private $SystemHistoryDataModel;
+
+    /** @var SchoolEditor */
+    private $SchoolEditorModel;
+
+    /** @var SchoolHistoryData */
+    private $SchoolHistoryDataModel;
+
+    /**
+     * SystemHistoryDataController constructor.
+     *
+     * @param SystemHistoryData $SystemHistoryDataModel
+     * @param SchoolEditor $SchoolEditorModel
+     * @param SchoolHistoryData $SchoolHistoryDataModel
+     */
+    public function __construct(SystemHistoryData $SystemHistoryDataModel, SchoolEditor $SchoolEditorModel, SchoolHistoryData $SchoolHistoryDataModel)
     {
         $this->middleware(['auth', 'switch']);
 
@@ -126,6 +154,12 @@ class SystemHistoryDataController extends Controller
             3 => 'master_departments',
             4 => 'phd_departments'
         ]);
+
+        $this->SystemHistoryDataModel = $SystemHistoryDataModel;
+
+        $this->SchoolEditorModel = $SchoolEditorModel;
+
+        $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
     }
     
     /**
@@ -204,7 +238,7 @@ class SystemHistoryDataController extends Controller
             }
 
             // 取得最新歷史版本
-            $system_history_data = SystemHistoryData::select()
+            $system_history_data = $this->SystemHistoryDataModel->select()
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
                 ->latest()
@@ -252,7 +286,7 @@ class SystemHistoryDataController extends Controller
             ];
 
             // 寫入資料
-            $new_data = SystemHistoryData::create($insert_data);
+            $new_data = $this->SystemHistoryDataModel->create($insert_data);
 
             return $this->return_info($school_id, $system_id, $new_data->history_id, 201);
         } else if ($user->can('create_quota', [SystemHistoryData::class, $school_id, $data_type])) {
@@ -265,7 +299,7 @@ class SystemHistoryDataController extends Controller
             }
 
             // 取得最新歷史版本
-            $system_history_data = SystemHistoryData::select()
+            $system_history_data = $this->SystemHistoryDataModel->select()
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', $system_id)
                 ->latest()
@@ -286,7 +320,7 @@ class SystemHistoryDataController extends Controller
             // 必須讓 學士所有系所的 (admission_selection_quota + admission_placement_quota + self_enrollment_quota) + 二技所有系所的 (admission_selection_quota + self_enrollment_quota) <= 可招生總量
             
             // 取得學校資料最新歷史版本
-            $school_history_data = SchoolHistoryData::select()
+            $school_history_data = $this->SchoolHistoryDataModel->select()
                 ->where('id', '=', $school_id)
                 ->latest()
                 ->first();
@@ -409,7 +443,7 @@ class SystemHistoryDataController extends Controller
                 }
 
                 // 二技可招生總量參照學士班資料
-                $dept_system_history_data = SystemHistoryData::select()
+                $dept_system_history_data = $this->SystemHistoryDataModel->select()
                     ->where('school_code', '=', $school_id)
                     ->where('type_id', '=', 1)
                     ->latest()
@@ -563,7 +597,7 @@ class SystemHistoryDataController extends Controller
             }
 
             // 寫入學制資料
-            $new_data = SystemHistoryData::create($insert_data);
+            $new_data = $this->SystemHistoryDataModel->create($insert_data);
 
             // 整理系所輸入資料
             foreach ($request->input('departments') as &$department) {
@@ -853,7 +887,7 @@ class SystemHistoryDataController extends Controller
     public function return_quota($school_id, $system_id, $history_id = 'latest', $status_code = 200)
     {
         // 擷取資料，並依照學制
-        $data = SystemHistoryData::select()
+        $data = $this->SystemHistoryDataModel->select()
             ->where('school_code', '=', $school_id)
             ->where('type_id', '=', $system_id)
             ->with('type', 'creator.school_editor')
@@ -869,7 +903,7 @@ class SystemHistoryDataController extends Controller
 
         // 若為二技學制，則 last_year_surplus_admission_quota、last_year_admission_amount、ratify_expanded_quota 要從學士的資料拿
         if ($system_id == 2) {
-            $another_system_data = SystemHistoryData::select()
+            $another_system_data = $this->SystemHistoryDataModel->select()
                 ->where('school_code', '=', $school_id)
                 ->where('type_id', '=', 1)
                 ->latest()
@@ -985,7 +1019,7 @@ class SystemHistoryDataController extends Controller
         }
 
         // 兩學制都要拿到該校的 has_enrollment
-        $school_history_data = SchoolHistoryData::select('has_self_enrollment')
+        $school_history_data = $this->SchoolHistoryDataModel->select('has_self_enrollment')
             ->where('id', '=', $school_id)
             ->latest()
             ->first();
@@ -1000,7 +1034,7 @@ class SystemHistoryDataController extends Controller
         $user = Auth::user();
 
         // 依照要求拿取學制資料
-        $data = SystemHistoryData::select()
+        $data = $this->SystemHistoryDataModel->select()
             ->where('school_code', '=', $school_id)
             ->where('type_id', '=', $system_id)
             ->with('type', 'creator.school_editor');
@@ -1021,7 +1055,7 @@ class SystemHistoryDataController extends Controller
         }
 
         // 取得使用者有權限的系所
-        $permissionsDepartments = SchoolEditor::select()
+        $permissionsDepartments = $this->SchoolEditorModel->select()
             ->where('username', '=', $user->username)
             ->with('department_permissions')
             ->first()

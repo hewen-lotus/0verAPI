@@ -17,13 +17,51 @@ use App\DepartmentEditorPermission;
 use App\GraduateDepartmentEditorPermission;
 use App\TwoYearTechDepartmentEditorPermission;
 
-use Log;
-
 class SchoolEditorController extends Controller
 {
-    public function __construct()
+    /** @var SchoolData */
+    private $SchoolDataModel;
+
+    /** @var User */
+    private $UserModel;
+
+    /** @var SchoolEditor */
+    private $SchoolEditorModel;
+
+    /** @var DepartmentEditorPermission */
+    private $DepartmentEditorPermissionModel;
+
+    /** @var GraduateDepartmentEditorPermission */
+    private $GraduateDepartmentEditorPermissionModel;
+
+    /** @var TwoYearTechDepartmentEditorPermission */
+    private $TwoYearTechDepartmentEditorPermissionModel;
+
+    /**
+     * SchoolEditorController constructor.
+     *
+     * @param SchoolData $SchoolDataModel
+     * @param User $UserModel
+     * @param SchoolEditor $SchoolEditorModel
+     * @param DepartmentEditorPermission $DepartmentEditorPermissionModel
+     * @param GraduateDepartmentEditorPermission $GraduateDepartmentEditorPermissionModel
+     * @param TwoYearTechDepartmentEditorPermission $TwoYearTechDepartmentEditorPermissionModel
+     */
+    public function __construct(User $UserModel, SchoolData $SchoolDataModel, SchoolEditor $SchoolEditorModel, DepartmentEditorPermission $DepartmentEditorPermissionModel, GraduateDepartmentEditorPermission $GraduateDepartmentEditorPermissionModel, TwoYearTechDepartmentEditorPermission $TwoYearTechDepartmentEditorPermissionModel)
     {
         $this->middleware(['auth', 'switch']);
+
+        $this->UserModel = $UserModel;
+
+        $this->SchoolDataModel = $SchoolDataModel;
+
+        $this->SchoolEditorModel = $SchoolEditorModel;
+
+        $this->DepartmentEditorPermissionModel = $DepartmentEditorPermissionModel;
+
+        $this->GraduateDepartmentEditorPermissionModel = $GraduateDepartmentEditorPermissionModel;
+
+        $this->TwoYearTechDepartmentEditorPermissionModel = $TwoYearTechDepartmentEditorPermissionModel;
     }
 
     /**
@@ -42,8 +80,8 @@ class SchoolEditorController extends Controller
                 $school_code = $user->school_editor->school_code;
             }
 
-            if (SchoolData::where('id', '=', $school_code)->exists()) {
-                return User::whereHas('school_editor', function ($query) use ($school_code) {
+            if ($this->SchoolDataModel->where('id', '=', $school_code)->exists()) {
+                return $this->UserModel->whereHas('school_editor', function ($query) use ($school_code) {
                     $query->where('school_code', '=', $school_code);
                 })->with('school_editor')->get();
             }
@@ -75,7 +113,7 @@ class SchoolEditorController extends Controller
                 $school_code = $user->school_editor->school_code;
             }
 
-            if (SchoolData::where('id', '=', $school_code)->exists()) {
+            if ($this->SchoolDataModel->where('id', '=', $school_code)->exists()) {
                 $validator = Validator::make($request->all(), [
                     'username' => 'required|string|max:191|unique:school_editors,username|unique:users,username',
                     'password' => 'required|string|min:6',
@@ -122,7 +160,7 @@ class SchoolEditorController extends Controller
                 }
 
                 return DB::transaction(function () use ($request, $school_code) {
-                    User::create([
+                    $this->UserModel->create([
                         'username' => $request->username,
                         'password' => Hash::make($request->password),
                         'email' => $request->email,
@@ -133,7 +171,7 @@ class SchoolEditorController extends Controller
                         'updated_by' => Auth::id()
                     ]);
 
-                    SchoolEditor::create([
+                    $this->SchoolEditorModel->create([
                         'username' => $request->username,
                         'school_code' => $school_code,
                         'organization' => $request->organization,
@@ -143,28 +181,28 @@ class SchoolEditorController extends Controller
                     ]);
 
                     foreach ($request->input('departments.bachelor') as $bachelor) {
-                        DepartmentEditorPermission::create([
+                        $this->DepartmentEditorPermissionModel->create([
                             'username' => $request->username,
                             'dept_id' => $bachelor
                         ]);
                     }
 
                     foreach ($request->input('departments.master') as $master) {
-                        GraduateDepartmentEditorPermission::create([
+                        $this->GraduateDepartmentEditorPermissionModel->create([
                             'username' => $request->username,
                             'dept_id' => $master
                         ]);
                     }
 
                     foreach ($request->input('departments.phd') as $phd) {
-                        GraduateDepartmentEditorPermission::create([
+                        $this->GraduateDepartmentEditorPermissionModel->create([
                             'username' => $request->username,
                             'dept_id' => $phd
                         ]);
                     }
 
                     foreach ($request->input('departments.two_year') as $two_year) {
-                        TwoYearTechDepartmentEditorPermission::create([
+                        $this->TwoYearTechDepartmentEditorPermissionModel->create([
                             'username' => $request->username,
                             'dept_id' => $two_year
                         ]);
@@ -173,21 +211,21 @@ class SchoolEditorController extends Controller
                     if ((bool)$request->input('has_banned')) {
                         //User::where('username', '=', $request->username)->delete();
 
-                        SchoolEditor::where('username', '=', $request->username)->update([
+                        $this->SchoolEditorModel->where('username', '=', $request->username)->update([
                             'deleted_by' => Auth::id(),
                         ]);
 
-                        SchoolEditor::where('username', '=', $request->username)->delete();
+                        $this->SchoolEditorModel->where('username', '=', $request->username)->delete();
 
-                        DepartmentEditorPermission::where('username', '=', $request->username)->delete();
+                        $this->DepartmentEditorPermissionModel->where('username', '=', $request->username)->delete();
 
-                        GraduateDepartmentEditorPermission::where('username', '=', $request->username)->delete();
+                        $this->GraduateDepartmentEditorPermissionModel->where('username', '=', $request->username)->delete();
 
-                        TwoYearTechDepartmentEditorPermission::where('username', '=', $request->username)->delete();
+                        $this->TwoYearTechDepartmentEditorPermissionModel->where('username', '=', $request->username)->delete();
                     }
 
                     return response()->json(
-                        User::where('username', '=', $request->username)
+                        $this->UserModel->where('username', '=', $request->username)
                         ->with([
                             'school_editor' => function ($query) {
                                 $query->withTrashed();
@@ -236,11 +274,11 @@ class SchoolEditorController extends Controller
                 $id = $user->school_editor->username;
             }
 
-            if (User::where('username', '=', $id)
+            if ($this->UserModel->where('username', '=', $id)
                 ->whereHas('school_editor', function ($query) use ($school_code) {
                     $query->where('school_code', '=', $school_code);
                 })->exists()) {
-                return User::where('username', '=', $id)
+                return $this->UserModel->where('username', '=', $id)
                     ->with([
                         'school_editor.school',
                         'school_editor.department_permissions',
@@ -280,7 +318,7 @@ class SchoolEditorController extends Controller
                 $id = $user->school_editor->username;
             }
 
-            if (User::where('username', '=', $id)
+            if ($this->UserModel->where('username', '=', $id)
                 ->whereHas('school_editor', function ($query) use ($school_code) {
                     $query->where('school_code', '=', $school_code);
                 })->exists()
@@ -331,11 +369,11 @@ class SchoolEditorController extends Controller
                 }
 
                 $result = DB::transaction(function () use ($request, $user, $school_code, $id) {
-                    DepartmentEditorPermission::where('username', '=', $id)->forceDelete();
+                    $this->DepartmentEditorPermissionModel->where('username', '=', $id)->forceDelete();
 
-                    GraduateDepartmentEditorPermission::where('username', '=', $id)->forceDelete();
+                    $this->GraduateDepartmentEditorPermissionModel->where('username', '=', $id)->forceDelete();
 
-                    TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->forceDelete();
+                    $this->TwoYearTechDepartmentEditorPermissionModel->where('username', '=', $id)->forceDelete();
 
                     $UserUpdateData = array(
                         'email' => $request->email,
@@ -361,33 +399,33 @@ class SchoolEditorController extends Controller
                         }
                     }
 
-                    User::where('username', '=', $id)->update($UserUpdateData);
+                    $this->UserModel->where('username', '=', $id)->update($UserUpdateData);
 
-                    SchoolEditor::where('username', '=', $id)->update($EditorUpdateData);
+                    $this->SchoolEditorModel->where('username', '=', $id)->update($EditorUpdateData);
 
                     foreach ($request->input('departments.bachelor') as $bachelor) {
-                        DepartmentEditorPermission::create([
+                        $this->DepartmentEditorPermissionModel->create([
                             'username' => $id,
                             'dept_id' => $bachelor
                         ]);
                     }
 
                     foreach ($request->input('departments.master') as $master) {
-                        GraduateDepartmentEditorPermission::create([
+                        $this->GraduateDepartmentEditorPermissionModel->create([
                             'username' => $id,
                             'dept_id' => $master
                         ]);
                     }
 
                     foreach ($request->input('departments.phd') as $phd) {
-                        GraduateDepartmentEditorPermission::create([
+                        $this->GraduateDepartmentEditorPermissionModel->create([
                             'username' => $id,
                             'dept_id' => $phd
                         ]);
                     }
 
                     foreach ($request->input('departments.two_year') as $two_year) {
-                        TwoYearTechDepartmentEditorPermission::create([
+                        $this->TwoYearTechDepartmentEditorPermissionModel->create([
                             'username' => $id,
                             'dept_id' => $two_year
                         ]);
@@ -397,34 +435,34 @@ class SchoolEditorController extends Controller
                         if ((bool)$request->input('has_banned')) {
                             //User::where('username', '=', $request->username)->delete();
 
-                            SchoolEditor::where('username', '=', $id)->update([
+                            $this->SchoolEditorModel->where('username', '=', $id)->update([
                                 'deleted_by' => Auth::id(),
                             ]);
 
-                            SchoolEditor::where('username', '=', $id)->delete();
+                            $this->SchoolEditorModel->where('username', '=', $id)->delete();
 
-                            DepartmentEditorPermission::where('username', '=', $id)->delete();
+                            $this->DepartmentEditorPermissionModel->where('username', '=', $id)->delete();
 
-                            GraduateDepartmentEditorPermission::where('username', '=', $id)->delete();
+                            $this->GraduateDepartmentEditorPermissionModel->where('username', '=', $id)->delete();
 
-                            TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->delete();
+                            $this->TwoYearTechDepartmentEditorPermissionModel->where('username', '=', $id)->delete();
                         } else {
-                            SchoolEditor::where('username', '=', $id)->update([
+                            $this->SchoolEditorModel->where('username', '=', $id)->update([
                                 'deleted_by' => NULL,
                             ]);
 
-                            SchoolEditor::where('username', '=', $id)->restore();
+                            $this->SchoolEditorModel->where('username', '=', $id)->restore();
 
-                            DepartmentEditorPermission::where('username', '=', $id)->restore();
+                            $this->DepartmentEditorPermissionModel->where('username', '=', $id)->restore();
 
-                            GraduateDepartmentEditorPermission::where('username', '=', $id)->restore();
+                            $this->GraduateDepartmentEditorPermissionModel->where('username', '=', $id)->restore();
 
-                            TwoYearTechDepartmentEditorPermission::where('username', '=', $id)->restore();
+                            $this->TwoYearTechDepartmentEditorPermissionModel->where('username', '=', $id)->restore();
                         }
                     }
 
                     return response()->json(
-                        User::where('username', '=', $id)
+                        $this->UserModel->where('username', '=', $id)
                             ->with([
                                 'school_editor.school' => function ($query) {
                                     $query->withTrashed();

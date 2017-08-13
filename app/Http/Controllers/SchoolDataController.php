@@ -9,14 +9,23 @@ use Validator;
 use DB;
 
 use App\SchoolData;
-use App\SchoolSavedData;
-use App\SchoolCommittedData;
+use App\SchoolHistoryData;
 
 class SchoolDataController extends Controller
 {
-    public function __construct()
+    /** @var SchoolData */
+    private $SchoolDataModel;
+
+    /**
+     * SchoolDataController constructor.
+     *
+     * @param SchoolData $SchoolDataModel
+     */
+    public function __construct(SchoolData $SchoolDataModel)
     {
         $this->middleware('auth');
+
+        $this->SchoolDataModel = $SchoolDataModel;
     }
 
     public function index()
@@ -27,7 +36,7 @@ class SchoolDataController extends Controller
             return SchoolData::all();
         }
 
-        return SchoolData::where('id', '=', $user->school_editor->school_code)->first();
+        return $this->SchoolDataModel->where('id', '=', $user->school_editor->school_code)->first();
     }
 
     /**
@@ -38,8 +47,8 @@ class SchoolDataController extends Controller
      */
     public function show(Request $request, $school_id)
     {
-        if (SchoolData::where('id', '=', $school_id)->exists()) {
-            return SchoolData::where('id', '=', $school_id)->with('departments')->first();
+        if ($this->SchoolDataModel->where('id', '=', $school_id)->exists()) {
+            return $this->SchoolDataModel->where('id', '=', $school_id)->with('departments')->first();
         }
 
         $messages = array('School Data Not Found!');
@@ -158,7 +167,7 @@ class SchoolDataController extends Controller
 
         $newDataid = DB::transaction(function () use ($InsertData, $SavedInsertData) {
 
-            SchoolData::create($InsertData);
+            $this->SchoolDataModel->create($InsertData);
 
             $SchoolSavedData = SchoolSavedData::create($SavedInsertData);
 
@@ -177,7 +186,7 @@ class SchoolDataController extends Controller
      */
     public function update(Request $request, $school_id)
     {
-        if (SchoolData::where('id', '=', $school_id)->exists()) {
+        if ($this->SchoolDataModel->where('id', '=', $school_id)->exists()) {
             $LastSavedData = SchoolSavedData::where('id', '=', $school_id)
                 ->orderBy('history_id', 'desc')->first();
 

@@ -39,14 +39,44 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
      */
     protected $description = '系統輸出英文版學士班簡章調查回覆表';
 
+    /** @var SchoolHistoryData */
+    private $SchoolHistoryDataModel;
+
+    /** @var EvaluationLevel */
+    private $EvaluationLevelModel;
+
+    /** @var DepartmentGroup */
+    private $DepartmentGroupModel;
+
+    /** @var DepartmentHistoryApplicationDocument */
+    private $DepartmentHistoryApplicationDocumentModel;
+
+    /** @var GuidelinesReplyFormRecord */
+    private $GuidelinesReplyFormRecordModel;
+
     /**
      * Create a new command instance.
      *
+     * @param SchoolHistoryData $SchoolHistoryDataModel
+     * @param EvaluationLevel $EvaluationLevelModel
+     * @param DepartmentGroup $DepartmentGroupModel
+     * @param DepartmentHistoryApplicationDocument $DepartmentHistoryApplicationDocumentModel
+     * @param GuidelinesReplyFormRecord $GuidelinesReplyFormRecordModel
      * @return void
      */
-    public function __construct()
+    public function __construct(SchoolHistoryData $SchoolHistoryDataModel, EvaluationLevel $EvaluationLevelModel, DepartmentGroup $DepartmentGroupModel, DepartmentHistoryApplicationDocument $DepartmentHistoryApplicationDocumentModel, GuidelinesReplyFormRecord $GuidelinesReplyFormRecordModel)
     {
         parent::__construct();
+
+        $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
+
+        $this->EvaluationLevelModel = $EvaluationLevelModel;
+
+        $this->DepartmentGroupModel = $DepartmentGroupModel;
+
+        $this->DepartmentHistoryApplicationDocumentModel = $DepartmentHistoryApplicationDocumentModel;
+
+        $this->GuidelinesReplyFormRecordModel = $GuidelinesReplyFormRecordModel;
     }
 
     /**
@@ -56,13 +86,13 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
      */
     public function handle()
     {
-        if (SchoolHistoryData::where('id', '=', $this->argument('school_code'))
+        if ($this->SchoolHistoryDataModel->where('id', '=', $this->argument('school_code'))
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 1);
             })
             ->exists()
         ) {
-            $data = SchoolHistoryData::where('id', '=', $this->argument('school_code'))->latest()->first();
+            $data = $this->SchoolHistoryDataModel->where('id', '=', $this->argument('school_code'))->latest()->first();
 
             $pdf_gen_record = ['system_id' => 1, 'school_history_data' => $data->history_id];
 
@@ -214,18 +244,18 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
                     $dept_has_special_class = 'N';
                 }
 
-                $evaluation_level = EvaluationLevel::find($dept->evaluation);
+                $evaluation_level = $this->EvaluationLevelModel->find($dept->evaluation);
 
                 $group = '';
 
                 if ($dept->sub_group) {
-                    $main_group = DepartmentGroup::find($dept->main_group);
+                    $main_group = $this->DepartmentGroupModel->find($dept->main_group);
 
-                    $sub_group = DepartmentGroup::find($dept->sub_group);
+                    $sub_group = $this->DepartmentGroupModel->find($dept->sub_group);
 
                     $group .= $main_group->eng_title . '、' . $sub_group->eng_title;
                 } else {
-                    $main_group = DepartmentGroup::find($dept->main_group);
+                    $main_group = $this->DepartmentGroupModel->find($dept->main_group);
 
                     $group .= $main_group->eng_title;
                 }
@@ -241,7 +271,7 @@ class EngBachelorGuidelinesReplyFormGenerator extends Command
                 }
 
                 if ($dept->admission_selection_quota > 0) {
-                    $docs = DepartmentHistoryApplicationDocument::where('dept_id', '=', $dept->id)
+                    $docs = $this->DepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
                         ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
                             $query->where('dept_id', '=', $dept->id);
                         }])->get();

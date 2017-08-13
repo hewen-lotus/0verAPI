@@ -17,7 +17,22 @@ use App\SystemQuotaRecord;
 
 class SystemQuotaController extends Controller
 {
-    public function __construct()
+    /** @string academic_year */
+    private $academic_year;
+
+    /** @var SystemQuota */
+    private $SystemQuotaModel;
+
+    /** @var SystemQuotaRecord */
+    private $SystemQuotaRecordModel;
+
+    /**
+     * SystemQuotaController constructor.
+     *
+     * @param SystemQuota $SystemQuotaModel
+     * @param SystemQuotaRecord $SystemQuotaRecordModel
+     */
+    public function __construct(SystemQuota $SystemQuotaModel, SystemQuotaRecord $SystemQuotaRecordModel)
     {
         $this->middleware(['auth', 'switch']);
 
@@ -26,6 +41,10 @@ class SystemQuotaController extends Controller
         } else {
             $this->academic_year = (Carbon::now()->year) - 0;
         }
+
+        $this->SystemQuotaModel = $SystemQuotaModel;
+
+        $this->SystemQuotaRecordModel = $SystemQuotaRecordModel;
     }
 
     public function index(Request $request, $school_id)
@@ -37,13 +56,13 @@ class SystemQuotaController extends Controller
             // 設定 school id（可能是 me）
             $school_id = $user->school_editor->school_code;
 
-            if (!SystemQuota::where('school_code', '=', $school_id)->exists()) {
+            if (!$this->SystemQuotaModel->where('school_code', '=', $school_id)->exists()) {
                 // 沒有資料？404 啦
                 $messages = array('System Data Not Found!');
                 return response()->json(compact('messages'), 404);
             } else {
                 // 取得此校所有學制第一階段名額資訊
-                $systems = SystemQuota::select()
+                $systems = $this->SystemQuotaModel->select()
                     ->where('school_code', '=', $school_id)
                     ->with('updater.school_editor')
                     ->get();

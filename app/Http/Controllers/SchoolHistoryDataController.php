@@ -7,15 +7,30 @@ use Illuminate\Http\Request;
 use Auth;
 use Validator;
 
-//use App\SchoolData;
 use App\SchoolHistoryData;
 use App\SchoolLastYearSelfEnrollmentAndFiveYearStatus;
 
 class SchoolHistoryDataController extends Controller
 {
-    public function __construct()
+    /** @var SchoolHistoryData */
+    private $SchoolHistoryDataModel;
+
+    /** @var SchoolLastYearSelfEnrollmentAndFiveYearStatus */
+    private $SchoolLastYearSelfEnrollmentAndFiveYearStatusModel;
+
+    /**
+     * SchoolHistoryDataController constructor.
+     *
+     * @param SchoolHistoryData $SchoolHistoryDataModel
+     * @param SchoolLastYearSelfEnrollmentAndFiveYearStatus $SchoolLastYearSelfEnrollmentAndFiveYearStatusModel
+     */
+    public function __construct(SchoolHistoryData $SchoolHistoryDataModel, SchoolLastYearSelfEnrollmentAndFiveYearStatus $SchoolLastYearSelfEnrollmentAndFiveYearStatusModel)
     {
         $this->middleware(['auth', 'switch']);
+
+        $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
+
+        $this->SchoolLastYearSelfEnrollmentAndFiveYearStatusModel = $SchoolLastYearSelfEnrollmentAndFiveYearStatusModel;
     }
 
     /**
@@ -142,7 +157,7 @@ class SchoolHistoryDataController extends Controller
                 ];
             }
 
-            $school_last_year_self_enrollment_and_five_year_status = SchoolLastYearSelfEnrollmentAndFiveYearStatus::find($school_id);
+            $school_last_year_self_enrollment_and_five_year_status = $this->SchoolLastYearSelfEnrollmentAndFiveYearStatusModel->find($school_id);
 
             // 整理招收中五生學則資料
             if ((bool)$request->input('has_five_year_student_allowed')) {
@@ -187,7 +202,7 @@ class SchoolHistoryDataController extends Controller
             }
 
             // 寫入資料
-            $new_data = SchoolHistoryData::create($insert_data);
+            $new_data = $this->SchoolHistoryDataModel->create($insert_data);
 
             $new_data = $this->get_data($school_id, $new_data->history_id);
 
@@ -202,11 +217,12 @@ class SchoolHistoryDataController extends Controller
     /**
      * @param $school_id
      * @param string $history_id
-     * @return $this|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder|static
+     *
+     * @return mixed
      */
     public function get_data($school_id, $history_id = 'latest')
     {
-        $data = SchoolHistoryData::where('id', '=', $school_id)
+        $data = $this->SchoolHistoryDataModel->where('id', '=', $school_id)
             ->with('creator.school_editor');
         
         // 容許 latest 字眼（取最新一筆）

@@ -13,9 +13,25 @@ use App\Admin;
 
 class AdminController extends Controller
 {
-    public function __construct()
+    /** @var User */
+    private $userModel;
+
+    /** @var Admin */
+    private $adminModel;
+
+    /**
+     * AdminController constructor.
+     *
+     * @param User $userModel
+     * @param Admin $adminModel
+     */
+    public function __construct(User $userModel, Admin $adminModel)
     {
         $this->middleware('auth');
+
+        $this->userModel = $userModel;
+
+        $this->adminModel = $adminModel;
     }
 
     /**
@@ -28,7 +44,7 @@ class AdminController extends Controller
         $user = Auth::user();
 
         if ($user->can('list_admin', User::class)) {
-            return User::has('admin')->with('admin')->get();
+            return $this->userModel->has('admin')->with('admin')->get();
         }
 
         $messages = array('User don\'t have permission to access');
@@ -44,8 +60,8 @@ class AdminController extends Controller
      */
     public function show($id)
     {
-        if (User::where('username', '=', $id)->has('admin')->exists()) {
-            $data = User::where('username', '=', $id)->with('admin')->first();
+        if ($this->userModel->where('username', '=', $id)->has('admin')->exists()) {
+            $data = $this->userModel->where('username', '=', $id)->with('admin')->first();
 
             $user = Auth::user();
 
@@ -91,7 +107,7 @@ class AdminController extends Controller
             }
 
             return DB::transaction(function () use ($request) {
-                User::create([
+                $this->userModel->create([
                     'username' => $request->username,
                     'password' => Hash::make($request->password),
                     'email' => $request->email,
@@ -102,7 +118,7 @@ class AdminController extends Controller
                     'updated_by' => Auth::id(),
                 ]);
 
-                Admin::create([
+                $this->adminModel->create([
                     'username' => $request->username,
                     'has_admin' => $request->input('has_admin', 0),
                     'created_by' => Auth::id(),
@@ -112,14 +128,14 @@ class AdminController extends Controller
                 if ((bool)$request->input('has_banned')) {
                     //User::where('username', '=', $request->username)->delete();
 
-                    Admin::where('username', '=', $request->username)->update([
+                    $this->adminModel->where('username', '=', $request->username)->update([
                         'deleted_by' => Auth::id(),
                     ]);
 
-                    Admin::where('username', '=', $request->username)->delete();
+                    $this->adminModel->where('username', '=', $request->username)->delete();
                 }
 
-                return response()->json(User::where('username', '=', $request->username)
+                return response()->json($this->userModel->where('username', '=', $request->username)
                     ->with([
                         'admin' => function ($query) {
                             $query->withTrashed();
@@ -142,8 +158,8 @@ class AdminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if (Admin::where('username', '=', $id)->exists()) {
-            $data = User::where('username', '=', $id)->first();
+        if ($this->adminModel->where('username', '=', $id)->exists()) {
+            $data = $this->userModel->where('username', '=', $id)->first();
 
             $user = Auth::user();
 
@@ -183,32 +199,32 @@ class AdminController extends Controller
                         );
                     }
 
-                    User::where('username', '=', $id)->update($updateData);
+                    $this->userModel->where('username', '=', $id)->update($updateData);
 
                     if ((bool)$user->admin->has_admin && $user->username != $id) {
                         if ($request->has('has_admin')) {
-                            Admin::where('username', '=', $id)->update([
+                            $this->adminModel->where('username', '=', $id)->update([
                                 'has_admin' => $request->input('has_admin', 0),
                                 'updated_by' => Auth::id(),
                             ]);
                         }
 
                         if ((bool)$request->input('has_banned')) {
-                            Admin::where('username', '=', $id)->update([
+                            $this->adminModel->where('username', '=', $id)->update([
                                 'deleted_by' => Auth::id(),
                             ]);
 
-                            Admin::where('username', '=', $id)->delete();
+                            $this->adminModel->where('username', '=', $id)->delete();
                         } else {
-                            Admin::where('username', '=', $id)->update([
+                            $this->adminModel->where('username', '=', $id)->update([
                                 'deleted_by' => NULL,
                             ]);
 
-                            Admin::where('username', '=', $id)->restore();
+                            $this->adminModel->where('username', '=', $id)->restore();
                         }
                     }
 
-                    return User::where('username', '=', $id)->with([
+                    return $this->userModel->where('username', '=', $id)->with([
                         'admin' => function ($query) {
                             $query->withTrashed();
                         }
