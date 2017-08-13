@@ -204,9 +204,9 @@ class EngPhDGuidelinesReplyFormGenerator extends Command
                 $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
 
                 if ((bool)$dept->has_special_class) {
-                    $dept_has_special_class = '是';
+                    $dept_has_special_class = 'Y';
                 } else {
-                    $dept_has_special_class = '否';
+                    $dept_has_special_class = 'N';
                 }
 
                 $evaluation_level = EvaluationLevel::find($dept->evaluation);
