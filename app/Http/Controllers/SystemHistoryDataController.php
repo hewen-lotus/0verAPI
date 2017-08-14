@@ -45,14 +45,61 @@ class SystemHistoryDataController extends Controller
     /** @var SchoolHistoryData */
     private $SchoolHistoryDataModel;
 
+    /** @var TwoYearTechHistoryDepartmentData */
+    private $TwoYearTechHistoryDepartmentDataModel;
+
+    /** @var TwoYearTechDepartmentData */
+    private $TwoYearTechDepartmentDataModel;
+
+    /** @var DepartmentHistoryData */
+    private $DepartmentHistoryDataModel;
+
+    /** @var DepartmentData */
+    private $DepartmentDataModel;
+
+    /** @var GraduateDepartmentHistoryData */
+    private $GraduateDepartmentHistoryDataModel;
+
+    /** @var GraduateDepartmentData */
+    private $GraduateDepartmentDataModel;
+
+    /** @var DepartmentHistoryApplicationDocument */
+    private $DepartmentHistoryApplicationDocumentModel;
+
+    /** @var TwoYearTechDepartmentHistoryApplicationDocument */
+    private $TwoYearTechDepartmentHistoryApplicationDocumentModel;
+
+    /** @var GraduateDepartmentHistoryApplicationDocument */
+    private $GraduateDepartmentHistoryApplicationDocumentModel;
+
     /**
      * SystemHistoryDataController constructor.
      *
      * @param SystemHistoryData $SystemHistoryDataModel
      * @param SchoolEditor $SchoolEditorModel
      * @param SchoolHistoryData $SchoolHistoryDataModel
+     * @param TwoYearTechHistoryDepartmentData $TwoYearTechHistoryDepartmentDataModel
+     * @param DepartmentHistoryData $DepartmentHistoryDataModel
+     * @param GraduateDepartmentHistoryData $GraduateDepartmentHistoryDataModel
+     * @param DepartmentHistoryApplicationDocument $DepartmentHistoryApplicationDocumentModel
+     * @param TwoYearTechDepartmentHistoryApplicationDocument $TwoYearTechDepartmentHistoryApplicationDocumentModel
+     * @param GraduateDepartmentHistoryApplicationDocument $GraduateDepartmentHistoryApplicationDocument
+     * @param DepartmentData $DepartmentDataModel
+     * @param TwoYearTechDepartmentData $TwoYearTechDepartmentDataModel
+     * @param GraduateDepartmentData $GraduateDepartmentDataModel
      */
-    public function __construct(SystemHistoryData $SystemHistoryDataModel, SchoolEditor $SchoolEditorModel, SchoolHistoryData $SchoolHistoryDataModel)
+    public function __construct(SystemHistoryData $SystemHistoryDataModel,
+                                SchoolEditor $SchoolEditorModel,
+                                SchoolHistoryData $SchoolHistoryDataModel,
+                                TwoYearTechHistoryDepartmentData $TwoYearTechHistoryDepartmentDataModel,
+                                DepartmentHistoryData $DepartmentHistoryDataModel,
+                                GraduateDepartmentHistoryData $GraduateDepartmentHistoryDataModel,
+                                DepartmentHistoryApplicationDocument $DepartmentHistoryApplicationDocumentModel,
+                                TwoYearTechDepartmentHistoryApplicationDocument $TwoYearTechDepartmentHistoryApplicationDocumentModel,
+                                GraduateDepartmentHistoryApplicationDocument $GraduateDepartmentHistoryApplicationDocumentModel,
+                                DepartmentData $DepartmentDataModel,
+                                TwoYearTechDepartmentData $TwoYearTechDepartmentDataModel,
+                                GraduateDepartmentData $GraduateDepartmentDataModel)
     {
         $this->middleware(['auth', 'switch']);
 
@@ -160,6 +207,24 @@ class SystemHistoryDataController extends Controller
         $this->SchoolEditorModel = $SchoolEditorModel;
 
         $this->SchoolHistoryDataModel = $SchoolHistoryDataModel;
+
+        $this->TwoYearTechHistoryDepartmentDataModel = $TwoYearTechHistoryDepartmentDataModel;
+
+        $this->DepartmentHistoryDataModel = $DepartmentHistoryDataModel;
+
+        $this->GraduateDepartmentHistoryDataModel = $GraduateDepartmentHistoryDataModel;
+
+        $this->DepartmentHistoryApplicationDocumentModel = $DepartmentHistoryApplicationDocumentModel;
+
+        $this->TwoYearTechDepartmentHistoryApplicationDocumentModel = $TwoYearTechDepartmentHistoryApplicationDocumentModel;
+
+        $this->GraduateDepartmentHistoryApplicationDocumentModel = $GraduateDepartmentHistoryApplicationDocumentModel;
+
+        $this->DepartmentDataModel = $DepartmentDataModel;
+
+        $this->TwoYearTechDepartmentDataModel = $TwoYearTechDepartmentDataModel;
+
+        $this->GraduateDepartmentDataModel = $GraduateDepartmentDataModel;
     }
     
     /**
@@ -365,30 +430,30 @@ class SystemHistoryDataController extends Controller
                 // 初始化欲招收總量
                 $all_quota = 0;
 
-                // 取得二技班資料歷史版本
-                $two_years = TwoYearTechDepartmentData::where('school_code','=', $school_id)->get();
+                // 取得二技班每個系所的最新版歷史資料
+                $two_years = DB::table('two_year_tech_department_history_data as depts')
+                    ->join(DB::raw('(SELECT id, max(history_id) as newest FROM two_year_tech_department_history_data group by id) deptid'), function($join) use ($school_id) {
+                        $join->on('depts.id', '=', 'deptid.id');
+                        $join->on('depts.history_id', '=', 'newest');
+                        $join->where('school_code','=', $school_id);
+                    })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
                 // 累計二技班所有系所個人申請與自招量（校可自招且系有開自招才可加入計算）
                 foreach ($two_years as $two_year) {
-                    // 取得每個系所的最新版資料
-                    $dept_history_data = TwoYearTechHistoryDepartmentData::select()
-                        ->where('id','=', $two_year['id'])
-                        ->latest()
-                        ->first();
-
                     // 若數字為 NULL，則預設為 0
-                    if ($dept_history_data->self_enrollment_quota == null) {
-                        $dept_history_data->self_enrollment_quota = 0;
+                    if ($two_year->self_enrollment_quota == null) {
+                        $two_year->self_enrollment_quota = 0;
                     }
-                    if ($dept_history_data->admission_selection_quota == null) {
-                        $dept_history_data->admission_selection_quota = 0;
+
+                    if ($two_year->admission_selection_quota == null) {
+                        $two_year->admission_selection_quota = 0;
                     }
 
                     // 累計二技人數
-                    if ($school_history_data->has_self_enrollment && $dept_history_data->self_enrollment_quota) {
-                        $all_quota += $dept_history_data->admission_selection_quota + $dept_history_data->self_enrollment_quota;
+                    if ($school_history_data->has_self_enrollment && $two_year->self_enrollment_quota) {
+                        $all_quota += $two_year->admission_selection_quota + $two_year->self_enrollment_quota;
                     } else {
-                        $all_quota += $dept_history_data->admission_selection_quota;
+                        $all_quota += $two_year->admission_selection_quota;
                     }
                 }
 
@@ -454,18 +519,17 @@ class SystemHistoryDataController extends Controller
                 // 初始化欲招收總量
                 $all_quota = 0;
 
-                // 取得學士班正式資料（為了拿 id）
-                $depts = DepartmentData::where('school_code','=', $school_id)->get();
+                // 取得每個系所歷史資料的最新版
+                $depts = DB::table('department_history_data as depts')
+                    ->join(DB::raw('(SELECT id, max(history_id) as newest FROM department_history_data group by id) deptid'), function($join) use ($school_id) {
+                        $join->on('depts.id', '=', 'deptid.id');
+                        $join->on('depts.history_id', '=', 'newest');
+                        $join->where('school_code','=', $school_id);
+                    })->select('depts.*')->orderBy('sort_order', 'ASC')->get();
 
                 // 累計要求的學士班個人申請、聯合分發人數
                 foreach ($depts as $dept) {
-                    // 取得每個系所的最新版資料
-                    $dept_history_data = DepartmentHistoryData::select()
-                        ->where('id','=', $dept['id'])
-                        ->latest()
-                        ->first();
-
-                    $all_quota += $dept_history_data->admission_selection_quota + $dept_history_data->admission_placement_quota;
+                    $all_quota += $dept->admission_selection_quota + $dept->admission_placement_quota;
                 }
 
                 // 累計學士班自招總量
@@ -476,7 +540,7 @@ class SystemHistoryDataController extends Controller
                 // 累計要求的二技班個人申請、聯合分發、自招量（校可自招且系有開自招才可加入計算）
                 foreach ($request->input('departments') as &$department_item) {
                     // 取得每個系所的最新版資料
-                    $two_year_dept_history_data = TwoYearTechHistoryDepartmentData::select()
+                    $two_year_dept_history_data = $this->TwoYearTechHistoryDepartmentDataModel->select()
                         ->where('id','=', $department_item['id'])
                         ->latest()
                         ->first();
@@ -506,7 +570,6 @@ class SystemHistoryDataController extends Controller
                     return response()->json(compact('messages'), 400);
                 }
             } else if ($system_id == 3 || $system_id == 4) {// 碩博學制名額驗證
-                
                 // 設定資料驗證欄位
                 $validation_rules = [
                     'departments' => 'required|array',
@@ -604,7 +667,7 @@ class SystemHistoryDataController extends Controller
                 // 依照學制不同，將每個系所資料寫入
                 if ($system_id == 1) { // 學士班
                     // 取得最新版系所資料
-                    $department_history_data = DepartmentHistoryData::select()
+                    $department_history_data = $this->DepartmentHistoryDataModel->select()
                         ->where('school_code', '=', $school_id)
                         ->where('id', '=', $department['id'])
                         ->latest()
@@ -679,10 +742,10 @@ class SystemHistoryDataController extends Controller
                     }
 
                     // 寫入名額資訊
-                    $new_department_data = DepartmentHistoryData::create($department_insert_data);
+                    $new_department_data = $this->DepartmentHistoryDataModel->create($department_insert_data);
                 } else if ($system_id == 2) { // 二技班
                     // 取得最新版系所資料
-                    $department_history_data = TwoYearTechHistoryDepartmentData::select()
+                    $department_history_data = $this->TwoYearTechHistoryDepartmentDataModel->select()
                         ->where('school_code', '=', $school_id)
                         ->where('id', '=', $department['id'])
                         ->latest()
@@ -775,10 +838,10 @@ class SystemHistoryDataController extends Controller
                     }
 
                     // 寫入名額資訊
-                    $new_department_data = TwoYearTechHistoryDepartmentData::create($department_insert_data);
-                } else if ($system_id == 3 || $system_id == 4) { // 碩博學制
+                    $new_department_data = $this->TwoYearTechHistoryDepartmentDataModel->create($department_insert_data);
+                } else { // $system_id == 3 || $system_id == 4 碩博學制
                     // 取得最新版系所資料
-                    $department_history_data = GraduateDepartmentHistoryData::select()
+                    $department_history_data = $this->GraduateDepartmentHistoryDataModel->select()
                         ->where('school_code', '=', $school_id)
                         ->where('id', '=', $department['id'])
                         ->where('system_id', '=', $system_id)
@@ -843,26 +906,28 @@ class SystemHistoryDataController extends Controller
                     }
 
                     // 寫入名額資料
-                    $new_department_data = GraduateDepartmentHistoryData::create($department_insert_data);
+                    $new_department_data = $this->GraduateDepartmentHistoryDataModel->create($department_insert_data);
                 }
 
                 // COPY 歷史版本的審查項目
 
                 // 依學制設定審查項目資料模型
-                if ($system_id == 1) {
-                    $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
-                } else if ($system_id == 2) {
-                    $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
-                } else if ($system_id == 3 || $system_id == 4) {
-                    $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
+                if ($system_id == 1) { // 學士
+                    $HistoryApplicationDocumentModel = $this->DepartmentHistoryApplicationDocumentModel;
+                } else if ($system_id == 2) { // 二技
+                    $HistoryApplicationDocumentModel = $this->TwoYearTechDepartmentHistoryApplicationDocumentModel;
+                } else { // $system_id == 3 || $system_id == 4 碩博
+                    $HistoryApplicationDocumentModel = $this->GraduateDepartmentHistoryApplicationDocumentModel;
                 }
 
                 // 取得上一版審查項目歷史版本
-                $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
+                $application_docs = $HistoryApplicationDocumentModel->where('history_id', '=', $department_history_data->history_id)->get();
+
+                $docs_insert_data = [];
 
                 // COPY 歷史版本的審查項目至最新版
                 foreach ($application_docs as &$docs) {
-                    $docs_insert_data = [
+                    $docs_insert_data[] = [
                         'history_id' => $new_department_data->history_id,
                         'dept_id' => $docs['dept_id'],
                         'type_id' => $docs['type_id'],
@@ -871,9 +936,9 @@ class SystemHistoryDataController extends Controller
                         'required' => $docs['required'],
                         'modifiable' => $docs['modifiable'],
                     ];
-
-                    $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
                 }
+
+                $HistoryApplicationDocumentModel->create($docs_insert_data);
             }
 
             return $this->return_quota($school_id, $system_id, $new_data->history_id, 201);
@@ -918,35 +983,35 @@ class SystemHistoryDataController extends Controller
 
         // 依學制設定系所資料模型
         if ($system_id == 1) {
-            $DepartmentHistoryDataModel = DepartmentHistoryData::class;
-            $DepartmentDataModel = DepartmentData::class;
+            $HistoryDataModel = $this->DepartmentHistoryDataModel;
+            $DataModel = $this->DepartmentDataModel;
 
-            $AnotherDepartmentHistoryDataModel = TwoYearTechHistoryDepartmentData::class;
-            $AnotherDepartmentDataModel = TwoYearTechDepartmentData::class;
+            $AnotherHistoryDataModel = $this->TwoYearTechHistoryDepartmentDataModel;
+            $AnotherDataModel = $this->TwoYearTechDepartmentDataModel;
         } else if ($system_id == 2) {
-            $DepartmentHistoryDataModel = TwoYearTechHistoryDepartmentData::class;
-            $DepartmentDataModel = TwoYearTechDepartmentData::class;
+            $HistoryDataModel = $this->TwoYearTechHistoryDepartmentDataModel;
+            $DataModel = $this->TwoYearTechDepartmentDataModel;
 
-            $AnotherDepartmentHistoryDataModel = DepartmentHistoryData::class;
-            $AnotherDepartmentDataModel = DepartmentData::class;
-        } else if ($system_id == 3 || $system_id == 4) {
-            $DepartmentHistoryDataModel = GraduateDepartmentHistoryData::class;
-            $DepartmentDataModel = GraduateDepartmentData::class;
+            $AnotherHistoryDataModel = $this->DepartmentHistoryDataModel;
+            $AnotherDataModel = $this->DepartmentDataModel;
+        } else { // $system_id == 3 || $system_id == 4
+            $HistoryDataModel = $this->GraduateDepartmentHistoryDataModel;
+            $DataModel = $this->GraduateDepartmentDataModel;
         }
 
         // 從主表取得系所列表
         if ($system_id == 1 || $system_id == 2) {
             // 學士二技各自有表
-            $departments_list = $DepartmentDataModel::select('id')
+            $departments_list = $DataModel->select('id')
                 ->where('school_code', '=', $school_id)
                 ->get();
             // 需取得另一個學制的系所列表
-            $another_departments_list = $AnotherDepartmentDataModel::select('id')
+            $another_departments_list = $AnotherDataModel->select('id')
                 ->where('school_code', '=', $school_id)
                 ->get();
         } else if ($system_id == 3 || $system_id == 4) {
             // 碩博同表，需多加規則
-            $departments_list = $DepartmentDataModel::select('id')
+            $departments_list = $DataModel->select('id')
                 ->where('school_code', '=', $school_id)
                 ->where('system_id', '=', $system_id)
                 ->get();
@@ -954,15 +1019,17 @@ class SystemHistoryDataController extends Controller
 
         // 取得使用者有權限閱覽的系所資料
         $department_quota_columns = $this->department_quota_columns_collection->get($system_id);
+
         $department_history_list = [];
+
         foreach ($departments_list as $dept) {
-            $dept_history_data = $DepartmentHistoryDataModel::select($department_quota_columns)
+            $dept_history_data = $HistoryDataModel->select($department_quota_columns)
                 ->where('id', '=', $dept['id'])
                 ->with('creator.school_editor')
                 ->latest()
                 ->first();
 
-            array_push($department_history_list, $dept_history_data);
+            $department_history_list[] = $dept_history_data;
         }
 
         $data->departments = $department_history_list;
@@ -976,7 +1043,7 @@ class SystemHistoryDataController extends Controller
             if ($system_id == 1) {
                 // 處理二技班名額
                 foreach ($another_departments_list as $dept) {
-                    $dept_history_data = $AnotherDepartmentHistoryDataModel::select()
+                    $dept_history_data = $AnotherHistoryDataModel->select()
                         ->where('id', '=', $dept['id'])
                         ->with('creator.school_editor')
                         ->latest()
@@ -996,7 +1063,7 @@ class SystemHistoryDataController extends Controller
 
                 // 處理學士班名額
                 foreach ($another_departments_list as $dept) {
-                    $dept_history_data = $AnotherDepartmentHistoryDataModel::select()
+                    $dept_history_data = $AnotherHistoryDataModel->select()
                         ->where('id', '=', $dept['id'])
                         ->with('creator.school_editor')
                         ->latest()
@@ -1065,33 +1132,33 @@ class SystemHistoryDataController extends Controller
 
         // 依學制設定資料模型
         if ($system_id == 1) {
-            $DepartmentHistoryDataModel = DepartmentHistoryData::class;
-            $DepartmentDataModel = DepartmentData::class;
+            $HistoryDataModel = $this->DepartmentHistoryDataModel;
+            $DataModel = $this->DepartmentDataModel;
         } else if ($system_id == 2) {
-            $DepartmentHistoryDataModel = TwoYearTechHistoryDepartmentData::class;
-            $DepartmentDataModel = TwoYearTechDepartmentData::class;
-        } else if ($system_id == 3 || $system_id == 4) {
-            $DepartmentHistoryDataModel = GraduateDepartmentHistoryData::class;
-            $DepartmentDataModel = GraduateDepartmentData::class;
+            $HistoryDataModel = $this->TwoYearTechHistoryDepartmentDataModel;
+            $DataModel = $this->TwoYearTechDepartmentDataModel;
+        } else { // $system_id == 3 || $system_id == 4
+            $HistoryDataModel = $this->GraduateDepartmentHistoryDataModel;
+            $DataModel = $this->GraduateDepartmentDataModel;
         }
 
         // 取得系所列表
         if ($system_id == 3 || $system_id == 4) {
             // 碩博同表，需多加規則
-            $departments_list = $DepartmentDataModel::select('id')
+            $departments_list = $DataModel->select('id')
                 ->where('school_code', '=', $school_id)
                 ->where('system_id', '=', $system_id)
                 ->get();
         } else {
             // 學士二技各自有表
-            $departments_list = $DepartmentDataModel::select('id')
+            $departments_list = $DataModel->select('id')
                 ->where('school_code', '=', $school_id)
                 ->get();
         }
         // 取得使用者有權限閱覽的系所資料
         $department_history_list = [];
         foreach ($departments_list as $dept) {
-            $dept_history_data = $DepartmentHistoryDataModel::select($this->department_info_columns)
+            $dept_history_data = $HistoryDataModel->select($this->department_info_columns)
                 ->where('id', '=', $dept['id'])
                 ->with('creator.school_editor')
                 ->latest()
