@@ -24,7 +24,7 @@ use Carbon\Carbon;
 use Auth;
 use Excel;
 
-class MoveDataWithPDFChecksum extends Command
+class UpdateDataWithPDFChecksum extends Command
 {
     /** @var GuidelinesReplyFormRecord */
     private $GuidelinesReplyFormRecordModel;
@@ -80,7 +80,7 @@ class MoveDataWithPDFChecksum extends Command
      *
      * @var string
      */
-    protected $description = '用 PDF Checksum 紀錄更新資料';
+    protected $description = '用 PDF Checksum 紀錄更新資料 ( ◓ Д ◒ ) ✄ ╰⋃ ╯ ';
 
     /**
      * Create a new command instance.
