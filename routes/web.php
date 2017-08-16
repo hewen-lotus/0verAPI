@@ -55,4 +55,9 @@ Route::post('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
 
+// 名額查詢
+Route::resource('/quota-inquire', 'QuotaInquireController', ['only' => [
+    'index'
+]]);
+
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
