@@ -27,6 +27,7 @@ class Kernel extends ConsoleKernel
         Commands\EngMasterGuidelinesReplyFormGenerator::class,
         Commands\EngPhDGuidelinesReplyFormGenerator::class,
         Commands\UpdateDataWithPDFChecksum::class,
+        Commands\UpdateAdmissionPlacementStepQuota::class,
     ];
 
     /**

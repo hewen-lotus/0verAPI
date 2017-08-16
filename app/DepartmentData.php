@@ -123,6 +123,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentData withoutTrashed()
  * @property string $group_code 系所類組（1|2|3）
  * @method static \Illuminate\Database\Eloquent\Builder|\App\DepartmentData whereGroupCode($value)
+ * @property-read \App\AdmissionPlacementStepQuota $admission_placement_step_quota
  */
 class DepartmentData extends Model
 {
@@ -238,5 +239,10 @@ class DepartmentData extends Model
     public function application_doc()
     {
         return $this->hasMany('App\DepartmentApplicationDocument', 'dept_id', 'id');
+    }
+
+    public function admission_placement_step_quota()
+    {
+        return $this->hasOne('App\AdmissionPlacementStepQuota', 'dept_id', 'id');
     }
 }

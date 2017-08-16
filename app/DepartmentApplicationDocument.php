@@ -35,6 +35,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withTrashed()
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withoutTrashed()
  * @property-read \App\ApplicationDocumentType $type
+ * @property-read \App\DepartmentData $department
  */
 class DepartmentApplicationDocument extends Model
 {
@@ -65,5 +66,10 @@ class DepartmentApplicationDocument extends Model
     public function type()
     {
         return $this->belongsTo('App\ApplicationDocumentType', 'type_id', 'id');
+    }
+
+    public function department()
+    {
+        return $this->belongsTo('App\DepartmentData', 'dept_id', 'id');
     }
 }
