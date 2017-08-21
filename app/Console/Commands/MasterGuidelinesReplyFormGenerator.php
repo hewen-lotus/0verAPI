@@ -168,12 +168,14 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
                     $total_self_enrollment_quota += $dept_QQ->self_enrollment_quota;
 
+                    // 要顯示在 PDF 的系所清單
                     $depts[] = $dept_QQ;
 
                     $total_dept++;
-
-                    $used_dept_history_id[] = ['id' => $dept_QQ->id, 'history_id' => $dept_QQ->history_id];
                 }
+
+                // 所有的系所 history 資料
+                $used_dept_history_id[] = ['id' => $dept_QQ->id, 'history_id' => $dept_QQ->history_id];
             }
 
             $system = $data->systems()->where('type_id', '=', 3)->latest()->first();
