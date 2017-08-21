@@ -29,6 +29,16 @@ Route::resource('/schools.histories', 'SchoolHistoryDataController', ['only' => 
     'store', 'show'
 ]]);
 
+Route::prefix('eng')->group(function () {
+    Route::resource('/schools.histories', 'ENGSchoolHistoryDataController', ['only' => [
+        'store'
+    ]]);
+
+    Route::resource('/schools.systems.departments.histories', 'ENGDepartmentHistoryDataController', ['only' => [
+        'store'
+    ]]);
+});
+
 Route::resource('/schools.systems.histories', 'SystemHistoryDataController', ['only' => [
     'store', 'show'
 ]]);

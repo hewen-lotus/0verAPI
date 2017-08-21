@@ -84,7 +84,7 @@ class SchoolHistoryDataController extends Controller
         if ($user->can('create', [SchoolHistoryData::class, $school_id])) {
             $history_data = $this->get_data($school_id);
 
-            // 設定資料驗證欄位
+            // 驗證輸入資料
             $validator = Validator::make($request->all(), [
                 'address' => 'required|string|max:191', //學校地址
                 'eng_address' => 'present|string|max:191', //學校英文地址
@@ -108,7 +108,7 @@ class SchoolHistoryDataController extends Controller
                 'approval_no_of_self_enrollment' => 'required_if:has_self_enrollment,1|string', //[自招]核定文號
             ]);
             
-            // 驗證輸入資料
+            // 驗證沒過
             if ($validator->fails()) {
                 $messages = $validator->errors()->all();
                 return response()->json(compact('messages'), 400);
