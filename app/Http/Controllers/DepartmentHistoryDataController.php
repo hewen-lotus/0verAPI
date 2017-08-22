@@ -204,7 +204,7 @@ class DepartmentHistoryDataController extends Controller
             'birth_limit_before' => 'sometimes|nullable|date_format:"Y-m-d"', //限...之前出生 年月日 `1991-02-23`
             'main_group' => 'required|exists:department_groups,id', //主要隸屬學群 id
             'sub_group' => 'present|exists:department_groups,id', //次要隸屬學群 id
-            'group_code' => 'required|in:1,2,3', //次要隸屬學群 id
+            'group_code' => 'required|in:1,2,3', //類組
             'evaluation' => 'required|exists:evaluation_levels,id', //系所評鑑等級 id
             'admission_selection_quota' => 'required|integer|min:0', //個人申請名額
             'application_docs' => 'required_unless:admission_selection_quota,0|array|not_modifiable_doc_in_array:'.$system_id.','.$department_id.',history', //審查項目
@@ -364,11 +364,19 @@ class DepartmentHistoryDataController extends Controller
                 'eng_review_fee_detail' => $department_history_data->eng_review_fee_detail,
             ];
         } else {
-            $insert_data += [
-                'has_review_fee' => $request->input('has_review_fee'),
-                'review_fee_detail' => $request->input('review_fee_detail') == '' ? NULL : $request->input('review_fee_detail'),
-                'eng_review_fee_detail' => $request->input('eng_review_fee_detail') == '' ? NULL : $request->input('eng_review_fee_detail'),
-            ];
+            if ((bool)$request->input('has_review_fee')) {
+                $insert_data += [
+                    'has_review_fee' => $request->input('has_review_fee'),
+                    'review_fee_detail' => $request->input('review_fee_detail') == '' ? NULL : $request->input('review_fee_detail'),
+                    'eng_review_fee_detail' => $request->input('eng_review_fee_detail') == '' ? NULL : $request->input('eng_review_fee_detail'),
+                ];
+            } else {
+                $insert_data += [
+                    'has_review_fee' => $request->input('has_review_fee'),
+                    'review_fee_detail' => NULL,
+                    'eng_review_fee_detail' => NULL,
+                ];
+            }
         }
 
         // 各學制特別資料整理
