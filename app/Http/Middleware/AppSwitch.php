@@ -20,15 +20,21 @@ class AppSwitch
      */
     protected $app;
 
+    /** @var AppSwitchData */
+    private $AppSwitchDataModel;
+
     /**
      * Create a new middleware instance.
      *
      * @param  \Illuminate\Contracts\Foundation\Application  $app
+     * @param AppSwitchData $AppSwitchDataModel
      * @return void
      */
-    public function __construct(Application $app)
+    public function __construct(Application $app, AppSwitchData $AppSwitchDataModel)
     {
         $this->app = $app;
+
+        $this->AppSwitchDataModel = $AppSwitchDataModel;
     }
 
     /**
@@ -45,11 +51,9 @@ class AppSwitch
         Log::info($method);
 
         if ( $this->app->environment() != 'local' ) {
-            $app_switch_data = new AppSwitchData();
-
             $db_now = DB::raw('NOW()');
 
-            if ( !$app_switch_data->where([
+            if ( !$this->AppSwitchDataModel->where([
                 ['function', '=', $method],
                 ['start_at', '>=', $db_now],
                 ['end_at', '<=', $db_now]
