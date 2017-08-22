@@ -51,10 +51,8 @@ class AppSwitch
         Log::info($method);
 
         if ( $this->app->environment() != 'local' ) {
-            $db_now = DB::raw('NOW()');
-
             if ( !$this->AppSwitchDataModel->where('function', '=', $method)
-                ->whereRaw('start_at >= now() and end_at <= now()')
+                ->whereRaw('start_at <= now() and end_at >= now()')
                 ->exists() ) {
                 return response()->json([
                     'messages' => ['本功能暫時無法使用']
