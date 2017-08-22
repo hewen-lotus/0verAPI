@@ -4,6 +4,8 @@ namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
 
+use App\AppSwitchData;
+
 use App;
 use Route;
 
@@ -23,14 +25,21 @@ class ListSwitchedRoute extends Command
      */
     protected $description = '列出可以控制開關的 Controller';
 
+    /** @var AppSwitchData */
+    private $AppSwitchDataModel;
+
     /**
      * Create a new command instance.
      *
+     * @param AppSwitchData $AppSwitchDataModel
+     *
      * @return void
      */
-    public function __construct()
+    public function __construct(AppSwitchData $AppSwitchDataModel)
     {
         parent::__construct();
+
+        $this->AppSwitchDataModel = $AppSwitchDataModel;
     }
 
     /**
@@ -56,14 +65,22 @@ class ListSwitchedRoute extends Command
 
                 foreach ($middlewares as $middleware) {
                     if ($middleware['middleware'] == 'switch') {
-                        $controllers[] = $action['controller'];
+                        if ( $this->AppSwitchDataModel->where('function', '=', $action['controller'])->exists() ) {
+                            $switch_data = $this->AppSwitchDataModel->where('function', '=', $action['controller'])->first();
 
-                        $this->info($action['controller']);
+                            $controllers[] = [$action['controller'], $switch_data->start_at, $switch_data->end_at];
+                        } else {
+                            $controllers[] = [$action['controller'], '', ''];
+                        }
 
                         break;
                     }
                 }
             }
         }
+
+        $headers = ['Function', 'Start_at', 'End_at'];
+
+        $this->table($headers, $controllers);
     }
 }
