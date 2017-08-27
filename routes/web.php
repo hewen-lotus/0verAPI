@@ -29,16 +29,6 @@ Route::resource('/schools.histories', 'SchoolHistoryDataController', ['only' => 
     'store', 'show'
 ]]);
 
-Route::prefix('eng')->group(function () {
-    Route::resource('/schools.histories', 'ENGSchoolHistoryDataController', ['only' => [
-        'store'
-    ]]);
-
-    Route::resource('/schools.systems.departments.histories', 'ENGDepartmentHistoryDataController', ['only' => [
-        'store'
-    ]]);
-});
-
 Route::resource('/schools.systems.histories', 'SystemHistoryDataController', ['only' => [
     'store', 'show'
 ]]);
@@ -46,6 +36,20 @@ Route::resource('/schools.systems.histories', 'SystemHistoryDataController', ['o
 Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryDataController', ['only' => [
     'store', 'show'
 ]]);
+
+Route::prefix('eng')->group(function () {
+    Route::resource('/schools.histories', 'ENGSchoolHistoryDataController', ['only' => [
+        'store'
+    ]]);
+
+    Route::resource('/schools.systems.histories', 'ENGSystemHistoryDataController', ['only' => [
+        'store'
+    ]]);
+
+    Route::resource('/schools.systems.departments.histories', 'ENGDepartmentHistoryDataController', ['only' => [
+        'store'
+    ]]);
+});
 
 Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController', ['only' => [
     'index', 'store', 'show', 'update', 'destroy'
