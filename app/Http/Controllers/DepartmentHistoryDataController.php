@@ -419,74 +419,77 @@ class DepartmentHistoryDataController extends Controller
             ];
         }
 
-        // 寫入資料
-        $new_department_data = $DepartmentHistoryDataModel::create($insert_data);
+        $new_department_data = DB::transaction(function () use ($DepartmentHistoryDataModel, $insert_data, $system_id, $request, $department_history_data, $department_id, $user) {
+            // 寫入資料
+            $new_department_data = $DepartmentHistoryDataModel::create($insert_data);
 
-        // 依學制設定審查項目資料模型
-        if ($system_id == 1) {
-            $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
-        } else if ($system_id == 2) {
-            $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
-        } else if ($system_id == 3) {
-            $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
-        } else { // $system_id == 4
-            $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
-        }
-
-        // 個人申請人數為 0，則審查項目資料照舊版本；否則照輸入資料
-        if ($request->input('admission_selection_quota') > 0) {
-            $application_docs = $request->input('application_docs');
-        } else {
-            $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
-        }
-
-        $recommendation_doc_id = $this->ApplicationDocumentTypeModel->where('name', 'like', '%推薦函%')
-            ->where('system_id', '=', $system_id)->value('id');
-
-        foreach ($application_docs as &$docs) {
-            $docs_insert_data = [
-                'history_id' => $new_department_data->history_id,
-                'dept_id' => $department_id,
-                'type_id' => $docs['type_id'],
-                'description' => $docs['description'],
-                'eng_description' => $docs['eng_description'],
-                'required' => $docs['required'],
-            ];
-
-            // 是否可編輯沿用上一筆資料，如果是新的就拿帶入的參數
-            $modifiable_status = $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
-                ->where('type_id', '=', $docs['type_id'])->latest()->first();
-
-            if (isset($modifiable_status->modifiable)) {
-                $docs_insert_data += [
-                    'modifiable' => $modifiable_status->modifiable,
-                ];
-            } else {
-                $docs_insert_data += [
-                    'modifiable' => $docs['modifiable'],
-                ];
+            // 依學制設定審查項目資料模型
+            if ($system_id == 1) {
+                $DepartmentHistoryApplicationDocumentModel = DepartmentHistoryApplicationDocument::class;
+            } else if ($system_id == 2) {
+                $DepartmentHistoryApplicationDocumentModel = TwoYearTechDepartmentHistoryApplicationDocument::class;
+            } else if ($system_id == 3) {
+                $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
+            } else { // $system_id == 4
+                $DepartmentHistoryApplicationDocumentModel = GraduateDepartmentHistoryApplicationDocument::class;
             }
 
-            $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
+            // 個人申請人數為 0，則審查項目資料照舊版本；否則照輸入資料
+            if ($request->input('admission_selection_quota') > 0) {
+                $application_docs = $request->input('application_docs');
+            } else {
+                $application_docs = $DepartmentHistoryApplicationDocumentModel::where('history_id', '=', $department_history_data->history_id)->get();
+            }
 
-            // 清除全部的紙本推薦函地址資料
-            $this->PaperApplicationDocumentHistoryAddressModel->where('dept_id', '=', $department_id)
-                ->where('type_id', '=', $docs['type_id'])->delete();
+            $recommendation_doc_id = $this->ApplicationDocumentTypeModel->where('name', 'like', '%推薦函%')
+                ->where('system_id', '=', $system_id)->value('id');
 
-            // 如果要紙本推薦函再新增一筆新的
-            if ($docs['type_id'] == $recommendation_doc_id && $docs['need_paper'] == true) {
-                $this->PaperApplicationDocumentHistoryAddressModel->create([
+            // 軟刪除系所全部的紙本推薦函地址資料
+            $this->PaperApplicationDocumentHistoryAddressModel->where('dept_id', '=', $department_id)->delete();
+
+            foreach ($application_docs as &$docs) {
+                $docs_insert_data = [
+                    'history_id' => $new_department_data->history_id,
                     'dept_id' => $department_id,
                     'type_id' => $docs['type_id'],
-                    'address' => $docs['recieve_address'],
-                    'recipient' => $docs['recipient'] ,
-                    'phone' => $docs['recipient_phone'],
-                    'email' => $docs['recieve_email'],
-                    'deadline' => $docs['recieve_deadline'],
-                    'created_by' => $user->username
-                ]);
+                    'description' => $docs['description'],
+                    'eng_description' => $docs['eng_description'],
+                    'required' => $docs['required'],
+                ];
+
+                // 是否可編輯沿用上一筆資料，如果是新的就拿帶入的參數
+                $modifiable_status = $DepartmentHistoryApplicationDocumentModel::where('dept_id', '=', $department_id)
+                    ->where('type_id', '=', $docs['type_id'])->latest()->first();
+
+                if (isset($modifiable_status->modifiable)) {
+                    $docs_insert_data += [
+                        'modifiable' => $modifiable_status->modifiable,
+                    ];
+                } else {
+                    $docs_insert_data += [
+                        'modifiable' => $docs['modifiable'],
+                    ];
+                }
+
+                $DepartmentHistoryApplicationDocumentModel::create($docs_insert_data);
+
+                // 如果要紙本推薦函再新增一筆新的
+                if ($docs['type_id'] == $recommendation_doc_id && $docs['need_paper'] == true) {
+                    $this->PaperApplicationDocumentHistoryAddressModel->create([
+                        'dept_id' => $department_id,
+                        'type_id' => $docs['type_id'],
+                        'address' => $docs['recieve_address'],
+                        'recipient' => $docs['recipient'] ,
+                        'phone' => $docs['recipient_phone'],
+                        'email' => $docs['recieve_email'],
+                        'deadline' => $docs['recieve_deadline'],
+                        'created_by' => $user->username
+                    ]);
+                }
             }
-        }
+
+            return $new_department_data;
+        });
 
         // 依照要求拿取系所資料
         $new_data = $this->get_data($school_id, $system_id, $department_id, $new_department_data->history_id);
