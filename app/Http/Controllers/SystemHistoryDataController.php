@@ -291,7 +291,7 @@ class SystemHistoryDataController extends Controller
         // mapping 學制 id（預設為 0）
         $system_id = $this->system_id_collection->get($system_id, 0);
 
-        // 分辨要求為名額或資料
+        // 分辨要求為名額 (quota) 或資料 (info)
         $data_type = $request->query('data_type');
 
         // 確認使用者權限
