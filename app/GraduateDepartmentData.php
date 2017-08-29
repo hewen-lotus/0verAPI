@@ -209,4 +209,19 @@ class GraduateDepartmentData extends Model
     {
         return $this->hasMany('App\GraduateDepartmentApplicationDocument', 'dept_id', 'id');
     }
+
+    public function evaluation_level()
+    {
+        return $this->belongsTo('App\EvaluationLevel', 'evaluation', 'id');
+    }
+
+    public function main_group_data()
+    {
+        return $this->belongsTo('App\DepartmentGroup', 'main_group', 'id');
+    }
+
+    public function sub_group_data()
+    {
+        return $this->belongsTo('App\DepartmentGroup', 'sub_group', 'id');
+    }
 }

@@ -22,7 +22,15 @@ Route::post('/users/login', 'Auth\LoginController@UserLogin');
 Route::post('/users/logout', 'Auth\LoginController@UserLogout');
 
 Route::resource('/schools', 'SchoolDataController', ['only' => [
-    'index', 'show'
+    'index'
+]]);
+
+//Route::resource('/schools.systems', 'SystemDataController', ['only' => [
+//    'index'
+//]]);
+
+Route::resource('/schools.systems.departments', 'DepartmentDataController', ['only' => [
+    'index'
 ]]);
 
 Route::resource('/schools.editors', 'SchoolEditorController', ['only' => [
