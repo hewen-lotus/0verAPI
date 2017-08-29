@@ -21,6 +21,10 @@ Route::post('/users/login', 'Auth\LoginController@UserLogin');
 
 Route::post('/users/logout', 'Auth\LoginController@UserLogout');
 
+Route::resource('/schools', 'SchoolDataController', ['only' => [
+    'index', 'show'
+]]);
+
 Route::resource('/schools.editors', 'SchoolEditorController', ['only' => [
     'index', 'store', 'show', 'update'
 ]]);
@@ -68,10 +72,5 @@ Route::post('/schools/{school_code}/systems/{system_id}/guidelines-reply-form', 
 
 // 突然跑出來的第一階段，又沒了
 //Route::resource('/schools.quotas', 'SystemQuotaController');
-
-// 名額查詢
-Route::resource('/quota-inquire', 'QuotaInquireController', ['only' => [
-    'index'
-]]);
 
 Route::get('/limesurvey-filemtime', 'LimesurveyFilemtimeController@export');
