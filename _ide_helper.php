@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.28 on 2017-08-15.
+ * Generated for Laravel 5.4.36 on 2017-08-31.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -416,7 +416,7 @@ namespace Illuminate\Support\Facades {
          * Register a deferred provider and service.
          *
          * @param string $provider
-         * @param string $service
+         * @param string|null $service
          * @return void 
          * @static 
          */ 
@@ -3594,7 +3594,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the PDO connection.
          *
-         * @param \PDO|null $pdo
+         * @param \PDO|\Closure|null $pdo
          * @return $this 
          * @static 
          */ 
@@ -3607,7 +3607,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the PDO connection used for reading.
          *
-         * @param \PDO|null $pdo
+         * @param \PDO|\Closure|null $pdo
          * @return $this 
          * @static 
          */ 
@@ -6013,7 +6013,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function size($queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::size($queue);
+            return \Illuminate\Queue\DatabaseQueue::size($queue);
         }
         
         /**
@@ -6023,12 +6023,11 @@ namespace Illuminate\Support\Facades {
          * @param mixed $data
          * @param string $queue
          * @return mixed 
-         * @throws \Exception|\Throwable
          * @static 
          */ 
         public static function push($job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::push($job, $data, $queue);
+            return \Illuminate\Queue\DatabaseQueue::push($job, $data, $queue);
         }
         
         /**
@@ -6042,7 +6041,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function pushRaw($payload, $queue = null, $options = array())
         {
-            return \Illuminate\Queue\SyncQueue::pushRaw($payload, $queue, $options);
+            return \Illuminate\Queue\DatabaseQueue::pushRaw($payload, $queue, $options);
         }
         
         /**
@@ -6052,12 +6051,40 @@ namespace Illuminate\Support\Facades {
          * @param string $job
          * @param mixed $data
          * @param string $queue
-         * @return mixed 
+         * @return void 
          * @static 
          */ 
         public static function later($delay, $job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::later($delay, $job, $data, $queue);
+            \Illuminate\Queue\DatabaseQueue::later($delay, $job, $data, $queue);
+        }
+        
+        /**
+         * Push an array of jobs onto the queue.
+         *
+         * @param array $jobs
+         * @param mixed $data
+         * @param string $queue
+         * @return mixed 
+         * @static 
+         */ 
+        public static function bulk($jobs, $data = '', $queue = null)
+        {
+            return \Illuminate\Queue\DatabaseQueue::bulk($jobs, $data, $queue);
+        }
+        
+        /**
+         * Release a reserved job back onto the queue.
+         *
+         * @param string $queue
+         * @param \Illuminate\Queue\Jobs\DatabaseJobRecord $job
+         * @param int $delay
+         * @return mixed 
+         * @static 
+         */ 
+        public static function release($queue, $job, $delay)
+        {
+            return \Illuminate\Queue\DatabaseQueue::release($queue, $job, $delay);
         }
         
         /**
@@ -6069,7 +6096,31 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function pop($queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::pop($queue);
+            return \Illuminate\Queue\DatabaseQueue::pop($queue);
+        }
+        
+        /**
+         * Delete a reserved job from the queue.
+         *
+         * @param string $queue
+         * @param string $id
+         * @return void 
+         * @static 
+         */ 
+        public static function deleteReserved($queue, $id)
+        {
+            \Illuminate\Queue\DatabaseQueue::deleteReserved($queue, $id);
+        }
+        
+        /**
+         * Get the underlying database instance.
+         *
+         * @return \Illuminate\Database\Connection 
+         * @static 
+         */ 
+        public static function getDatabase()
+        {
+            return \Illuminate\Queue\DatabaseQueue::getDatabase();
         }
         
         /**
@@ -6084,7 +6135,7 @@ namespace Illuminate\Support\Facades {
         public static function pushOn($queue, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::pushOn($queue, $job, $data);
+            return \Illuminate\Queue\DatabaseQueue::pushOn($queue, $job, $data);
         }
         
         /**
@@ -6100,22 +6151,7 @@ namespace Illuminate\Support\Facades {
         public static function laterOn($queue, $delay, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::laterOn($queue, $delay, $job, $data);
-        }
-        
-        /**
-         * Push an array of jobs onto the queue.
-         *
-         * @param array $jobs
-         * @param mixed $data
-         * @param string $queue
-         * @return mixed 
-         * @static 
-         */ 
-        public static function bulk($jobs, $data = '', $queue = null)
-        {
-            //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::bulk($jobs, $data, $queue);
+            return \Illuminate\Queue\DatabaseQueue::laterOn($queue, $delay, $job, $data);
         }
         
         /**
@@ -6127,7 +6163,7 @@ namespace Illuminate\Support\Facades {
         public static function getConnectionName()
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::getConnectionName();
+            return \Illuminate\Queue\DatabaseQueue::getConnectionName();
         }
         
         /**
@@ -6140,7 +6176,7 @@ namespace Illuminate\Support\Facades {
         public static function setConnectionName($name)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::setConnectionName($name);
+            return \Illuminate\Queue\DatabaseQueue::setConnectionName($name);
         }
         
         /**
@@ -6153,7 +6189,7 @@ namespace Illuminate\Support\Facades {
         public static function setContainer($container)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            \Illuminate\Queue\SyncQueue::setContainer($container);
+            \Illuminate\Queue\DatabaseQueue::setContainer($container);
         }
          
     }
@@ -6550,7 +6586,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Returns the client IP address.
+         * Get the client IP address.
          *
          * @return string 
          * @static 
@@ -6561,7 +6597,7 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Returns the client IP addresses.
+         * Get the client IP addresses.
          *
          * @return array 
          * @static 
@@ -6569,6 +6605,17 @@ namespace Illuminate\Support\Facades {
         public static function ips()
         {
             return \Illuminate\Http\Request::ips();
+        }
+        
+        /**
+         * Get the client user agent.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function userAgent()
+        {
+            return \Illuminate\Http\Request::userAgent();
         }
         
         /**
@@ -10070,6 +10117,18 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Get the full path for the file at the given "short" path.
+         *
+         * @param string $path
+         * @return string 
+         * @static 
+         */ 
+        public static function path($path)
+        {
+            return \Illuminate\Filesystem\FilesystemAdapter::path($path);
+        }
+        
+        /**
          * Get the contents of a file.
          *
          * @param string $path
@@ -10262,6 +10321,20 @@ namespace Illuminate\Support\Facades {
         public static function url($path)
         {
             return \Illuminate\Filesystem\FilesystemAdapter::url($path);
+        }
+        
+        /**
+         * Get a temporary URL for the file at the given path.
+         *
+         * @param string $path
+         * @param \DateTimeInterface $expiration
+         * @param array $options
+         * @return string 
+         * @static 
+         */ 
+        public static function temporaryUrl($path, $expiration, $options = array())
+        {
+            return \Illuminate\Filesystem\FilesystemAdapter::temporaryUrl($path, $expiration, $options);
         }
         
         /**
@@ -11838,7 +11911,7 @@ namespace  {
             /**
              * Add an "or where" clause to the query.
              *
-             * @param string|\Closure $column
+             * @param string|array|\Closure $column
              * @param string $operator
              * @param mixed $value
              * @return \Illuminate\Database\Eloquent\Builder|static 
@@ -12315,7 +12388,7 @@ namespace  {
              * Execute the query and get the first result.
              *
              * @param array $columns
-             * @return mixed 
+             * @return \Illuminate\Database\Eloquent\Model|static|null 
              * @static 
              */ 
             public static function first($columns = array())
@@ -12335,6 +12408,18 @@ namespace  {
             public static function when($value, $callback, $default = null)
             {    
                 return \Illuminate\Database\Eloquent\Builder::when($value, $callback, $default);
+            }
+         
+            /**
+             * Pass the query to a given callback.
+             *
+             * @param \Closure $callback
+             * @return \Illuminate\Database\Query\Builder 
+             * @static 
+             */ 
+            public static function tap($callback)
+            {    
+                return \Illuminate\Database\Eloquent\Builder::tap($callback);
             }
          
             /**
@@ -12396,6 +12481,18 @@ namespace  {
             }
          
             /**
+             * Add a relationship count / exists condition to the query with an "or".
+             *
+             * @param string $relation
+             * @return \Illuminate\Database\Eloquent\Builder|static 
+             * @static 
+             */ 
+            public static function orDoesntHave($relation)
+            {    
+                return \Illuminate\Database\Eloquent\Builder::orDoesntHave($relation);
+            }
+         
+            /**
              * Add a relationship count / exists condition to the query with where clauses.
              *
              * @param string $relation
@@ -12436,6 +12533,19 @@ namespace  {
             public static function whereDoesntHave($relation, $callback = null)
             {    
                 return \Illuminate\Database\Eloquent\Builder::whereDoesntHave($relation, $callback);
+            }
+         
+            /**
+             * Add a relationship count / exists condition to the query with where clauses and an "or".
+             *
+             * @param string $relation
+             * @param \Closure $callback
+             * @return \Illuminate\Database\Eloquent\Builder|static 
+             * @static 
+             */ 
+            public static function orWhereDoesntHave($relation, $callback = null)
+            {    
+                return \Illuminate\Database\Eloquent\Builder::orWhereDoesntHave($relation, $callback);
             }
          
             /**
@@ -12645,18 +12755,6 @@ namespace  {
             }
          
             /**
-             * Pass the query to a given callback.
-             *
-             * @param \Closure $callback
-             * @return \Illuminate\Database\Query\Builder 
-             * @static 
-             */ 
-            public static function tap($callback)
-            {    
-                return \Illuminate\Database\Query\Builder::tap($callback);
-            }
-         
-            /**
              * Merge an array of where clauses and bindings.
              *
              * @param array $wheres
@@ -12716,7 +12814,7 @@ namespace  {
              * Add a raw or where clause to the query.
              *
              * @param string $sql
-             * @param array $bindings
+             * @param mixed $bindings
              * @return \Illuminate\Database\Query\Builder|static 
              * @static 
              */ 
@@ -14713,6 +14811,20 @@ if (! function_exists('str_slug')) {
     function str_slug($title, $separator = '-')
     {
         return Str::slug($title, $separator);
+    }
+}
+
+if (! function_exists('str_start')) {
+    /**
+     * Begin a string with a single instance of a given value.
+     *
+     * @param  string  $value
+     * @param  string  $prefix
+     * @return string
+     */
+    function str_start($value, $prefix)
+    {
+        return Str::start($value, $prefix);
     }
 }
 
