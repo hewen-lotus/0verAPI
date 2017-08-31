@@ -181,6 +181,7 @@ class DepartmentHistoryDataController extends Controller
             'has_RiJian' => json_decode($request->input('has_RiJian'), true),
             'has_self_enrollment' => json_decode($request->input('has_self_enrollment'), true),
             'has_special_class' => json_decode($request->input('has_special_class'), true),
+            'use_eng_data' => json_decode($request->input('use_eng_data'), true),
         ]);
 
         // 設定資料驗證欄位
@@ -216,9 +217,10 @@ class DepartmentHistoryDataController extends Controller
                     $query->where('system_id', $system_id);
                 })
             ],
-            'application_docs.*.description' => 'required|string', //審查項目敘述
+            'application_docs.*.description' => 'present|string', //審查項目敘述
             'application_docs.*.eng_description' => 'present|string', //審查項目英文敘述
             'application_docs.*.required' => 'required|boolean', //審查項目是否為必交
+            'use_eng_data' => 'required|boolean', //本年度是否提供英文資料
         ];
 
         // 設定各學制特有欄位
@@ -354,6 +356,7 @@ class DepartmentHistoryDataController extends Controller
             'group_code' => $request->input('group_code'),
             'evaluation' => $request->input('evaluation'),
             'admission_selection_quota' => $request->input('admission_selection_quota'),
+            'use_eng_data' => $request->input('use_eng_data'),
         ];
 
         // 個人申請人數為 0，則審查費用資料照舊版本；否則照輸入資料

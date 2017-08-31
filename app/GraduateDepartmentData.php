@@ -133,7 +133,8 @@ class GraduateDepartmentData extends Model
         'has_birth_limit' => 'boolean',
         'has_eng_taught' => 'boolean',
         'has_disabilities' => 'boolean',
-        'has_BuHweiHwaWen' => 'boolean'
+        'has_BuHweiHwaWen' => 'boolean',
+        'use_eng_data' => 'boolean'
     ];
 
     protected $fillable = [
@@ -177,6 +178,7 @@ class GraduateDepartmentData extends Model
         'has_disabilities', //是否招收身障學生
         'has_BuHweiHwaWen', //是否招收不具華文基礎學生
         'evaluation', //系所評鑑等級
+        'use_eng_data', //本年度是否提供英文資料
     ];
 
 

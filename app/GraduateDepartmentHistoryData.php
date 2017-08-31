@@ -142,7 +142,8 @@ class GraduateDepartmentHistoryData extends Model
         'has_eng_taught' => 'boolean',
         'has_disabilities' => 'boolean',
         'has_BuHweiHwaWen' => 'boolean',
-        'has_review_fee' => 'boolean'
+        'has_review_fee' => 'boolean',
+        'use_eng_data' => 'boolean'
     ];
 
     protected $fillable = [
@@ -185,6 +186,7 @@ class GraduateDepartmentHistoryData extends Model
         'created_by', //按下送出的人是誰
         'ip_address', //按下送出的人的IP
         'created_at', //此版本建立時間
+        'use_eng_data', //本年度是否提供英文資料
     ];
 
 
