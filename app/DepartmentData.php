@@ -124,6 +124,8 @@ use Carbon\Carbon;
  * @property string $group_code 系所類組（1|2|3）
  * @method static \Illuminate\Database\Eloquent\Builder|\App\DepartmentData whereGroupCode($value)
  * @property-read \App\AdmissionPlacementStepQuota $admission_placement_step_quota
+ * @property bool $use_eng_data 本年度是否提供英文資料
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\DepartmentData whereUseEngData($value)
  */
 class DepartmentData extends Model
 {

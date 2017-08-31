@@ -112,6 +112,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\GraduateDepartmentData withoutTrashed()
  * @property string $group_code 系所類組（1|2|3）
  * @method static \Illuminate\Database\Eloquent\Builder|\App\GraduateDepartmentData whereGroupCode($value)
+ * @property bool $use_eng_data 本年度是否提供英文資料
+ * @property-read \App\EvaluationLevel $evaluation_level
+ * @property-read \App\DepartmentGroup $main_group_data
+ * @property-read \App\DepartmentGroup|null $sub_group_data
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\GraduateDepartmentData whereUseEngData($value)
  */
 class GraduateDepartmentData extends Model
 {

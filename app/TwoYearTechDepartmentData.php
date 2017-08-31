@@ -115,6 +115,11 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechDepartmentData whereGroupCode($value)
  * @property string|null $approval_no_of_special_class 招收僑生專班核定文號
  * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechDepartmentData whereApprovalNoOfSpecialClass($value)
+ * @property bool $use_eng_data 本年度是否提供英文資料
+ * @property-read \App\EvaluationLevel $evaluation_level
+ * @property-read \App\DepartmentGroup $main_group_data
+ * @property-read \App\DepartmentGroup|null $sub_group_data
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechDepartmentData whereUseEngData($value)
  */
 class TwoYearTechDepartmentData extends Model
 {
