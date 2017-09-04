@@ -90,7 +90,9 @@ class BachelorGuidelinesReplyFormGenerator extends Command
         if ($this->SchoolHistoryDataModel->where('id', '=', $this->argument('school_code'))
             ->whereHas('systems', function ($query) {
                 $query->where('type_id', '=', 1);
-            })->exists() ) {
+            })
+            ->exists()
+        ) {
             $data = $this->SchoolHistoryDataModel->where('id', '=', $this->argument('school_code'))->latest()->first();
 
             $pdf_gen_record = ['system_id' => 1, 'school_history_data' => $data->history_id];
@@ -251,54 +253,111 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
                 $group = '第' . $zh_group_code . '類組';
 
+                $eng_group_data = 'Group ' . $dept->group_code;
+
                 if ($dept->sub_group) {
                     $main_group = $this->DepartmentGroupModel->find($dept->main_group);
 
                     $sub_group = $this->DepartmentGroupModel->find($dept->sub_group);
 
                     $group .= '：' . $main_group->title . '、' . $sub_group->title;
+
+                    $eng_group_data .= ': ' . $main_group->eng_title . '. ' . $sub_group->eng_title . '.';
                 } else {
                     $main_group = $this->DepartmentGroupModel->find($dept->main_group);
 
                     $group .= '：' . $main_group->title;
+
+                    $eng_group_data .= ': ' . $main_group->eng_title . '.';
                 }
 
-                $table .= '<td colspan="2">' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                if ($dept->use_eng_data) {
+                    $table .= '<td colspan="2">';
 
-                $table .= '</tr>';
+                    $table .= $data->title . '&nbsp;' . $dept->title . '（' . $group . '）<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
 
-                if ((bool)$dept->has_review_fee) {
-                    $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
-                } else {
-                    $doc_output = '';
-                }
+                    $table .= $data->eng_title . '&nbsp;' . $dept->eng_title . '<br />' . $eng_group_data;
 
-                if ($dept->admission_selection_quota > 0) {
-                    $docs = $this->DepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
-                        ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
-                            $query->where('dept_id', '=', $dept->id);
-                        }])->get();
+                    $table .= '</td></tr>';
 
-                    $doc_count = 1;
+                    if ((bool)$dept->has_review_fee) {
+                        $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
 
-                    foreach ($docs as $doc) {
-                        if ((bool)$doc->required) {
-                            $is_required = '(必)';
-                        } else {
-                            $is_required = '(選)';
-                        }
+                        $eng_doc_output = '◎ ' . $dept->eng_review_fee_detail . '<br />';
+                    } else {
+                        $doc_output = '';
 
-                        $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
-
-                        if ($doc->paper != NULL) {
-                            $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
-                        }
-
-                        $doc_count++;
+                        $eng_doc_output = '';
                     }
-                }
 
-                $table .= '<tr><td style="width: 40%;">' . $dept->description . '</td><td style="width: 40%;">' . $doc_output . '</td></tr></table>';
+                    if ($dept->admission_selection_quota > 0) {
+                        $docs = $this->DepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
+                            ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
+                                $query->where('dept_id', '=', $dept->id);
+                            }])->get();
+
+                        $doc_count = 1;
+
+                        foreach ($docs as $doc) {
+                            if ((bool)$doc->required) {
+                                $is_required = '(必)';
+                            } else {
+                                $is_required = '(選)';
+                            }
+
+                            $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+
+                            $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $is_required . '：' . $doc->eng_description . '<br />';
+
+                            if ($doc->paper != NULL) {
+                                $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
+
+                                $eng_doc_output .= '本項目請以紙本方式寄出<br />address: ' . $doc->paper->address . '<br />recipient: ' . $doc->paper->recipient . '<br />phone: ' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />deadline: ' . $doc->paper->deadline . '<br />';
+                            }
+
+                            $doc_count++;
+                        }
+                    }
+
+                    $table .= '<tr><td style="width: 40%;">' . $dept->description . '<br />' . $dept->eng_description . '</td><td style="width: 40%;">' . $doc_output . '<br />' . $eng_doc_output . '</td></tr></table>';
+                } else {
+                    $table .= '<td colspan="2">' . '&diams;&diams; 本系今年不提供英文資料 &diams;&diams; <br />' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+
+                    $table .= '</tr>';
+
+                    if ((bool)$dept->has_review_fee) {
+                        $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
+                    } else {
+                        $doc_output = '';
+                    }
+
+                    if ($dept->admission_selection_quota > 0) {
+                        $docs = $this->DepartmentHistoryApplicationDocumentModel->where('dept_id', '=', $dept->id)
+                            ->where('history_id', '=', $dept->history_id)->with(['paper' => function ($query) use ($dept) {
+                                $query->where('dept_id', '=', $dept->id);
+                            }])->get();
+
+                        $doc_count = 1;
+
+                        foreach ($docs as $doc) {
+                            if ((bool)$doc->required) {
+                                $is_required = '(必)';
+                            } else {
+                                $is_required = '(選)';
+                            }
+
+                            $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+
+                            if ($doc->paper != NULL) {
+                                $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
+                            }
+
+                            $doc_count++;
+                        }
+                    }
+
+                    $table .= '<tr><td style="width: 40%;">' . $dept->description . '</td><td style="width: 40%;">' . $doc_output . '</td></tr></table>';
+                }
             }
 
             $now = Carbon::now('Asia/Taipei');

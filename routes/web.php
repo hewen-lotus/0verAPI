@@ -25,9 +25,11 @@ Route::resource('/schools', 'SchoolDataController', ['only' => [
     'index'
 ]]);
 
-//Route::resource('/schools.systems', 'SystemDataController', ['only' => [
-//    'index'
-//]]);
+/*
+Route::resource('/schools.systems', 'SystemDataController', ['only' => [
+    'index'
+]]);
+*/
 
 Route::resource('/schools.systems.departments', 'DepartmentDataController', ['only' => [
     'index'
@@ -49,6 +51,7 @@ Route::resource('/schools.systems.departments.histories', 'DepartmentHistoryData
     'store', 'show'
 ]]);
 
+/*
 Route::prefix('eng')->group(function () {
     Route::resource('/schools.histories', 'ENGSchoolHistoryDataController', ['only' => [
         'store'
@@ -62,6 +65,7 @@ Route::prefix('eng')->group(function () {
         'store'
     ]]);
 });
+*/
 
 Route::resource('/systems.application-document-types', 'ApplicationDocumentTypeController', ['only' => [
     'index', 'store', 'show', 'update', 'destroy'
