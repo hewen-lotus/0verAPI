@@ -287,13 +287,17 @@ class PhDGuidelinesReplyFormGenerator extends Command
                         foreach ($docs as $doc) {
                             if ((bool)$doc->required) {
                                 $is_required = '(必)';
+
+                                $eng_is_required = '(required)';
                             } else {
                                 $is_required = '(選)';
+
+                                $eng_is_required = '(optional)';
                             }
 
                             $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
 
-                            $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $is_required . '：' . $doc->eng_description . '<br />';
+                            $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $eng_is_required . '：' . $doc->eng_description . '<br />';
 
                             if ($doc->paper != NULL) {
                                 $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
@@ -360,7 +364,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 $mpdf->SetHTMLFooter('
                     <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
                     <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
-                    <td style="width: 33%; border: none;">※單位主管簽章</td>
+                    <!--<td style="width: 33%; border: none;">※單位主管簽章</td>-->
                     <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . $file_check_code . '</span></td>
                     </tr></table>
                 ');
