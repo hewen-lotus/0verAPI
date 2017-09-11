@@ -300,13 +300,13 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                                 $eng_is_required = '(optional)';
                             }
 
-                            if ($doc->description == '') {
+                            if (trim($doc->description) == '' || $doc->description == NULL) {
                                 $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '<br />';
                             } else {
                                 $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
                             }
 
-                            if ($doc->eng_description == '') {
+                            if (trim($doc->eng_description) == '' || $doc->eng_description == NULL) {
                                 $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $eng_is_required . '<br />';
                             } else {
                                 $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $eng_is_required . '：' . $doc->eng_description . '<br />';
