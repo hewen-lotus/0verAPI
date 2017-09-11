@@ -309,9 +309,17 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                                 $eng_is_required = '(optional)';
                             }
 
-                            $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+                            if ($doc->description == '') {
+                                $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '<br />';
+                            } else {
+                                $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+                            }
 
-                            $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $eng_is_required . '：' . $doc->eng_description . '<br />';
+                            if ($doc->eng_description == '') {
+                                $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $eng_is_required . '<br />';
+                            } else {
+                                $eng_doc_output .= $doc_count . '. ' . $doc->type->eng_name . $eng_is_required . '：' . $doc->eng_description . '<br />';
+                            }
 
                             if ($doc->paper != NULL) {
                                 $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
@@ -350,7 +358,11 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                                 $is_required = '(選)';
                             }
 
-                            $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+                            if ($doc->description == '') {
+                                $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '<br />';
+                            } else {
+                                $doc_output .= $doc_count . '. ' . $doc->type->name . $is_required . '：' . $doc->description . '<br />';
+                            }
 
                             if ($doc->paper != NULL) {
                                 $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
