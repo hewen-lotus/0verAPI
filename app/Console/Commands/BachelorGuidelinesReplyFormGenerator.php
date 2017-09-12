@@ -206,7 +206,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             $table .= '<tr><th>總計</th><td colspan="4">' . $total_dept . ' 系組 / (聯合分發：' . $total_admission_placement_quota . ' 人，個人申請：' . $total_admission_selection_quota . ' 人，自招；' . (int)$system->ratify_quota_for_self_enrollment . ' 人)<br />上學年度新生總量 10%：' . (int)$system->last_year_admission_amount . ' 人,本國學生學士班未招足名額：' . (int)$system->last_year_surplus_admission_quota . ' 人, 教育部核定擴增名額：' . (int)$system->ratify_expanded_quota . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
-                $scholarship = '有提供僑生專屬獎學金，請逕洽本校<br />' . $data->scholarship_dept . '(' . $data->eng_scholarship_dept . ')<br />僑生專屬獎學金網址：<br />中：' . $data->scholarship_url . '<br />英：' . $data->eng_scholarship_url;
+                $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '(' . $data->eng_scholarship_dept . ')<br />僑生專屬獎學金網址：<br />中：' . $data->scholarship_url . '<br />英：' . $data->eng_scholarship_url;
             } else {
                 $scholarship = '無僑生專屬獎學金';
             }
@@ -229,7 +229,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<table style="width: 100%;">';
 
-            $table .= '<tr><th style="width: 14%; text-align: center; vertical-align: middle" rowspan="2">系所代碼<br />(志願代碼)</th><th style="width: 6%; text-align: center; vertical-align: middle" colspan="3">名額</th><th style="width: 31%; text-align: center; vertical-align: middle" rowspan="2">系所分則</th><th style="text-align: center; vertical-align: middle" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 14%;" rowspan="2">系所代碼<br />(志願代碼)</th><th style="width: 6%;" colspan="3">名額</th><th style="width: 31%;" rowspan="2">系所分則</th><th rowspan="2">個人申請繳交資料說明</th></tr>';
 
             $table .= '<tr><th style="width: 3%;">聯</th><th style="width: 3%;">個</th><th style="width: 3%;">自</th></tr>';
 
