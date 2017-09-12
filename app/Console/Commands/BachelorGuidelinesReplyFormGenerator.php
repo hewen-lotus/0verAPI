@@ -16,8 +16,6 @@ use App\GuidelinesReplyFormRecord;
 
 use App;
 use DB;
-use mPDF;
-use PDF;
 use Auth;
 use Carbon\Carbon;
 
@@ -146,7 +144,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table = '<h3 style="text-align: center">' . $data->title . ' ' . $data->eng_title . ' (學士班)</h3>';
 
-            $table .= '<table>';
+            $table .= '<table style="width: 100%;">';
 
             if ($data->has_self_enrollment) {
                 $basic_data_rowspan = 4;
@@ -231,7 +229,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<table style="width: 100%;">';
 
-            $table .= '<tr><th style="width: 14%; text-align: center; vertical-align: middle" rowspan="2">系所代碼<br />(志願代碼)</th><th style="width: 6%; text-align: center; vertical-align: middle" colspan="3">名額</th><th style="width: 31.5%; text-align: center; vertical-align: middle" rowspan="2">系所分則</th><th style="text-align: center; vertical-align: middle" rowspan="2">個人申請繳交資料說明</th></tr>';
+            $table .= '<tr><th style="width: 14%; text-align: center; vertical-align: middle" rowspan="2">系所代碼<br />(志願代碼)</th><th style="width: 6%; text-align: center; vertical-align: middle" colspan="3">名額</th><th style="width: 31%; text-align: center; vertical-align: middle" rowspan="2">系所分則</th><th style="text-align: center; vertical-align: middle" rowspan="2">個人申請繳交資料說明</th></tr>';
 
             $table .= '<tr><th style="width: 3%;">聯</th><th style="width: 3%;">個</th><th style="width: 3%;">自</th></tr>';
 
