@@ -7,11 +7,15 @@
 <a href="https://packagist.org/packages/laravel/framework"><img src="https://poser.pugx.org/laravel/framework/license.svg" alt="License"></a>
 </p>
 
+## Notice
+- This project will only work on 64-bit Linux system (tested on Ubuntu 16.04 x64) because we use 64-bit wkhtmltopdf binary to generate pdf files, if you want to run this project on 32-bit system or other platform (e.g: Windows, MacOS) you will need to setup your own config file.
+- because of wkhtmltopdf depandency, you will need to install libxrender, Ubuntu user can simply run ``sudo apt-get install libxrender1``
+
 ## Deploy Local Develop Environment
 
 - Install [composer](https://getcomposer.org/download/) first.
-  >for ubuntu user, recommand to place composer into ~/bin to avoid some permission problem.  
-  >please also remember to install php-mbstring, php-mcrypt, php-json, php-zip, php-xml, php-mysql or other php database driver.
+  - for ubuntu user, recommand to place composer into ~/bin to avoid some permission problem.  
+  - please also remember to install php-mbstring, php-mcrypt, php-json, php-zip, php-xml, php-mysql or other php database driver.  
 - clone this [repo](https://github.com/0verseas/0verAPI.git).
 - change your command line path into repo directory.
 - ``composer install``
