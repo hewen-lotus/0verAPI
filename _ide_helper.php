@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.4.36 on 2017-09-01.
+ * Generated for Laravel 5.4.36 on 2017-09-12.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -6013,7 +6013,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function size($queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::size($queue);
+            return \Illuminate\Queue\DatabaseQueue::size($queue);
         }
         
         /**
@@ -6023,12 +6023,11 @@ namespace Illuminate\Support\Facades {
          * @param mixed $data
          * @param string $queue
          * @return mixed 
-         * @throws \Exception|\Throwable
          * @static 
          */ 
         public static function push($job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::push($job, $data, $queue);
+            return \Illuminate\Queue\DatabaseQueue::push($job, $data, $queue);
         }
         
         /**
@@ -6042,7 +6041,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function pushRaw($payload, $queue = null, $options = array())
         {
-            return \Illuminate\Queue\SyncQueue::pushRaw($payload, $queue, $options);
+            return \Illuminate\Queue\DatabaseQueue::pushRaw($payload, $queue, $options);
         }
         
         /**
@@ -6052,12 +6051,40 @@ namespace Illuminate\Support\Facades {
          * @param string $job
          * @param mixed $data
          * @param string $queue
-         * @return mixed 
+         * @return void 
          * @static 
          */ 
         public static function later($delay, $job, $data = '', $queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::later($delay, $job, $data, $queue);
+            \Illuminate\Queue\DatabaseQueue::later($delay, $job, $data, $queue);
+        }
+        
+        /**
+         * Push an array of jobs onto the queue.
+         *
+         * @param array $jobs
+         * @param mixed $data
+         * @param string $queue
+         * @return mixed 
+         * @static 
+         */ 
+        public static function bulk($jobs, $data = '', $queue = null)
+        {
+            return \Illuminate\Queue\DatabaseQueue::bulk($jobs, $data, $queue);
+        }
+        
+        /**
+         * Release a reserved job back onto the queue.
+         *
+         * @param string $queue
+         * @param \Illuminate\Queue\Jobs\DatabaseJobRecord $job
+         * @param int $delay
+         * @return mixed 
+         * @static 
+         */ 
+        public static function release($queue, $job, $delay)
+        {
+            return \Illuminate\Queue\DatabaseQueue::release($queue, $job, $delay);
         }
         
         /**
@@ -6069,7 +6096,31 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function pop($queue = null)
         {
-            return \Illuminate\Queue\SyncQueue::pop($queue);
+            return \Illuminate\Queue\DatabaseQueue::pop($queue);
+        }
+        
+        /**
+         * Delete a reserved job from the queue.
+         *
+         * @param string $queue
+         * @param string $id
+         * @return void 
+         * @static 
+         */ 
+        public static function deleteReserved($queue, $id)
+        {
+            \Illuminate\Queue\DatabaseQueue::deleteReserved($queue, $id);
+        }
+        
+        /**
+         * Get the underlying database instance.
+         *
+         * @return \Illuminate\Database\Connection 
+         * @static 
+         */ 
+        public static function getDatabase()
+        {
+            return \Illuminate\Queue\DatabaseQueue::getDatabase();
         }
         
         /**
@@ -6084,7 +6135,7 @@ namespace Illuminate\Support\Facades {
         public static function pushOn($queue, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::pushOn($queue, $job, $data);
+            return \Illuminate\Queue\DatabaseQueue::pushOn($queue, $job, $data);
         }
         
         /**
@@ -6100,22 +6151,7 @@ namespace Illuminate\Support\Facades {
         public static function laterOn($queue, $delay, $job, $data = '')
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::laterOn($queue, $delay, $job, $data);
-        }
-        
-        /**
-         * Push an array of jobs onto the queue.
-         *
-         * @param array $jobs
-         * @param mixed $data
-         * @param string $queue
-         * @return mixed 
-         * @static 
-         */ 
-        public static function bulk($jobs, $data = '', $queue = null)
-        {
-            //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::bulk($jobs, $data, $queue);
+            return \Illuminate\Queue\DatabaseQueue::laterOn($queue, $delay, $job, $data);
         }
         
         /**
@@ -6127,7 +6163,7 @@ namespace Illuminate\Support\Facades {
         public static function getConnectionName()
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::getConnectionName();
+            return \Illuminate\Queue\DatabaseQueue::getConnectionName();
         }
         
         /**
@@ -6140,7 +6176,7 @@ namespace Illuminate\Support\Facades {
         public static function setConnectionName($name)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            return \Illuminate\Queue\SyncQueue::setConnectionName($name);
+            return \Illuminate\Queue\DatabaseQueue::setConnectionName($name);
         }
         
         /**
@@ -6153,7 +6189,7 @@ namespace Illuminate\Support\Facades {
         public static function setContainer($container)
         {
             //Method inherited from \Illuminate\Queue\Queue            
-            \Illuminate\Queue\SyncQueue::setContainer($container);
+            \Illuminate\Queue\DatabaseQueue::setContainer($container);
         }
          
     }
@@ -11759,6 +11795,317 @@ namespace Maatwebsite\Excel\Facades {
  
 }
 
+namespace Barryvdh\Snappy\Facades { 
+
+    class SnappyPdf {
+        
+        /**
+         * Get the Snappy instance.
+         *
+         * @return \Knp\Snappy\Pdf 
+         * @static 
+         */ 
+        public static function snappy()
+        {
+            return \Barryvdh\Snappy\PdfWrapper::snappy();
+        }
+        
+        /**
+         * Set the paper size (default A4)
+         *
+         * @param string $paper
+         * @param string $orientation
+         * @return $this 
+         * @static 
+         */ 
+        public static function setPaper($paper, $orientation = null)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::setPaper($paper, $orientation);
+        }
+        
+        /**
+         * Set the orientation (default portrait)
+         *
+         * @param string $orientation
+         * @return $this 
+         * @static 
+         */ 
+        public static function setOrientation($orientation)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::setOrientation($orientation);
+        }
+        
+        /**
+         * Show or hide warnings
+         *
+         * @param bool $warnings
+         * @return $this 
+         * @deprecated 
+         * @static 
+         */ 
+        public static function setWarnings($warnings)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::setWarnings($warnings);
+        }
+        
+        /**
+         * 
+         *
+         * @param string $name
+         * @param mixed $value
+         * @return $this 
+         * @static 
+         */ 
+        public static function setOption($name, $value)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::setOption($name, $value);
+        }
+        
+        /**
+         * 
+         *
+         * @param array $options
+         * @return $this 
+         * @static 
+         */ 
+        public static function setOptions($options)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::setOptions($options);
+        }
+        
+        /**
+         * Load a HTML string
+         *
+         * @param string $string
+         * @return $this 
+         * @static 
+         */ 
+        public static function loadHTML($string)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::loadHTML($string);
+        }
+        
+        /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return $this 
+         * @static 
+         */ 
+        public static function loadFile($file)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::loadFile($file);
+        }
+        
+        /**
+         * Load a View and convert to HTML
+         *
+         * @param string $view
+         * @param array $data
+         * @param array $mergeData
+         * @return $this 
+         * @static 
+         */ 
+        public static function loadView($view, $data = array(), $mergeData = array())
+        {
+            return \Barryvdh\Snappy\PdfWrapper::loadView($view, $data, $mergeData);
+        }
+        
+        /**
+         * Output the PDF as a string.
+         *
+         * @return string The rendered PDF as string
+         * @throws \InvalidArgumentException
+         * @static 
+         */ 
+        public static function output()
+        {
+            return \Barryvdh\Snappy\PdfWrapper::output();
+        }
+        
+        /**
+         * Save the PDF to a file
+         *
+         * @param $filename
+         * @return $this 
+         * @static 
+         */ 
+        public static function save($filename, $overwrite = false)
+        {
+            return \Barryvdh\Snappy\PdfWrapper::save($filename, $overwrite);
+        }
+        
+        /**
+         * Make the PDF downloadable by the user
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function download($filename = 'document.pdf')
+        {
+            return \Barryvdh\Snappy\PdfWrapper::download($filename);
+        }
+        
+        /**
+         * Return a response with the PDF to show in the browser
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function inline($filename = 'document.pdf')
+        {
+            return \Barryvdh\Snappy\PdfWrapper::inline($filename);
+        }
+        
+        /**
+         * Return a response with the PDF to show in the browser
+         *
+         * @param string $filename
+         * @return \Symfony\Component\HttpFoundation\StreamedResponse 
+         * @deprecated use inline() instead
+         * @static 
+         */ 
+        public static function stream($filename = 'document.pdf')
+        {
+            return \Barryvdh\Snappy\PdfWrapper::stream($filename);
+        }
+         
+    }
+
+    class SnappyImage {
+        
+        /**
+         * Get the Snappy instance.
+         *
+         * @return \Knp\Snappy\Image 
+         * @static 
+         */ 
+        public static function snappy()
+        {
+            return \Barryvdh\Snappy\ImageWrapper::snappy();
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setOption($name, $value)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::setOption($name, $value);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function setOptions($options)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::setOptions($options);
+        }
+        
+        /**
+         * Load a HTML string
+         *
+         * @param string $string
+         * @return static 
+         * @static 
+         */ 
+        public static function loadHTML($string)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::loadHTML($string);
+        }
+        
+        /**
+         * Load a HTML file
+         *
+         * @param string $file
+         * @return static 
+         * @static 
+         */ 
+        public static function loadFile($file)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::loadFile($file);
+        }
+        
+        /**
+         * 
+         *
+         * @static 
+         */ 
+        public static function loadView($view, $data = array(), $mergeData = array())
+        {
+            return \Barryvdh\Snappy\ImageWrapper::loadView($view, $data, $mergeData);
+        }
+        
+        /**
+         * Output the PDF as a string.
+         *
+         * @return string The rendered PDF as string
+         * @throws \InvalidArgumentException
+         * @static 
+         */ 
+        public static function output()
+        {
+            return \Barryvdh\Snappy\ImageWrapper::output();
+        }
+        
+        /**
+         * Save the image to a file
+         *
+         * @param $filename
+         * @return static 
+         * @static 
+         */ 
+        public static function save($filename, $overwrite = false)
+        {
+            return \Barryvdh\Snappy\ImageWrapper::save($filename, $overwrite);
+        }
+        
+        /**
+         * Make the image downloadable by the user
+         *
+         * @param string $filename
+         * @return \Symfony\Component\HttpFoundation\Response 
+         * @static 
+         */ 
+        public static function download($filename = 'image.jpg')
+        {
+            return \Barryvdh\Snappy\ImageWrapper::download($filename);
+        }
+        
+        /**
+         * Return a response with the image to show in the browser
+         *
+         * @param string $filename
+         * @return \Illuminate\Http\Response 
+         * @static 
+         */ 
+        public static function inline($filename = 'image.jpg')
+        {
+            return \Barryvdh\Snappy\ImageWrapper::inline($filename);
+        }
+        
+        /**
+         * Return a response with the image to show in the browser
+         *
+         * @deprecated Use inline() instead
+         * @param string $filename
+         * @return \Symfony\Component\HttpFoundation\Response 
+         * @static 
+         */ 
+        public static function stream($filename = 'image.jpg')
+        {
+            return \Barryvdh\Snappy\ImageWrapper::stream($filename);
+        }
+         
+    }
+ 
+}
+
 
 namespace  { 
 
@@ -13851,6 +14198,10 @@ namespace  {
     class View extends \Illuminate\Support\Facades\View {}
 
     class Excel extends \Maatwebsite\Excel\Facades\Excel {}
+
+    class PDF extends \Barryvdh\Snappy\Facades\SnappyPdf {}
+
+    class SnappyImage extends \Barryvdh\Snappy\Facades\SnappyImage {}
  
 }
 
