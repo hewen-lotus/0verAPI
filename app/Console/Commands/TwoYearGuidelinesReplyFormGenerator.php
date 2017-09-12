@@ -315,7 +315,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                             if ($doc->paper != NULL) {
                                 $doc_output .= '本項目請以紙本方式寄出<br />地址：' . $doc->paper->address . '<br />收件人：' . $doc->paper->recipient . '<br />聯絡電話：' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />收件截止日：' . $doc->paper->deadline . '<br />';
 
-                                $eng_doc_output .= '本項目請以紙本方式寄出<br />address: ' . $doc->paper->address . '<br />recipient: ' . $doc->paper->recipient . '<br />phone: ' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />deadline: ' . $doc->paper->deadline . '<br />';
+                                $eng_doc_output .= 'Paper letters of recommendation must be sent to the following address: <br />address: ' . $doc->paper->address . '<br />recipient: ' . $doc->paper->recipient . '<br />phone: ' . $doc->paper->phone . '<br />E-mail：' . $doc->paper->email . '<br />deadline: ' . $doc->paper->deadline . '<br />';
                             }
 
                             $doc_count++;
