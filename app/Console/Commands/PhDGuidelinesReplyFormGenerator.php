@@ -13,8 +13,8 @@ use App\DepartmentGroup;
 use App\GraduateDepartmentHistoryApplicationDocument;
 use App\GuidelinesReplyFormRecord;
 
+use App;
 use DB;
-use mPDF;
 use Auth;
 use Carbon\Carbon;
 
@@ -94,14 +94,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
             $pdf_gen_record = ['system_id' => 4, 'school_history_data' => $data->history_id];
 
-            $mpdf = new mPDF('UTF-8', 'A4', '10', 'sun-exta');
-
-            $mpdf->SetAuthor('海外聯合招生委員會');
-
-            $mpdf->autoScriptToLang = true;
-
-            $mpdf->autoLangToFont = true;
-
+            /* 浮水印不會用 QQ
             if ($this->option('preview')) {
                 $mpdf->SetWatermarkText('PREVIEW VERSION');
 
@@ -111,18 +104,40 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
                 $mpdf->showWatermarkImage = true;
             }
+            */
 
-            $mpdf->shrink_tables_to_fit = 0;
+            $pdf = App::make('snappy.pdf.wrapper');
+
+            $pdf->setOptions([
+                'title' => '',
+                'page-size' => 'A4',
+                'margin-bottom' => '20mm',
+                'margin-left' => '20mm',
+                'margin-right' => '20mm',
+                'margin-top' => '20mm',
+                'disable-javascript' => true
+            ]);
 
             $css = '
+                <style type = "text/css">
+                @font-face {
+                    font-family: "Noto Sans TC";
+                    font-style: normal;
+                    font-weight: 400;
+                    src: url(' . public_path('fonts/NotoSansCJKtc-Regular.otf') . ') format("opentype");
+                }
+                
+                body {
+                    font-family: "Noto Sans TC"; 
+                }
+                
                 table, th, td {
+                    font-size: 10px;
                     border: 2px solid black;
                     border-collapse: collapse;
-                    overflow: wrap;
                 }
+                </style>
             ';
-
-            $mpdf->Bookmark($data->title . ' ' . $data->eng_title);
 
             $table = '<h3 style="text-align: center">' . $data->title . ' ' . $data->eng_title . ' (博士班)</h3>';
 
@@ -134,14 +149,14 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 $basic_data_rowspan = 3;
             }
 
-            $table .= '<tr><th rowspan="'. $basic_data_rowspan .'">學校基本資料</th><td style="width: 10%; text-align: right; vertical-align: middle;">學校代碼</td><td>' . $data->id . '</td><td style="width: 10%; text-align: right; vertical-align: middle;">承辦單位</td><td>' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
+            $table .= '<tr><th style="width: 8%;" rowspan="'. $basic_data_rowspan .'">學校基本資料</th><td style="width: 8%; text-align: right; vertical-align: middle;">學校代碼</td><td>' . $data->id . '</td><td style="width: 8%; text-align: right; vertical-align: middle;">承辦單位</td><td>' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
 
-            $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td><td style="width: 10%; text-align: right; vertical-align: middle;">地址</td><td>' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
+            $table .= '<tr><td style="width: 8%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td><td style="width: 8%; text-align: right; vertical-align: middle;">地址</td><td>' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
 
-            $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td><td style="width: 10%; text-align: right; vertical-align: middle;">網址</td><td>中：' . $data->url . '<br />英：' . $data->eng_url . '</td></tr>';
+            $table .= '<tr><td style="width: 8%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td><td style="width: 8%; text-align: right; vertical-align: middle;">網址</td><td>中：' . $data->url . '<br />英：' . $data->eng_url . '</td></tr>';
 
             if ($data->has_self_enrollment) {
-                $table .= '<tr><td style="width: 10%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
+                $table .= '<tr><td style="width: 8%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
             }
 
             $all_depts = DB::table('graduate_department_history_data as depts')
@@ -185,7 +200,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
             $table .= '<tr><th>總計</th><td colspan="4">' . $total_dept . ' 系組 / (個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system->last_year_admission_amount . ' 人,本國學生碩士班未招足名額：' . (int)$system->last_year_surplus_admission_quota . ' 人, 教育部核定擴增名額：' . (int)$system->ratify_expanded_quota . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
-                $scholarship = '有提供僑生專屬獎學金，請逕洽本校<br />' . $data->scholarship_dept . '(' . $data->eng_scholarship_dept . ')<br />僑生專屬獎學金網址：<br />中：' . $data->scholarship_url . '<br />英：' . $data->eng_scholarship_url;
+                $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '(' . $data->eng_scholarship_dept . ')<br />僑生專屬獎學金網址：<br />中：' . $data->scholarship_url . '<br />英：' . $data->eng_scholarship_url;
             } else {
                 $scholarship = '無僑生專屬獎學金';
             }
@@ -362,24 +377,26 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 }
             }
 
+            $full_html = '<!DOCTYPE html><html><head>'.$css.'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$table.'</body></html>';
+
             $now = Carbon::now('Asia/Taipei');
 
             if (Auth::check()) {
-                $maker = Auth::user()->name . '&nbsp;&nbsp;' . Auth::user()->phone . '<br />' . Auth::user()->email . '<br />';
+                $maker = Auth::user()->name . '  ' . Auth::user()->phone . PHP_EOL . Auth::user()->email;
             } else {
-                $maker = 'NCNU Overseas<br />';
+                $maker = 'NCNU Overseas' . PHP_EOL;
             }
 
             $file_check_code = hash('md5', $table . $maker . $now);
 
             if (!$this->option('preview')) {
-                $mpdf->SetHTMLFooter('
-                    <table  style="width: 100%; vertical-align: top; border: none; font-size: 8pt;"><tr style="border: none;">
-                    <td style="width: 33%; border: none;">※承辦人簽章<br />' . $maker . $now . '</td>
-                    <!--<td style="width: 33%; border: none;">※單位主管簽章</td>-->
-                    <td style="width: 33%; text-align: center; vertical-align: bottom; border: none;"><span>page {PAGENO} of {nbpg}<br />確認碼：' . $file_check_code . '</span></td>
-                    </tr></table>
-                ');
+                $pdf->setOptions([
+                    'footer-font-size' => '8',
+                    'footer-spacing' => '10',
+                    'footer-left' => '※承辦人簽章' . PHP_EOL . $maker . PHP_EOL . $now,
+                    // 'footer-center' => '※單位主管簽章',
+                    'footer-right' => 'page [page] of [topage]' . PHP_EOL . '確認碼：' . $file_check_code
+                ]);
 
                 $record = new GuidelinesReplyFormRecord;
 
@@ -398,12 +415,8 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
             $output_file_name = $data->title . '-博士班簡章調查回覆表-' . $file_check_code . '.pdf';
 
-            $mpdf->WriteHTML($css, 1);
-
-            $mpdf->WriteHTML($table, 2);
-
             if ($this->argument('email')) {
-                $mpdf->Output(sys_get_temp_dir() . '/' . $output_file_name, 'F');
+                $pdf->loadHTML($full_html)->save(sys_get_temp_dir() . '/' . $output_file_name);
 
                 // use function in OverseasMailerTrait
                 $this->mailer();
@@ -424,7 +437,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
                 unlink(sys_get_temp_dir() . '/' . $output_file_name);
             } else {
-                $mpdf->Output(storage_path('app/' . $output_file_name), 'F');
+                $pdf->loadHTML($full_html)->save(storage_path('app/' . $output_file_name));
 
                 $this->info('PDF 產生完成！');
                 //$this->info(json_encode($pdf_gen_record, true));
