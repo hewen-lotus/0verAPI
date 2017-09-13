@@ -227,23 +227,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
 
             $table .= '<br>';
 
-            $table .= '<table style="width: 100%;">';
-
-            $table .= '<tr><th style="width: 14%;" rowspan="2">系所代碼<br />(志願代碼)</th><th style="width: 6%;" colspan="3">名額</th><th style="width: 31%;" rowspan="2">系所分則</th><th rowspan="2">個人申請繳交資料說明</th></tr>';
-
-            $table .= '<tr><th style="width: 3%;">聯</th><th style="width: 3%;">個</th><th style="width: 3%;">自</th></tr>';
-
-            $table .= '</table>';
-
             foreach ($depts as $dept) {
-                $table .= '<table style="width: 100%;"><tr>';
-
-                $table .= '<td rowspan="2" style="width: 13.9%; text-align: center; vertical-align: middle">' . $dept->id . '<br />(' . $dept->card_code . ')</td>';
-
-                $table .= '<td rowspan="2" style="width: 2.9%; text-align: center; vertical-align: middle">' . $dept->admission_placement_quota . '</td>';
-
-                $table .= '<td rowspan="2" style="width: 2.9%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
-
                 if ((bool)$data->has_self_enrollment) {
                     if ((bool)$dept->has_self_enrollment) {
                         $dept_self_enrollment_quota = '是';
@@ -254,7 +238,20 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                     $dept_self_enrollment_quota = '-';
                 }
 
-                $table .= '<td rowspan="2" style="width: 3%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
+                $quta_table_block = '<tr>
+                                        <th style="width: 20%; text-align: center; vertical-align: middle">系所代碼</th>
+                                        <th style="width: 20%; text-align: center; vertical-align: middle">志願代碼</th>
+                                        <th style="width: 20%; text-align: center; vertical-align: middle">聯合分發名額</th>
+                                        <th style="width: 20%; text-align: center; vertical-align: middle">個人申請名額</th>
+                                        <th style="width: 20%; text-align: center; vertical-align: middle">自招名額</th>
+                                     </tr>
+                                     <tr>
+                                        <td style="width: 20%; text-align: center; vertical-align: middle">' . $dept->id . '</td>
+                                        <td style="width: 20%; text-align: center; vertical-align: middle">' . $dept->card_code . '</td>
+                                        <td style="width: 20%; text-align: center; vertical-align: middle">' . $dept->admission_placement_quota . '</td>
+                                        <td style="width: 20%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>
+                                        <td style="width: 20%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>
+                                     </tr>';
 
                 if ((bool)$dept->has_special_class) {
                     $dept_has_special_class = '是';
@@ -286,14 +283,18 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                     $eng_group_data .= ': ' . $main_group->eng_title . '.';
                 }
 
-                if ($dept->use_eng_data) {
-                    $table .= '<td colspan="2" style="width: 81%;">';
+                $table .= '<table style="width: 100%;">';
 
-                    $table .= $data->title . '&nbsp;' . $dept->title . '（' . $group . '）<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
+                if ($dept->use_eng_data) {
+                    $table .= '<tr><td colspan="5">';
+
+                    $table .= '<p style="font-size:12pt; font-weight:bold;">' . $data->title . '&nbsp;' . $dept->title . '</p>' . $group . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
 
                     $table .= $data->eng_title . '&nbsp;' . $dept->eng_title . '<br />' . $eng_group_data;
 
                     $table .= '</td></tr>';
+
+                    $table .= $quta_table_block;
 
                     if ((bool)$dept->has_review_fee) {
                         $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
@@ -346,11 +347,20 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                         }
                     }
 
-                    $table .= '<tr><td>' . $dept->description . '<br />' . $dept->eng_description . '</td><td style="width: 50%;">' . $doc_output . '<br />' . $eng_doc_output . '</td></tr></table>';
+                    $table .= '<tr>
+                                   <th colspan="5" style="text-align: center; vertical-align: middle">系所分則</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="5">' . $dept->description . '<br />' . $dept->eng_description . '</td>
+                               </tr>
+                               <tr>
+                                   <th colspan="5" style="text-align: center; vertical-align: middle">個人申請繳交資料說明</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="5">' . $doc_output . '<br />' . $eng_doc_output . '</td>
+                               </tr>';
                 } else {
-                    $table .= '<td colspan="2" style="width: 81%;">' . '&diams;&diams; 本系今年不提供英文資料 &diams;&diams; <br />' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
-
-                    $table .= '</tr>';
+                    $table .= '<tr><td colspan="5"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td></tr>';
 
                     if ((bool)$dept->has_review_fee) {
                         $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
@@ -387,8 +397,21 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                         }
                     }
 
-                    $table .= '<tr><td>' . $dept->description . '</td><td style="width: 50%;">' . $doc_output . '</td></tr></table>';
+                    $table .= '<tr>
+                                   <th colspan="5" style="text-align: center; vertical-align: middle">系所分則</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="5">' . $dept->description . '</td>
+                               </tr>
+                               <tr>
+                                   <th colspan="5" style="text-align: center; vertical-align: middle">個人申請繳交資料說明</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="5">' . $doc_output . '</td>
+                               </tr>';
                 }
+
+                $table .= '</table><br />';
             }
 
             $full_html = '<!DOCTYPE html><html><head>'.$css.'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$table.'</body></html>';

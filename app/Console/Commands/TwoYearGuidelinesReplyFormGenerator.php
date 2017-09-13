@@ -220,21 +220,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $table .= '<br>';
 
-            $table .= '<table style="width: 100%;">';
-
-            $table .= '<tr><th style="width: 11%;" rowspan="2">系所代碼</th><th style="width: 5%;" colspan="2">名額</th><th style="width: 44%;" rowspan="2">系所分則</th><th style="width: 44%;" rowspan="2">個人申請繳交資料說明</th></tr>';
-
-            $table .= '<tr><th style="width: 4%;">個</th><th style="width: 4%;">自</th></tr>';
-
-            $table .= '</table>';
-
             foreach ($depts as $dept) {
-                $table .= '<table style="width: 100%;"><tr>';
-
-                $table .= '<td rowspan="2" style="width: 11%; text-align: center; vertical-align: middle">' . $dept->id . '</td>';
-
-                $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>';
-
                 if ((bool)$dept->has_self_enrollment) {
                     if ($dept->self_enrollment_quota != NULL) {
                         $dept_self_enrollment_quota = $dept->self_enrollment_quota;
@@ -245,7 +231,16 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                     $dept_self_enrollment_quota = '-';
                 }
 
-                $table .= '<td rowspan="2" style="width: 4%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>';
+                $quta_table_block = '<tr>
+                                        <th style="width: 33%; text-align: center; vertical-align: middle">系所代碼</th>
+                                        <th style="width: 33%; text-align: center; vertical-align: middle">個人申請名額</th>
+                                        <th style="width: 33%; text-align: center; vertical-align: middle">自招名額</th>
+                                     </tr>
+                                     <tr>
+                                        <td style="width: 33%; text-align: center; vertical-align: middle">' . $dept->id . '</td>
+                                        <td style="width: 33%; text-align: center; vertical-align: middle">' . $dept->admission_selection_quota . '</td>
+                                        <td style="width: 33%; text-align: center; vertical-align: middle">' . $dept_self_enrollment_quota . '</td>
+                                     </tr>';
 
                 if ((bool)$dept->has_special_class) {
                     $dept_has_special_class = '是 (專班報部文號：'. $dept->approval_no_of_special_class .')';
@@ -277,14 +272,18 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                     $eng_group_data = $main_group->eng_title . '.';
                 }
 
-                if ($dept->use_eng_data) {
-                    $table .= '<td colspan="2">';
+                $table .= '<table style="width: 100%;">';
 
-                    $table .= $data->title . '&nbsp;' . $dept->title . '（' . $group . '）<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
+                if ($dept->use_eng_data) {
+                    $table .= '<tr><td colspan="3">';
+
+                    $table .= '<p style="font-size:12pt; font-weight:bold;">' . $data->title . '&nbsp;' . $dept->title . '</p>' . $group . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
 
                     $table .= $data->eng_title . '&nbsp;' . $dept->eng_title . '<br />' . $eng_group_data;
 
                     $table .= '</td></tr>';
+
+                    $table .= $quta_table_block;
 
                     if ((bool)$dept->has_review_fee) {
                         $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
@@ -337,9 +336,20 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                         }
                     }
 
-                    $table .= '<tr><td style="width: 44%;">' . $dept->description . '<br />' . $dept->eng_description . '</td><td style="width: 44%;">' . $doc_output . '<br />' . $eng_doc_output . '</td></tr></table>';
+                    $table .= '<tr>
+                                   <th colspan="3" style="text-align: center; vertical-align: middle">系所分則</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="3">' . $dept->description . '<br />' . $dept->eng_description . '</td>
+                               </tr>
+                               <tr>
+                                   <th colspan="3" style="text-align: center; vertical-align: middle">個人申請繳交資料說明</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="3">' . $doc_output . '<br />' . $eng_doc_output . '</td>
+                               </tr>';
                 } else {
-                    $table .= '<td colspan="2">' . '&diams;&diams; 本系今年不提供英文資料 &diams;&diams; <br />' . $data->title . ' ' . $dept->title . '（' . $group . '）<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                    $table .= '<td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td>';
 
                     $table .= '</tr>';
 
@@ -378,8 +388,21 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                         }
                     }
 
-                    $table .= '<tr><td style="width: 44%;">' . $dept->description . '</td><td style="width: 44%;">' . $doc_output . '</td></tr></table>';
+                    $table .= '<tr>
+                                   <th colspan="3" style="text-align: center; vertical-align: middle">系所分則</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="3">' . $dept->description . '</td>
+                               </tr>
+                               <tr>
+                                   <th colspan="3" style="text-align: center; vertical-align: middle">個人申請繳交資料說明</th>
+                               </tr>
+                               <tr>
+                                   <td colspan="3">' . $doc_output . '</td>
+                               </tr>';
                 }
+
+                $table .= '</table><br />';
             }
 
             $full_html = '<!DOCTYPE html><html><head>'.$css.'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$table.'</body></html>';
