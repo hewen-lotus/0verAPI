@@ -115,9 +115,6 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 'title' => '',
                 'page-size' => 'A4',
                 'margin-bottom' => '20mm',
-                'margin-left' => '20mm',
-                'margin-right' => '20mm',
-                'margin-top' => '20mm',
                 'disable-javascript' => true
             ]);
 
@@ -135,7 +132,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
                 }
                 
                 table, th, td {
-                    font-size: 10px;
+                    font-size: 12px;
                     border: 2px solid black;
                     border-collapse: collapse;
                 }
@@ -429,7 +426,7 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             if (!$this->option('preview')) {
                 $pdf->setOptions([
                     'footer-font-size' => '8',
-                    'footer-spacing' => '10',
+                    'footer-spacing' => '12',
                     'footer-left' => '※承辦人簽章' . PHP_EOL . $maker . PHP_EOL . $now,
                     // 'footer-center' => '※單位主管簽章',
                     'footer-right' => 'page [page] of [topage]' . PHP_EOL . '確認碼：' . $file_check_code
