@@ -217,9 +217,9 @@ class PhDGuidelinesReplyFormGenerator extends Command
 
             $table .= '</table>';
 
-            $table .= '<br>';
-
             foreach ($depts as $dept) {
+                $table .= '<br />';
+
                 if ((bool)$dept->has_self_enrollment) {
                     if ($dept->self_enrollment_quota != NULL) {
                         $dept_self_enrollment_quota = $dept->self_enrollment_quota;
@@ -268,7 +268,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 $table .= '<table style="width: 100%;">';
 
                 if ($dept->use_eng_data) {
-                    $table .= '<td colspan="3">';
+                    $table .= '<tr><td colspan="3">';
 
                     $table .= '<p style="font-size:12pt; font-weight:bold;">' . $data->title . '&nbsp;' . $dept->title . '</p>' . $group . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
 
@@ -342,9 +342,8 @@ class PhDGuidelinesReplyFormGenerator extends Command
                                    <td colspan="3">' . $doc_output . '<br />' . $eng_doc_output . '</td>
                                </tr>';
                 } else {
-                    $table .= '<td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                    $table .= '<tr><td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td></tr>';
 
-                    $table .= '</tr>';
                     $table .= $quta_table_block;
 
                     if ((bool)$dept->has_review_fee) {
@@ -396,7 +395,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                                </tr>';
                 }
 
-                $table .= '</table><br />';
+                $table .= '</table>';
             }
 
             $full_html = '<!DOCTYPE html><html><head>'.$css.'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$table.'</body></html>';

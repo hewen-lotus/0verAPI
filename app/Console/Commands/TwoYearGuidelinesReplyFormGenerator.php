@@ -216,9 +216,10 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
 
             $table .= '</table>';
 
-            $table .= '<br>';
 
             foreach ($depts as $dept) {
+                $table .= '<br />';
+
                 if ((bool)$dept->has_self_enrollment) {
                     if ($dept->self_enrollment_quota != NULL) {
                         $dept_self_enrollment_quota = $dept->self_enrollment_quota;
@@ -347,9 +348,8 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                                    <td colspan="3">' . $doc_output . '<br />' . $eng_doc_output . '</td>
                                </tr>';
                 } else {
-                    $table .= '<td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td>';
+                    $table .= '<tr><td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '<br />日間部二技學制：' . $dept_has_RiJian . '<br />最近一次系所評鑑：' . $evaluation_level->title . '</td></tr>';
 
-                    $table .= '</tr>';
                     $table .= $quta_table_block;
 
                     if ((bool)$dept->has_review_fee) {
@@ -401,7 +401,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
                                </tr>';
                 }
 
-                $table .= '</table><br />';
+                $table .= '</table>';
             }
 
             $full_html = '<!DOCTYPE html><html><head>'.$css.'<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/></head><body>'.$table.'</body></html>';
