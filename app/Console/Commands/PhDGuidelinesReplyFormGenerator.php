@@ -344,6 +344,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                     $table .= '<td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td>';
 
                     $table .= '</tr>';
+                    $table .= $quta_table_block;
 
                     if ((bool)$dept->has_review_fee) {
                         $doc_output = '◎ ' . $dept->review_fee_detail . '<br />';
