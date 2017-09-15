@@ -145,14 +145,14 @@ class BachelorGuidelinesReplyFormGenerator extends Command
             $table .= '<table style="width: 100%;">';
 
             if ($data->has_self_enrollment) {
-                $basic_data_rowspan = 7;
-            } else {
                 $basic_data_rowspan = 6;
+            } else {
+                $basic_data_rowspan = 5;
             }
 
             $table .= '<tr><th style="width: 4%;" rowspan="'. $basic_data_rowspan .'">學校基本資料</th>';
 
-            $table .= '<td style="width: 12%; text-align: right; vertical-align: middle;" rowspan="3">學校代碼</td><td style="font-size:14pt; font-weight:bold; text-align: center; vertical-align: middle;" rowspan="3">' . $data->id . '</td><tr><td style="width: 12%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td></tr><tr><td style="width: 12%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td></tr></tr>';
+            $table .= '<td style="width: 12%; text-align: right; vertical-align: middle;" rowspan="2">學校代碼</td><td style="font-size:14pt; font-weight:bold; text-align: center; vertical-align: middle;" rowspan="2">' . $data->id . '</td><td style="width: 12%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td><tr><td style="width: 12%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td></tr></tr>';
 
             $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">地址</td><td colspan="3">' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
 
