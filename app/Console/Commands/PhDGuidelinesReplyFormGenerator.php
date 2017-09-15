@@ -130,7 +130,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 }
                 
                 table, th, td {
-                    font-size: 12px;
+                    font-size: 12pt;
                     border: 2px solid black;
                     border-collapse: collapse;
                 }
@@ -142,19 +142,23 @@ class PhDGuidelinesReplyFormGenerator extends Command
             $table .= '<table style="width: 100%;">';
 
             if ($data->has_self_enrollment) {
-                $basic_data_rowspan = 4;
+                $basic_data_rowspan = 6;
             } else {
-                $basic_data_rowspan = 3;
+                $basic_data_rowspan = 5;
             }
 
-            $table .= '<tr><th style="width: 8%;" rowspan="'. $basic_data_rowspan .'">學校基本資料</th><td style="width: 8%; text-align: right; vertical-align: middle;">學校代碼</td><td>' . $data->id . '</td><td style="width: 8%; text-align: right; vertical-align: middle;">承辦單位</td><td>' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
+            $table .= '<tr><th style="width: 4%;" rowspan="'. $basic_data_rowspan .'">學校基本資料</th>';
 
-            $table .= '<tr><td style="width: 8%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td><td style="width: 8%; text-align: right; vertical-align: middle;">地址</td><td>' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
+            $table .= '<td style="width: 12%; text-align: right; vertical-align: middle;" rowspan="2">學校代碼</td><td style="font-size:14pt; font-weight:bold; text-align: center; vertical-align: middle;" rowspan="2">' . $data->id . '</td><td style="width: 12%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td></tr><tr><td style="width: 12%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td></tr></tr>';
 
-            $table .= '<tr><td style="width: 8%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td><td style="width: 8%; text-align: right; vertical-align: middle;">網址</td><td>中：' . $data->url . '<br />英：' . $data->eng_url . '</td></tr>';
+            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">地址</td><td colspan="3">' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
+
+            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">網址</td><td colspan="3">中：' . $data->url . '<br />英：' . $data->eng_url . '</td></tr>';
+
+            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">承辦單位</td><td colspan="3">' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
 
             if ($data->has_self_enrollment) {
-                $table .= '<tr><td style="width: 8%; text-align: right; vertical-align: middle;">自招文號</td><td>' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
+                $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">自招文號</td><td colspan="3">' . $data->approval_no_of_self_enrollment . '</td></tr>';
             }
 
             $all_depts = DB::table('graduate_department_history_data as depts')
@@ -270,7 +274,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                 if ($dept->use_eng_data) {
                     $table .= '<tr><td colspan="3">';
 
-                    $table .= '<p style="font-size:12pt; font-weight:bold;">' . $data->title . '&nbsp;' . $dept->title . '</p>' . $group . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
+                    $table .= '<p style="font-size:14pt; font-weight:bold;">' . $data->title . '&nbsp;' . $dept->title . '</p>' . $group . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . ' (' . $evaluation_level->eng_title . ')<br />';
 
                     $table .= $data->eng_title . '&nbsp;' . $dept->eng_title . '<br />' . $eng_group_data;
 
@@ -342,7 +346,7 @@ class PhDGuidelinesReplyFormGenerator extends Command
                                    <td colspan="3">' . $doc_output . '<br />' . $eng_doc_output . '</td>
                                </tr>';
                 } else {
-                    $table .= '<tr><td colspan="3"><p style="font-size:12pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td></tr>';
+                    $table .= '<tr><td colspan="3"><p style="font-size:14pt; font-weight:bold;">' . $data->title . ' ' . $dept->title . '<br />&diams;&diams; 本系今年不提供英文資料 &diams;&diams;</p>' . $group . '<br />' . $dept->eng_title . '<br />開設專班：' . $dept_has_special_class . '&nbsp;&nbsp;&nbsp;&nbsp;最近一次系所評鑑：' . $evaluation_level->title . '</td></tr>';
 
                     $table .= $quta_table_block;
 
