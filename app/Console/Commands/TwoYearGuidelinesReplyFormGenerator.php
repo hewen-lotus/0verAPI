@@ -158,7 +158,7 @@ class TwoYearGuidelinesReplyFormGenerator extends Command
             $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">承辦單位</td><td colspan="3">' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
 
             if ($data->has_self_enrollment) {
-                $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">自招文號</td><td colspan="3">' . $data->approval_no_of_self_enrollment . '</td><td></td><td></td></tr>';
+                $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">自招文號</td><td colspan="3">' . $data->approval_no_of_self_enrollment . '</td></tr>';
             }
 
             $all_depts = DB::table('two_year_tech_department_history_data as depts')
