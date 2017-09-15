@@ -112,6 +112,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
                 'title' => '',
                 'page-size' => 'A4',
                 'margin-top' => '20mm',
+                'disable-smart-shrinking' => true,
                 'disable-javascript' => true
             ]);
 
