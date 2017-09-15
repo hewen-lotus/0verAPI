@@ -142,23 +142,23 @@ class MasterGuidelinesReplyFormGenerator extends Command
             $table .= '<table style="width: 100%;">';
 
             if ($data->has_self_enrollment) {
-                $basic_data_rowspan = 6;
-            } else {
                 $basic_data_rowspan = 5;
+            } else {
+                $basic_data_rowspan = 4;
             }
 
             $table .= '<tr><th style="width: 4%;" rowspan="'. $basic_data_rowspan .'">學校基本資料</th>';
 
-            $table .= '<td style="width: 12%; text-align: right; vertical-align: middle;" rowspan="2">學校代碼</td><td style="font-size:14pt; font-weight:bold; text-align: center; vertical-align: middle;" rowspan="2">' . $data->id . '</td><td style="width: 12%; text-align: right; vertical-align: middle;">聯絡電話</td><td>' . $data->phone . '</td></tr><tr><td style="width: 12%; text-align: right; vertical-align: middle;">傳真</td><td>' . $data->fax . '</td></tr></tr>';
+            $table .= '<td style="width: 12%; text-align: right; vertical-align: middle;">學校代碼</td><td style="font-size:14pt; font-weight:bold; text-align: center; vertical-align: middle;">' . $data->id . '</td><td style="width: 12%; text-align: right; vertical-align: middle;">聯絡電話</td><td style="width: 30%;">' . $data->phone . '</td><td style="width: 7%; text-align: right; vertical-align: middle;">傳真</td><td style="width: 25%;">' . $data->fax . '</td></tr>';
 
-            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">地址</td><td colspan="3">' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
+            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">地址</td><td colspan="5">' . $data->address . '<br />' . $data->eng_address . '</td></tr>';
 
-            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">網址</td><td colspan="3">中：' . $data->url . '<br />英：' . $data->eng_url . '</td></tr>';
+            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">網址</td><td colspan="5">中：' . $data->url . '<br />英：' . $data->eng_url . '</td></tr>';
 
-            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">承辦單位</td><td colspan="3">' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
+            $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">承辦單位</td><td colspan="5">' . $data->organization . '<br />' . $data->eng_organization . '</td></tr>';
 
             if ($data->has_self_enrollment) {
-                $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">自招文號</td><td colspan="3">' . $data->approval_no_of_self_enrollment . '</td></tr>';
+                $table .= '<tr><td style="width: 12%; text-align: right; vertical-align: middle;">自招文號</td><td colspan="5">' . $data->approval_no_of_self_enrollment . '</td></tr>';
             }
 
             $all_depts = DB::table('graduate_department_history_data as depts')
@@ -199,7 +199,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
             $pdf_gen_record += ['system_history_data' => $system->history_id, 'depts' => $used_dept_history_id];
 
-            $table .= '<tr><th>總計</th><td colspan="4">' . $total_dept . ' 系組 / (個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system->last_year_admission_amount . ' 人,本國學生碩士班未招足名額：' . (int)$system->last_year_surplus_admission_quota . ' 人, 教育部核定擴增名額：' . (int)$system->ratify_expanded_quota . ' 人</td></tr>';
+            $table .= '<tr><th>總計</th><td colspan="6">' . $total_dept . ' 系組 / (個人申請：' . $total_admission_selection_quota . ' 人，自招；' . $total_self_enrollment_quota . ' 人)<br />上學年度新生總量 10%：' . (int)$system->last_year_admission_amount . ' 人,本國學生碩士班未招足名額：' . (int)$system->last_year_surplus_admission_quota . ' 人, 教育部核定擴增名額：' . (int)$system->ratify_expanded_quota . ' 人</td></tr>';
 
             if ($data->has_scholarship) {
                 $scholarship = '有提供僑生專屬獎學金，請逕洽本校' . $data->scholarship_dept . '(' . $data->eng_scholarship_dept . ')<br />僑生專屬獎學金網址：<br />中：' . $data->scholarship_url . '<br />英：' . $data->eng_scholarship_url;
@@ -207,7 +207,7 @@ class MasterGuidelinesReplyFormGenerator extends Command
                 $scholarship = '無僑生專屬獎學金';
             }
 
-            $table .= '<tr><th>獎學金</th><td colspan="4">' . $scholarship . '</td></tr>';
+            $table .= '<tr><th>獎學金</th><td colspan="6">' . $scholarship . '</td></tr>';
 
             if ($data->has_dorm) {
                 $dorm = $data->dorm_info . '<br />' . $data->eng_dorm_info;
@@ -215,9 +215,9 @@ class MasterGuidelinesReplyFormGenerator extends Command
                 $dorm = '無';
             }
 
-            $table .= '<tr><th>宿舍</th><td colspan="4">' . $dorm . ' </td></tr>';
+            $table .= '<tr><th>宿舍</th><td colspan="6">' . $dorm . ' </td></tr>';
 
-            $table .= '<tr><th>備註</th><td colspan="4">' . $system->description . '<br />' . $system->eng_description . '</td></tr>';
+            $table .= '<tr><th>備註</th><td colspan="6">' . $system->description . '<br />' . $system->eng_description . '</td></tr>';
 
             $table .= '</table>';
 
