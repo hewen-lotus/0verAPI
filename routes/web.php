@@ -32,7 +32,7 @@ Route::resource('/schools.systems', 'SystemDataController', ['only' => [
 */
 
 Route::resource('/schools.systems.departments', 'DepartmentDataController', ['only' => [
-    'index'
+    'index', 'show'
 ]]);
 
 Route::resource('/schools.editors', 'SchoolEditorController', ['only' => [
