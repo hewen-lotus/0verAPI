@@ -16,8 +16,6 @@ class DepartmentGroupController extends Controller
      */
     public function __construct(DepartmentGroup $DepartmentGroupModel)
     {
-        $this->middleware(['auth', 'switch']);
-
         $this->DepartmentGroupModel = $DepartmentGroupModel;
     }
 
