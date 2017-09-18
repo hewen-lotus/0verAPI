@@ -29,6 +29,12 @@ class DropDeptIdForeignInDeptApplicationDocsTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('paper_application_document_history_address', function (Blueprint $table) {
+            $table->foreign('dept_id', 'history_address_dept_id_foreign')->references('id')->on('department_data');
+        });
+
+        Schema::table('paper_application_document_address', function (Blueprint $table) {
+            $table->foreign('dept_id', 'address_dept_id_foreign')->references('id')->on('department_data');
+        });
     }
 }

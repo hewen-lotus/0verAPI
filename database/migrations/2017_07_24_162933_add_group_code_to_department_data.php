@@ -45,6 +45,30 @@ class AddGroupCodeToDepartmentData extends Migration
      */
     public function down()
     {
-        //
+        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
+        Schema::table('department_data', function (Blueprint $table) {
+            $table->dropColumn('group_code');
+        });
+
+        Schema::table('department_history_data', function (Blueprint $table) {
+            $table->dropColumn('group_code');
+        });
+
+        Schema::table('two_year_tech_department_data', function (Blueprint $table) {
+            $table->dropColumn('group_code');
+        });
+
+        Schema::table('two_year_tech_department_history_data', function (Blueprint $table) {
+            $table->dropColumn('group_code');
+        });
+
+        Schema::table('graduate_department_data', function (Blueprint $table) {
+            $table->dropColumn('group_code');
+        });
+
+        Schema::table('graduate_department_history_data', function (Blueprint $table) {
+            $table->dropColumn('group_code');
+        });
     }
 }

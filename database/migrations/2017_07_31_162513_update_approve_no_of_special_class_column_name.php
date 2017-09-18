@@ -31,6 +31,14 @@ class UpdateApproveNoOfSpecialClassColumnName extends Migration
      */
     public function down()
     {
-        //
+        DB::getDoctrineSchemaManager()->getDatabasePlatform()->registerDoctrineTypeMapping('enum', 'string');
+
+        Schema::table('two_year_tech_department_history_data', function (Blueprint $table) {
+            $table->renameColumn('approval_no_of_special_class', 'approve_no_of_special_class');
+        });
+
+        Schema::table('two_year_tech_department_data', function (Blueprint $table) {
+            $table->renameColumn('approval_no_of_special_class', 'approve_no_of_special_class');
+        });
     }
 }

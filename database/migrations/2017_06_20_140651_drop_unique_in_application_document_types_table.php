@@ -26,6 +26,9 @@ class DropUniqueInApplicationDocumentTypesTable extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('application_document_types', function (Blueprint $table) {
+            $table->unique('name');
+            $table->unique('eng_name');
+        });
     }
 }
