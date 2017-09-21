@@ -55,10 +55,7 @@ class DepartmentDataController extends Controller
         if ($school_id == 'all') {
             switch ($system_id) {
                 case 1:
-                    return $this->SchoolDataModel->with([
-                        'systems' => function ($query) use ($system_id) {
-                            $query->where('type_id', '=', $system_id);
-                        },
+                    return $this->SchoolDataModel->select(['name', 'eng_name'])->with([
                         'departments',
                         'departments.evaluation_level',
                         'departments.main_group_data',
@@ -69,10 +66,7 @@ class DepartmentDataController extends Controller
                     break;
 
                 case 2:
-                    return $this->SchoolDataModel->with([
-                        'systems' => function ($query) use ($system_id) {
-                            $query->where('type_id', '=', $system_id);
-                        },
+                    return $this->SchoolDataModel->select(['name', 'eng_name'])->with([
                         'two_year_tech_departments',
                         'two_year_tech_departments.evaluation_level',
                         'two_year_tech_departments.main_group_data',
@@ -82,10 +76,7 @@ class DepartmentDataController extends Controller
                     break;
 
                 default:
-                    return $this->SchoolDataModel->with([
-                        'systems' => function ($query) use ($system_id) {
-                            $query->where('type_id', '=', $system_id);
-                        },
+                    return $this->SchoolDataModel->select(['name', 'eng_name'])->with([
                         'graduate_departments' => function ($query) use ($system_id) {
                             $query->where('system_id', '=', $system_id);
                         },
@@ -103,44 +94,35 @@ class DepartmentDataController extends Controller
         })->exists()) {
             switch ($system_id) {
                 case 1:
-                    return $this->SchoolDataModel->where('id', '=', $school_id)->with([
-                        'systems' => function ($query) use ($system_id) {
-                            $query->where('type_id', '=', $system_id);
-                        },
+                    return $this->SchoolDataModel->select(['name', 'eng_name'])->where('id', '=', $school_id)->with([
                         'departments',
                         'departments.evaluation_level',
                         'departments.main_group_data',
                         'departments.sub_group_data',
                         'departments.admission_placement_step_quota'
-                    ])->first();
+                    ])->get();
 
                     break;
 
                 case 2:
-                    return $this->SchoolDataModel->where('id', '=', $school_id)->with([
-                        'systems' => function ($query) use ($system_id) {
-                            $query->where('type_id', '=', $system_id);
-                        },
+                    return $this->SchoolDataModel->select(['name', 'eng_name'])->where('id', '=', $school_id)->with([
                         'two_year_tech_departments',
                         'two_year_tech_departments.evaluation_level',
                         'two_year_tech_departments.main_group_data',
                         'two_year_tech_departments.sub_group_data'
-                    ])->first();
+                    ])->get();
 
                     break;
 
                 default:
-                    return $this->SchoolDataModel->where('id', '=', $school_id)->with([
-                        'systems' => function ($query) use ($system_id) {
-                            $query->where('type_id', '=', $system_id);
-                        },
+                    return $this->SchoolDataModel->select(['name', 'eng_name'])->where('id', '=', $school_id)->with([
                         'graduate_departments' => function ($query) use ($system_id) {
                             $query->where('system_id', '=', $system_id);
                         },
                         'graduate_departments.evaluation_level',
                         'graduate_departments.main_group_data',
                         'graduate_departments.sub_group_data'
-                    ])->first();
+                    ])->get();
 
                     break;
             }
