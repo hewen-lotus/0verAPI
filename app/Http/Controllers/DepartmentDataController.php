@@ -56,10 +56,43 @@ class DepartmentDataController extends Controller
             switch ($system_id) {
                 case 1:
                     return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->with([
-                        'departments',
-                        'departments.evaluation_level',
-                        'departments.main_group_data',
-                        'departments.sub_group_data',
+                        'departments' => function ($query) {
+                            $query->select([
+                                'id',
+                                'school_code',
+                                'card_code',
+                                'title',
+                                'eng_title',
+                                'admission_placement_quota',
+                                'admission_selection_quota',
+                                'self_enrollment_quota',
+                                'evaluation',
+                                'main_group',
+                                'sub_group',
+                                'group_code'
+                            ]);
+                        },
+                        'departments.evaluation_level' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'departments.main_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'departments.sub_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
                         'departments.admission_placement_step_quota'
                     ])->get();
 
@@ -67,10 +100,40 @@ class DepartmentDataController extends Controller
 
                 case 2:
                     return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->with([
-                        'two_year_tech_departments',
-                        'two_year_tech_departments.evaluation_level',
-                        'two_year_tech_departments.main_group_data',
-                        'two_year_tech_departments.sub_group_data'
+                        'two_year_tech_departments' => function ($query) {
+                            $query->select([
+                                'id',
+                                'school_code',
+                                'title',
+                                'eng_title',
+                                'admission_selection_quota',
+                                'self_enrollment_quota',
+                                'evaluation',
+                                'main_group',
+                                'sub_group'
+                            ]);
+                        },
+                        'two_year_tech_departments.evaluation_level' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'two_year_tech_departments.main_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'two_year_tech_departments.sub_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        }
                     ])->get();
 
                     break;
@@ -78,11 +141,40 @@ class DepartmentDataController extends Controller
                 default:
                     return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->with([
                         'graduate_departments' => function ($query) use ($system_id) {
-                            $query->where('system_id', '=', $system_id);
+                            $query->select([
+                                'id',
+                                'school_code',
+                                'system_id',
+                                'title',
+                                'eng_title',
+                                'admission_selection_quota',
+                                'self_enrollment_quota',
+                                'evaluation',
+                                'main_group',
+                                'sub_group'
+                            ])->where('system_id', '=', $system_id);
                         },
-                        'graduate_departments.evaluation_level',
-                        'graduate_departments.main_group_data',
-                        'graduate_departments.sub_group_data'
+                        'graduate_departments.evaluation_level' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'graduate_departments.main_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'graduate_departments.sub_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        }
                     ])->get();
 
                     break;
@@ -95,10 +187,43 @@ class DepartmentDataController extends Controller
             switch ($system_id) {
                 case 1:
                     return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->where('id', '=', $school_id)->with([
-                        'departments',
-                        'departments.evaluation_level',
-                        'departments.main_group_data',
-                        'departments.sub_group_data',
+                        'departments' => function ($query) {
+                            $query->select([
+                                'id',
+                                'school_code',
+                                'card_code',
+                                'title',
+                                'eng_title',
+                                'admission_placement_quota',
+                                'admission_selection_quota',
+                                'self_enrollment_quota',
+                                'evaluation',
+                                'main_group',
+                                'sub_group',
+                                'group_code'
+                            ]);
+                        },
+                        'departments.evaluation_level' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'departments.main_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'departments.sub_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
                         'departments.admission_placement_step_quota'
                     ])->get();
 
@@ -106,10 +231,40 @@ class DepartmentDataController extends Controller
 
                 case 2:
                     return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->where('id', '=', $school_id)->with([
-                        'two_year_tech_departments',
-                        'two_year_tech_departments.evaluation_level',
-                        'two_year_tech_departments.main_group_data',
-                        'two_year_tech_departments.sub_group_data'
+                        'two_year_tech_departments' => function ($query) {
+                            $query->select([
+                                'id',
+                                'school_code',
+                                'title',
+                                'eng_title',
+                                'admission_selection_quota',
+                                'self_enrollment_quota',
+                                'evaluation',
+                                'main_group',
+                                'sub_group'
+                            ]);
+                        },
+                        'two_year_tech_departments.evaluation_level' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'two_year_tech_departments.main_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'two_year_tech_departments.sub_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        }
                     ])->get();
 
                     break;
@@ -117,11 +272,40 @@ class DepartmentDataController extends Controller
                 default:
                     return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->where('id', '=', $school_id)->with([
                         'graduate_departments' => function ($query) use ($system_id) {
-                            $query->where('system_id', '=', $system_id);
+                            $query->select([
+                                'id',
+                                'school_code',
+                                'system_id',
+                                'title',
+                                'eng_title',
+                                'admission_selection_quota',
+                                'self_enrollment_quota',
+                                'evaluation',
+                                'main_group',
+                                'sub_group'
+                            ])->where('system_id', '=', $system_id);
                         },
-                        'graduate_departments.evaluation_level',
-                        'graduate_departments.main_group_data',
-                        'graduate_departments.sub_group_data'
+                        'graduate_departments.evaluation_level' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'graduate_departments.main_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        },
+                        'graduate_departments.sub_group_data' => function ($query) {
+                            $query->select([
+                                'id',
+                                'title',
+                                'eng_title'
+                            ]);
+                        }
                     ])->get();
 
                     break;
