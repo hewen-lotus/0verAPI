@@ -55,7 +55,7 @@ class DepartmentDataController extends Controller
         if ($school_id == 'all') {
             switch ($system_id) {
                 case 1:
-                    return $this->SchoolDataModel->select(['name', 'eng_name'])->with([
+                    return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->with([
                         'departments',
                         'departments.evaluation_level',
                         'departments.main_group_data',
@@ -66,7 +66,7 @@ class DepartmentDataController extends Controller
                     break;
 
                 case 2:
-                    return $this->SchoolDataModel->select(['name', 'eng_name'])->with([
+                    return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->with([
                         'two_year_tech_departments',
                         'two_year_tech_departments.evaluation_level',
                         'two_year_tech_departments.main_group_data',
@@ -76,7 +76,7 @@ class DepartmentDataController extends Controller
                     break;
 
                 default:
-                    return $this->SchoolDataModel->select(['name', 'eng_name'])->with([
+                    return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->with([
                         'graduate_departments' => function ($query) use ($system_id) {
                             $query->where('system_id', '=', $system_id);
                         },
@@ -94,7 +94,7 @@ class DepartmentDataController extends Controller
         })->exists()) {
             switch ($system_id) {
                 case 1:
-                    return $this->SchoolDataModel->select(['name', 'eng_name'])->where('id', '=', $school_id)->with([
+                    return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->where('id', '=', $school_id)->with([
                         'departments',
                         'departments.evaluation_level',
                         'departments.main_group_data',
@@ -105,7 +105,7 @@ class DepartmentDataController extends Controller
                     break;
 
                 case 2:
-                    return $this->SchoolDataModel->select(['name', 'eng_name'])->where('id', '=', $school_id)->with([
+                    return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->where('id', '=', $school_id)->with([
                         'two_year_tech_departments',
                         'two_year_tech_departments.evaluation_level',
                         'two_year_tech_departments.main_group_data',
@@ -115,7 +115,7 @@ class DepartmentDataController extends Controller
                     break;
 
                 default:
-                    return $this->SchoolDataModel->select(['name', 'eng_name'])->where('id', '=', $school_id)->with([
+                    return $this->SchoolDataModel->select(['id', 'title', 'eng_title'])->where('id', '=', $school_id)->with([
                         'graduate_departments' => function ($query) use ($system_id) {
                             $query->where('system_id', '=', $system_id);
                         },
