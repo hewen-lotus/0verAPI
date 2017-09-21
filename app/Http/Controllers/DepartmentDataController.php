@@ -52,6 +52,52 @@ class DepartmentDataController extends Controller
             return response()->json(compact('messages'), 404);
         }
 
+        if ($school_id == 'all') {
+            switch ($system_id) {
+                case 1:
+                    return $this->SchoolDataModel->with([
+                        'systems' => function ($query) use ($system_id) {
+                            $query->where('type_id', '=', $system_id);
+                        },
+                        'departments',
+                        'departments.evaluation_level',
+                        'departments.main_group_data',
+                        'departments.sub_group_data',
+                        'departments.admission_placement_step_quota'
+                    ])->get();
+
+                    break;
+
+                case 2:
+                    return $this->SchoolDataModel->with([
+                        'systems' => function ($query) use ($system_id) {
+                            $query->where('type_id', '=', $system_id);
+                        },
+                        'two_year_tech_departments',
+                        'two_year_tech_departments.evaluation_level',
+                        'two_year_tech_departments.main_group_data',
+                        'two_year_tech_departments.sub_group_data'
+                    ])->get();
+
+                    break;
+
+                default:
+                    return $this->SchoolDataModel->with([
+                        'systems' => function ($query) use ($system_id) {
+                            $query->where('type_id', '=', $system_id);
+                        },
+                        'graduate_departments' => function ($query) use ($system_id) {
+                            $query->where('system_id', '=', $system_id);
+                        },
+                        'graduate_departments.evaluation_level',
+                        'graduate_departments.main_group_data',
+                        'graduate_departments.sub_group_data'
+                    ])->get();
+
+                    break;
+            }
+        }
+
         if ($this->SchoolDataModel->where('id', '=', $school_id)->whereHas('systems', function ($query) use ($system_id) {
             $query->where('type_id', '=', $system_id);
         })->exists()) {
