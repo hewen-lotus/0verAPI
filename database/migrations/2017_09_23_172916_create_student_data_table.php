@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DropUniqueInApplicationDocumentTypesTable extends Migration
+class CreateStudentDataTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,7 @@ class DropUniqueInApplicationDocumentTypesTable extends Migration
      */
     public function up()
     {
-        Schema::table('application_document_types', function (Blueprint $table) {
-            $table->dropUnique(['name']);
-            $table->dropUnique(['eng_name']);
-        });
+        //
     }
 
     /**

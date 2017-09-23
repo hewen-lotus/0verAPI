@@ -45,28 +45,40 @@ class AddEngDataUseOrNotToAllDapartmentTable extends Migration
      */
     public function down()
     {
-        Schema::table('department_data', function (Blueprint $table) {
-            $table->dropColumn('use_eng_data');
-        });
+        if (Schema::hasColumn('department_data', 'use_eng_data')) {
+            Schema::table('department_data', function (Blueprint $table) {
+                $table->dropColumn('use_eng_data');
+            });
+        }
 
-        Schema::table('department_history_data', function (Blueprint $table) {
-            $table->dropColumn('use_eng_data');
-        });
+        if (Schema::hasColumn('department_history_data', 'use_eng_data')) {
+            Schema::table('department_history_data', function (Blueprint $table) {
+                $table->dropColumn('use_eng_data');
+            });
+        }
 
-        Schema::table('two_year_tech_department_data', function (Blueprint $table) {
-            $table->dropColumn('use_eng_data');
-        });
+        if (Schema::hasColumn('two_year_tech_department_data', 'use_eng_data')) {
+            Schema::table('two_year_tech_department_data', function (Blueprint $table) {
+                $table->dropColumn('use_eng_data');
+            });
+        }
 
-        Schema::table('two_year_tech_department_history_data', function (Blueprint $table) {
-            $table->dropColumn('use_eng_data');
-        });
+        if (Schema::hasColumn('two_year_tech_department_history_data', 'use_eng_data')) {
+            Schema::table('two_year_tech_department_history_data', function (Blueprint $table) {
+                $table->dropColumn('use_eng_data');
+            });
+        }
 
-        Schema::table('graduate_department_data', function (Blueprint $table) {
-            $table->dropColumn('use_eng_data');
-        });
+        if (Schema::hasColumn('graduate_department_data', 'use_eng_data')) {
+            Schema::table('graduate_department_data', function (Blueprint $table) {
+                $table->dropColumn('use_eng_data');
+            });
+        }
 
-        Schema::table('graduate_department_history_data', function (Blueprint $table) {
-            $table->dropColumn('use_eng_data');
-        });
+        if (Schema::hasColumn('graduate_department_history_data', 'use_eng_data')) {
+            Schema::table('graduate_department_history_data', function (Blueprint $table) {
+                $table->dropColumn('use_eng_data');
+            });
+        }
     }
 }

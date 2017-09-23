@@ -26,8 +26,10 @@ class AddJobTitleColumnToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('job_title');
-        });
+        if (Schema::hasColumn('users', 'job_title')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn('job_title');
+            });
+        }
     }
 }

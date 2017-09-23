@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class DropUniqueInApplicationDocumentTypesTable extends Migration
+class ModifyUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,8 @@ class DropUniqueInApplicationDocumentTypesTable extends Migration
      */
     public function up()
     {
-        Schema::table('application_document_types', function (Blueprint $table) {
-            $table->dropUnique(['name']);
-            $table->dropUnique(['eng_name']);
-        });
+        // 新增 autoincrement 的 id，並把 username 設為 unique
+        DB::statement('ALTER TABLE `users` ADD COLUMN `id` INT UNSIGNED NOT NULL AUTO_INCREMENT FIRST, DROP PRIMARY KEY, ADD PRIMARY KEY (`id`), ADD UNIQUE INDEX `users_username_unique` (`username`);');
     }
 
     /**

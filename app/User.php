@@ -52,6 +52,8 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\User withoutTrashed()
  * @property string $job_title
  * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereJobTitle($value)
+ * @property int $id
+ * @method static \Illuminate\Database\Eloquent\Builder|\App\User whereId($value)
  */
 class User extends Authenticatable
 {
@@ -59,9 +61,7 @@ class User extends Authenticatable
 
     protected $table = 'users';
 
-    protected $primaryKey = 'username';
-
-    public $incrementing = false;
+    protected $primaryKey = 'id';
 
     protected $dateFormat = Carbon::ISO8601;
 
