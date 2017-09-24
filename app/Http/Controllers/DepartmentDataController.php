@@ -352,7 +352,11 @@ class DepartmentDataController extends Controller
                             'departments.evaluation_level',
                             'departments.main_group_data',
                             'departments.sub_group_data',
-                            'departments.admission_placement_step_quota'
+                            'departments.admission_placement_step_quota',
+                            'application_docs.type',
+                            'application_docs.paper' => function ($query) use ($id) {
+                                $query->where('dept_id', '=', $id);
+                            }
                         ])->first();
                     } else {
                         $messages = ['Department data not found.'];
@@ -375,7 +379,11 @@ class DepartmentDataController extends Controller
                             },
                             'two_year_tech_departments.evaluation_level',
                             'two_year_tech_departments.main_group_data',
-                            'two_year_tech_departments.sub_group_data'
+                            'two_year_tech_departments.sub_group_data',
+                            'application_docs.type',
+                            'application_docs.paper' => function ($query) use ($id) {
+                                $query->where('dept_id', '=', $id);
+                            }
                         ])->first();
                     } else {
                         $messages = ['Department data not found.'];
@@ -398,7 +406,11 @@ class DepartmentDataController extends Controller
                             },
                             'graduate_departments.evaluation_level',
                             'graduate_departments.main_group_data',
-                            'graduate_departments.sub_group_data'
+                            'graduate_departments.sub_group_data',
+                            'application_docs.type',
+                            'application_docs.paper' => function ($query) use ($id) {
+                                $query->where('dept_id', '=', $id);
+                            }
                         ])->first();
                     } else {
                         $messages = ['Department data not found.'];
