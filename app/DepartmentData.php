@@ -126,6 +126,7 @@ use Carbon\Carbon;
  * @property-read \App\AdmissionPlacementStepQuota $admission_placement_step_quota
  * @property bool $use_eng_data 本年度是否提供英文資料
  * @method static \Illuminate\Database\Eloquent\Builder|\App\DepartmentData whereUseEngData($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\DepartmentApplicationDocument[] $application_docs
  */
 class DepartmentData extends Model
 {

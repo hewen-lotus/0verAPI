@@ -120,6 +120,7 @@ use Carbon\Carbon;
  * @property-read \App\DepartmentGroup $main_group_data
  * @property-read \App\DepartmentGroup|null $sub_group_data
  * @method static \Illuminate\Database\Eloquent\Builder|\App\TwoYearTechDepartmentData whereUseEngData($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\App\TwoYearTechDepartmentApplicationDocument[] $application_docs
  */
 class TwoYearTechDepartmentData extends Model
 {

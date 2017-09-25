@@ -36,6 +36,7 @@ use Carbon\Carbon;
  * @method static \Illuminate\Database\Query\Builder|\App\DepartmentApplicationDocument withoutTrashed()
  * @property-read \App\ApplicationDocumentType $type
  * @property-read \App\DepartmentData $department
+ * @property-read \App\PaperApplicationDocumentAddress $paper
  */
 class DepartmentApplicationDocument extends Model
 {
