@@ -239,7 +239,7 @@ class DepartmentData extends Model
         return $this->belongsTo('App\DepartmentGroup', 'sub_group', 'id');
     }
 
-    public function application_doc()
+    public function application_docs()
     {
         return $this->hasMany('App\DepartmentApplicationDocument', 'dept_id', 'id');
     }

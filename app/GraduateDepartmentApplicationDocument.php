@@ -66,4 +66,9 @@ class GraduateDepartmentApplicationDocument extends Model
     {
         return $this->belongsTo('App\ApplicationDocumentType', 'type_id', 'id');
     }
+
+    public function paper()
+    {
+        return $this->hasOne('App\PaperApplicationDocumentAddress', 'type_id', 'type_id');
+    }
 }

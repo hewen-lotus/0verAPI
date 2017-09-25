@@ -214,7 +214,7 @@ class TwoYearTechDepartmentData extends Model
         return $this->hasOne('App\SchoolData', 'history_id', 'history_id');
     }
 
-    public function application_doc()
+    public function application_docs()
     {
         return $this->hasMany('App\TwoYearTechDepartmentApplicationDocument', 'dept_id', 'id');
     }

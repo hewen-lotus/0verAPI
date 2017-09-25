@@ -353,8 +353,8 @@ class DepartmentDataController extends Controller
                             'departments.main_group_data',
                             'departments.sub_group_data',
                             'departments.admission_placement_step_quota',
-                            'application_docs.type',
-                            'application_docs.paper' => function ($query) use ($id) {
+                            'departments.application_docs.type',
+                            'departments.application_docs.paper' => function ($query) use ($id) {
                                 $query->where('dept_id', '=', $id);
                             }
                         ])->first();
@@ -380,8 +380,8 @@ class DepartmentDataController extends Controller
                             'two_year_tech_departments.evaluation_level',
                             'two_year_tech_departments.main_group_data',
                             'two_year_tech_departments.sub_group_data',
-                            'application_docs.type',
-                            'application_docs.paper' => function ($query) use ($id) {
+                            'two_year_tech_departments.application_docs.type',
+                            'two_year_tech_departments.application_docs.paper' => function ($query) use ($id) {
                                 $query->where('dept_id', '=', $id);
                             }
                         ])->first();
@@ -407,8 +407,8 @@ class DepartmentDataController extends Controller
                             'graduate_departments.evaluation_level',
                             'graduate_departments.main_group_data',
                             'graduate_departments.sub_group_data',
-                            'application_docs.type',
-                            'application_docs.paper' => function ($query) use ($id) {
+                            'graduate_departments.application_docs.type',
+                            'graduate_departments.application_docs.paper' => function ($query) use ($id) {
                                 $query->where('dept_id', '=', $id);
                             }
                         ])->first();
