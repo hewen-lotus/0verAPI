@@ -106,16 +106,6 @@ class MasterGuidelinesReplyFormGenerator extends Command
             }
             */
 
-            $pdf = App::make('snappy.pdf.wrapper');
-
-            $pdf->setOptions([
-                'title' => '',
-                'page-size' => 'A4',
-                'margin-top' => '20mm',
-                'disable-smart-shrinking' => true,
-                'disable-javascript' => true
-            ]);
-
             $css = '
                 <style type = "text/css">
                 @font-face {
@@ -410,8 +400,29 @@ class MasterGuidelinesReplyFormGenerator extends Command
 
             $file_check_code = hash('md5', $table . $maker . $now);
 
-            if (!$this->option('preview')) {
+            if ($this->option('preview')) {
+                $pdf = App::make('snappy.pdf.wrapper');
+
                 $pdf->setOptions([
+                    'title' => '',
+                    'page-size' => 'A4',
+                    'margin-bottom' => '20mm',
+                    'disable-smart-shrinking' => true,
+                    'disable-javascript' => true,
+                    'footer-font-size' => '8',
+                    'footer-spacing' => '12',
+                    'footer-left' => 'PREVIEW',
+                    'footer-right' => 'PREVIEW'
+                ]);
+            } else {
+                $pdf = App::make('snappy.pdf.wrapper');
+
+                $pdf->setOptions([
+                    'title' => '',
+                    'page-size' => 'A4',
+                    'margin-bottom' => '20mm',
+                    'disable-smart-shrinking' => true,
+                    'disable-javascript' => true,
                     'footer-font-size' => '8',
                     'footer-spacing' => '12',
                     'footer-left' => '※承辦人簽章' . PHP_EOL . $maker . PHP_EOL . $now,

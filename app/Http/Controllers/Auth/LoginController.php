@@ -73,7 +73,7 @@ class LoginController extends Controller
             return response()->json(['messages' => ['invalid credentials']], 401);
         }
 
-        User::where('username', '=', Auth::id())->update(['last_login_at' => Carbon::now()->toIso8601String()]);
+        User::where('id', '=', Auth::id())->update(['last_login_at' => Carbon::now()->toIso8601String()]);
 
         return $this->UserLoginStatus();
     }
@@ -102,7 +102,7 @@ class LoginController extends Controller
     public function UserLoginStatus()
     {
         if (Auth::check()) {
-            return User::where('username', '=', Auth::id())
+            return User::where('id', '=', Auth::id())
                 ->with('admin', 'school_editor.school', 'school_reviewer.school')->first();
         }
 
